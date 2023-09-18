@@ -13,7 +13,9 @@ public class OrGate extends Gate {
         body.append( new Line2D.Float( 0, 100, 75, 100 ), false );
         body.append( new Arc2D.Float( -50, 0, 100, 100, 270, 180, Arc2D.OPEN ), false );
 
-        input_pts[0] = new Point2D.Float( 45, 30 );
-        input_pts[1] = new Point2D.Float( 45, 70 );
+        input_pts[0]  = new Point2D.Float( 45, 30 );
+        input_pts[1]  = new Point2D.Float( 45, 70 );
+
+        output_pts[0] = new Point2D.Float( 125, 50 );
     }
 }

@@ -3,6 +3,7 @@ package Main;
 import Gates.Input;
 import Gates.OrGate;
 import Gates.AndGate;
+import Gates.Output;
 
 import java.awt.*;
 
@@ -17,6 +18,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     private AndGate andGate = new AndGate();
     private Input   input   = new Input();
+    private Output   output   = new Output();
 
 
     public GamePanel() {
@@ -90,12 +92,16 @@ public class GamePanel extends JPanel implements Runnable {
 
 
 
-        graphics2D.translate( 100, 300 );
+        graphics2D.translate( 500, 300 );
         andGate.repaint( graphics2D );
         resetTransform( graphics2D, scale );
 
-        graphics2D.translate( 500, 300 );
+        graphics2D.translate( 100, 300 );
         input.repaint( graphics2D );
+        resetTransform( graphics2D, scale );
+
+        graphics2D.translate( 700, 300 );
+        output.repaint( graphics2D );
         resetTransform( graphics2D, scale );
 
 
