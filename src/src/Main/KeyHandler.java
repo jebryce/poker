@@ -4,7 +4,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class KeyHandler implements KeyListener {
-    public  boolean[]    numbersPressed = new boolean[Constants.NUM_VALUES];
+    public  boolean[]    numbersPressed = new boolean[9];
     private boolean      spacePressed, backspacePressed, shiftPressed, enterPressed, commandPressed, zPressed;
     private boolean      escapePressed;
     private boolean      clearTilePressed, noteModePressed, stepSolverPressed, solveBoardPressed, undoPressed;

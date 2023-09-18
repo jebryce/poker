@@ -1,5 +1,8 @@
 package Main;
 
+import Gates.OrGate;
+import Gates.AndGate;
+
 import java.awt.*;
 
 import javax.swing.*;
@@ -9,11 +12,14 @@ public class GamePanel extends JPanel implements Runnable {
     private       Thread           gameThread;
     private final KeyHandler       keyHandler       = new KeyHandler();
     private final MouseHandler     mouseHandler     = new MouseHandler();
+    private OrGate orGate = new OrGate();
+
+    private AndGate andGate = new AndGate();
 
 
     public GamePanel() {
         this.setPreferredSize( new Dimension( Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT ) );
-        this.setBackground( Colors.BLACK );
+        this.setBackground( Colors.EGGSHELL );
         this.setDoubleBuffered( true );
         this.addKeyListener( keyHandler );
         this.setFocusTraversalKeysEnabled( false ); // can receive tab inputs
@@ -75,6 +81,14 @@ public class GamePanel extends JPanel implements Runnable {
         Graphics2D graphics2D = (Graphics2D) graphics;
 
 
+        graphics2D.translate( 300, 300 );
+        graphics2D.scale( 0.5, 0.5 );
+        orGate.repaint( graphics2D );
+        graphics2D.scale( 2, 2 );
+
+        graphics2D.translate( 100, 0 );
+        graphics2D.scale( 0.5, 0.5 );
+        andGate.repaint( graphics2D );
 
         graphics2D.dispose();
     }
