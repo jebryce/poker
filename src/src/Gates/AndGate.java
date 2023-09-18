@@ -13,7 +13,7 @@ public class AndGate extends Gate {
         body.append( new Line2D.Float( 0, 100, 75, 100 ), false );
         body.append( new Line2D.Float( 0, 100, 0, 0 ), false );
 
-        inputs[0] = new Point2D.Float( 0, 30 );
-        inputs[1] = new Point2D.Float( 0, 70 );
+        input_pts[0] = new Point2D.Float( 0, 30 );
+        input_pts[1] = new Point2D.Float( 0, 70 );
     }
 }

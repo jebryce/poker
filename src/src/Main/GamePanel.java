@@ -1,5 +1,6 @@
 package Main;
 
+import Gates.Input;
 import Gates.OrGate;
 import Gates.AndGate;
 
@@ -15,6 +16,7 @@ public class GamePanel extends JPanel implements Runnable {
     private OrGate orGate = new OrGate();
 
     private AndGate andGate = new AndGate();
+    private Input   input   = new Input();
 
 
     public GamePanel() {
@@ -79,23 +81,41 @@ public class GamePanel extends JPanel implements Runnable {
     protected void paintComponent ( final Graphics graphics ) {
         super.paintComponent( graphics );
         Graphics2D graphics2D = (Graphics2D) graphics;
-
+        double scale = 0.4;
+        graphics2D.scale( scale, scale );
 
         graphics2D.translate( 300, 300 );
-        graphics2D.scale( 0.5, 0.5 );
         orGate.repaint( graphics2D );
-        graphics2D.scale( 2, 2 );
+        resetTransform( graphics2D, scale );
 
-        graphics2D.translate( 100, 0 );
-        graphics2D.scale( 0.5, 0.5 );
+
+
+        graphics2D.translate( 100, 300 );
         andGate.repaint( graphics2D );
+        resetTransform( graphics2D, scale );
+
+        graphics2D.translate( 500, 300 );
+        input.repaint( graphics2D );
+        resetTransform( graphics2D, scale );
+
 
         graphics2D.dispose();
+    }
+
+    private void resetTransform( final Graphics2D graphics2D, final double scale ) {
+        graphics2D.scale( 2*scale/graphics2D.getTransform().getScaleX(),
+                2*scale/graphics2D.getTransform().getScaleX() );
+        graphics2D.translate( -graphics2D.getTransform().getTranslateX()/(2*scale),
+                -graphics2D.getTransform().getTranslateY()/(2*scale) );
     }
 
     private void update() {
         if ( keyHandler.isEndGamePressed() ) {
             System.exit(0);
+        }
+        if ( keyHandler.numbersPressed[0] ) {
+            keyHandler.numbersPressed[0] = false;
+            input.flipState();
         }
     }
 }
