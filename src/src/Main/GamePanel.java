@@ -14,11 +14,11 @@ public class GamePanel extends JPanel implements Runnable {
     private       Thread           gameThread;
     private final KeyHandler       keyHandler       = new KeyHandler();
     private final MouseHandler     mouseHandler     = new MouseHandler();
-    private OrGate orGate = new OrGate();
+    private OrGate  orGate = new OrGate( 550, 300);
 
-    private AndGate andGate = new AndGate();
-    private Input   input   = new Input();
-    private Output   output   = new Output();
+    private AndGate andGate = new AndGate( 300, 300);
+    private Input   input   = new Input( 50, 300);
+    private Output  output   = new Output( 800, 300 );
 
 
     public GamePanel() {
@@ -86,33 +86,12 @@ public class GamePanel extends JPanel implements Runnable {
         double scale = 0.4;
         graphics2D.scale( scale, scale );
 
-        graphics2D.translate( 300, 300 );
         orGate.repaint( graphics2D );
-        resetTransform( graphics2D, scale );
-
-
-
-        graphics2D.translate( 500, 300 );
         andGate.repaint( graphics2D );
-        resetTransform( graphics2D, scale );
-
-        graphics2D.translate( 100, 300 );
         input.repaint( graphics2D );
-        resetTransform( graphics2D, scale );
-
-        graphics2D.translate( 700, 300 );
         output.repaint( graphics2D );
-        resetTransform( graphics2D, scale );
-
 
         graphics2D.dispose();
-    }
-
-    private void resetTransform( final Graphics2D graphics2D, final double scale ) {
-        graphics2D.scale( 2*scale/graphics2D.getTransform().getScaleX(),
-                2*scale/graphics2D.getTransform().getScaleX() );
-        graphics2D.translate( -graphics2D.getTransform().getTranslateX()/(2*scale),
-                -graphics2D.getTransform().getTranslateY()/(2*scale) );
     }
 
     private void update() {
