@@ -12,7 +12,9 @@ public class IO_Gate extends Gate {
     @Override
     public void repaint( Graphics2D graphics2D ) {
         graphics2D.translate( location.getX(), location.getY() );
-        if ( inputs[0] || outputs[0] ) {
+        if ( inputs[0] != null && inputs[0].getState() ) {
+            graphics2D.setColor( Colors.GREEN );
+        } else if ( outputs[0] != null && outputs[0].getState() ) {
             graphics2D.setColor( Colors.GREEN );
         } else {
             graphics2D.setColor( Colors.RED );
