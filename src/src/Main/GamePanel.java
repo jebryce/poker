@@ -1,9 +1,6 @@
 package Main;
 
-import Gates.Input;
-import Gates.OrGate;
-import Gates.AndGate;
-import Gates.Output;
+import Gates.*;
 
 import java.awt.*;
 
@@ -14,11 +11,7 @@ public class GamePanel extends JPanel implements Runnable {
     private       Thread           gameThread;
     private final KeyHandler       keyHandler       = new KeyHandler();
     private final MouseHandler     mouseHandler     = new MouseHandler();
-    private OrGate  orGate = new OrGate( 550, 300);
-
-    private AndGate andGate = new AndGate( 300, 300);
-    private Input   input   = new Input( 50, 300);
-    private Output  output   = new Output( 800, 300 );
+    private final Player           player           = new Player( mouseHandler, keyHandler );
 
 
     public GamePanel() {
@@ -83,13 +76,8 @@ public class GamePanel extends JPanel implements Runnable {
     protected void paintComponent ( final Graphics graphics ) {
         super.paintComponent( graphics );
         Graphics2D graphics2D = (Graphics2D) graphics;
-        double scale = 0.4;
-        graphics2D.scale( scale, scale );
 
-        orGate.repaint( graphics2D );
-        andGate.repaint( graphics2D );
-        input.repaint( graphics2D );
-        output.repaint( graphics2D );
+        player.repaint( graphics2D );
 
         graphics2D.dispose();
     }
@@ -98,9 +86,6 @@ public class GamePanel extends JPanel implements Runnable {
         if ( keyHandler.isEndGamePressed() ) {
             System.exit(0);
         }
-        if ( keyHandler.numbersPressed[0] ) {
-            keyHandler.numbersPressed[0] = false;
-            input.flipState();
-        }
+        player.update();
     }
 }

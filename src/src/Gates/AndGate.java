@@ -18,5 +18,6 @@ public class AndGate extends Gate {
         input_pts[1]  = new Point2D.Float( 0, 70 );
 
         output_pts[0] = new Point2D.Float( 125, 50 );
+        outputs[0]    = new Wire();
     }
 }

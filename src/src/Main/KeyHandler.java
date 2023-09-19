@@ -16,8 +16,8 @@ public class KeyHandler implements KeyListener {
     @Override
     public void keyPressed( KeyEvent event ) {
         int code = event.getKeyCode();
-        if ( code >= KeyEvent.VK_1 && code <= KeyEvent.VK_9 ) {
-            numbersPressed[code - KeyEvent.VK_1] = true;
+        if ( code >= KeyEvent.VK_0 && code <= KeyEvent.VK_9 ) {
+            numbersPressed[code - KeyEvent.VK_0] = true;
         }
         if ( code == KeyEvent.VK_ESCAPE ) {
             escapePressed = true;
@@ -44,5 +44,15 @@ public class KeyHandler implements KeyListener {
             return true;
         }
         return false;
+    }
+
+    public int getNumberPressed() {
+        for( int index = 0; index < 10; index++ ) {
+            if ( numbersPressed[index] ) {
+                numbersPressed[index] = false;
+                return index;
+            }
+        }
+        return -1;
     }
 }
