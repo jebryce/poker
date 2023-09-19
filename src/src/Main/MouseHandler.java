@@ -15,8 +15,8 @@ public class MouseHandler implements MouseMotionListener, MouseListener {
 
     @Override
     public void mouseMoved( MouseEvent e ) {
-        xPos = e.getX();
-        yPos = e.getY();
+        xPos = (int) (e.getX() / Constants.SCREEN_SCALE);
+        yPos = (int) (e.getY() / Constants.SCREEN_SCALE);
     }
 
     @Override

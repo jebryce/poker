@@ -41,6 +41,28 @@ public class Gate {
         graphics2D.translate( -location.getX(), -location.getY() );
     }
 
+    public void denoteOpenNodes( final Graphics2D graphics2D ) {
+        graphics2D.setColor( Colors.GREEN );
+        for ( int index = 0; index < Constants.MAX_NUM_IO; index++ ) {
+            if ( input_pts[index] != null ) {
+                if ( inputs[index] == null ) {
+                    graphics2D.fillOval(
+                            (int) ( location.getX() + input_pts[index].getX() - 11),
+                            (int) ( location.getY() + input_pts[index].getY() - 11), 22, 22
+                    );
+                }
+            }
+            if ( output_pts[index] != null ) {
+                if ( outputs[index] == null ) {
+                    graphics2D.fillOval(
+                            (int) ( location.getX() + output_pts[index].getX() - 11),
+                            (int) ( location.getY() + output_pts[index].getY() - 11), 22, 22
+                    );
+                }
+            }
+        }
+    }
+
     private void repaintInputs( final Graphics2D graphics2D ) {
         for ( Point2D input : input_pts ) {
             if ( input == null ) {

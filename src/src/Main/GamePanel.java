@@ -76,6 +76,7 @@ public class GamePanel extends JPanel implements Runnable {
     protected void paintComponent ( final Graphics graphics ) {
         super.paintComponent( graphics );
         Graphics2D graphics2D = (Graphics2D) graphics;
+        graphics2D.scale( Constants.SCREEN_SCALE, Constants.SCREEN_SCALE);
 
         player.repaint( graphics2D );
 

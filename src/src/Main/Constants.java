@@ -8,4 +8,6 @@ public class Constants {
     public static final long   NANO_SEC_PER_SEC   = 1_000_000_000L;
     public static final long   NANO_SEC_PER_M_SEC = 1_000_000L;
     public static final int    MAX_NUM_IO         = 8;
+    public static final double SCREEN_SCALE       = 0.4;
+    public static final int    MAX_NUM_GATES      = 1000;
 }
