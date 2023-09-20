@@ -51,12 +51,14 @@ public class Gate {
                 break;
             }
             if ( input != null && inputs[index] == null ) {
-                graphics2D.drawLine( (int) ( input.getLocation().getX()-30), (int) input.getLocation().getY(),
-                        (int) input.getLocation().getX(), (int) input.getLocation().getY() );
+                Point2D inputLocation = input.getLocation();
+                graphics2D.drawLine( (int) ( inputLocation.getX()-30), (int) inputLocation.getY(),
+                        (int) inputLocation.getX(), (int) inputLocation.getY() );
             }
             if ( output != null && outputs[index] == null ) {
-                graphics2D.drawLine( (int) ( output.getLocation().getX()+30), (int) output.getLocation().getY(),
-                        (int) output.getLocation().getX(), (int) output.getLocation().getY() );
+                Point2D outputLocation = output.getLocation();
+                graphics2D.drawLine( (int) ( outputLocation.getX()+30), (int) outputLocation.getY(),
+                        (int) outputLocation.getX(), (int) outputLocation.getY() );
             }
         }
     }

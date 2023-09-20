@@ -8,7 +8,27 @@ public class Nodes {
     private final Node[] nodes     = new Node[Constants.MAX_NUM_GATES*Constants.MAX_NUM_IO];
     private       int    num_nodes = 0;
 
+    public void addNodesFromGate( final Gate newGate) {
+        for ( Node node : newGate.input_nodes ) {
+            if ( node == null ) {
+                break;
+            }
+            node.setTrueLocation();
+            add_node( node );
+        }
+        for ( Node node : newGate.output_nodes ) {
+            if ( node == null ) {
+                break;
+            }
+            node.setTrueLocation();
+            add_node( node );
+        }
+    }
+
     public void add_node( final Node newNode ) {
+        if ( newNode == null ) {
+            return;
+        }
         nodes[num_nodes++] = newNode;
     }
 
@@ -17,7 +37,7 @@ public class Nodes {
         double closestDistance = 0;
         for ( Node node : nodes ) {
             if ( node == null ) {
-                return null;
+                break;
             }
             double nodeDistance = node.getTrueLocation().distance( location );
             if ( closestNode == null ) {

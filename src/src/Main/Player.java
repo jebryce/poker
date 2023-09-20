@@ -13,6 +13,8 @@ public class Player {
     private final Gate[]       placedGates    = new Gate[Constants.MAX_NUM_GATES];
     private       int          numPlacedGates = 0;
     private       PlayerMode   playerMode     = PlayerMode.NORMAL;
+    private final Nodes        nodes          = new Nodes();
+    private       Node         closestNode    = null;
 
     public Player( final MouseHandler mouseH, final KeyHandler keyH ) {
         mouseHandler = mouseH;
@@ -26,6 +28,12 @@ public class Player {
             }
             gate.repaint( graphics2D );
         }
+        if ( closestNode != null ) {
+            graphics2D.setColor( Colors.GREEN );
+            Point2D location = closestNode.getTrueLocation();
+            graphics2D.fillOval( (int) location.getX() - 11, (int) location.getY() - 11, 22, 22 );
+        }
+
         if ( heldGate != null ) {
             Point2D centerOffset = heldGate.getCenterOffset();
             heldGate.setLocation(
@@ -54,37 +62,13 @@ public class Player {
         }
         if ( mouseHandler.isMouseClicked() ) {
             if ( heldGate != null ) {
+                nodes.addNodesFromGate( heldGate );
                 placedGates[numPlacedGates++] = heldGate;
                 heldGate = null;
             }
             if ( playerMode == PlayerMode.PLACE_WIRE ) {
-                findNearestNode( x, y );
+                closestNode = nodes.findClosestNode( new Point2D.Double( x, y ) );
             }
         }
-    }
-
-    private void findNearestNode( final int x, final int y ) {
-        Gate closestGate       = null;
-        double closestDistance = 0;
-        Point2D player         = new Point2D.Double( x, y );
-        for ( Gate gate : placedGates ) {
-            if ( gate == null ) {
-                break;
-            }
-            double gateDistance = gate.getCenter().distance( player );
-            if ( closestGate == null ) {
-                closestDistance = gateDistance;
-                closestGate = gate;
-                continue;
-            }
-            if ( gateDistance < closestDistance ) {
-                closestDistance = gateDistance;
-                closestGate = gate;
-            }
-        }
-        if ( closestGate == null ) {
-            return;
-        }
-
     }
 }

@@ -10,9 +10,13 @@ public class Node {
     public Node( final Gate attachedGate, final int x, final int y ) {
         location.setLocation( x, y );
         this.attachedGate = attachedGate;
+    }
+
+    public void setTrueLocation() {
         trueLocation.setLocation( location.getX() + attachedGate.location.getX(),
                 location.getY() + attachedGate.location.getY() );
     }
+
 
     public Point2D getLocation() {
         return (Point2D) location.clone();
