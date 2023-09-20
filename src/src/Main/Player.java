@@ -15,6 +15,7 @@ public class Player {
     private       PlayerMode   playerMode     = PlayerMode.NORMAL;
     private final Nodes        nodes          = new Nodes();
     private       Node         closestNode    = null;
+    private       Wire         heldWire       = null;
 
     public Player( final MouseHandler mouseH, final KeyHandler keyH ) {
         mouseHandler = mouseH;
@@ -28,10 +29,8 @@ public class Player {
             }
             gate.repaint( graphics2D );
         }
-        if ( closestNode != null ) {
-            graphics2D.setColor( Colors.GREEN );
-            Point2D location = closestNode.getTrueLocation();
-            graphics2D.fillOval( (int) location.getX() - 11, (int) location.getY() - 11, 22, 22 );
+        if ( heldWire != null ) {
+            heldWire.repaintToHand( graphics2D, new Point2D.Double( mouseHandler.xPos, mouseHandler.yPos ) );
         }
 
         if ( heldGate != null ) {
@@ -62,12 +61,17 @@ public class Player {
         }
         if ( mouseHandler.isMouseClicked() ) {
             if ( heldGate != null ) {
+                playerMode = PlayerMode.HOLD_GATE;
                 nodes.addNodesFromGate( heldGate );
                 placedGates[numPlacedGates++] = heldGate;
                 heldGate = null;
             }
             if ( playerMode == PlayerMode.PLACE_WIRE ) {
                 closestNode = nodes.findClosestNode( new Point2D.Double( x, y ) );
+                if ( closestNode != null ) {
+                    Gate attachedGate = closestNode.getAttachedGate();
+                    heldWire          = attachedGate.createWire( closestNode );
+                }
             }
         }
     }

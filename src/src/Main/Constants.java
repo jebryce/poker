@@ -10,4 +10,5 @@ public class Constants {
     public static final int    MAX_NUM_IO         = 8;
     public static final double SCREEN_SCALE       = 0.4;
     public static final int    MAX_NUM_GATES      = 1000;
+    public static final int    LINE_THICKNESS     = 6;
 }

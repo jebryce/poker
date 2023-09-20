@@ -26,4 +26,7 @@ public class Node {
         return (Point2D) trueLocation.clone();
     }
 
+    public Gate getAttachedGate() {
+        return attachedGate;
+    }
 }
