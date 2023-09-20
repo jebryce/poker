@@ -3,7 +3,6 @@ package Gates;
 
 import java.awt.geom.Arc2D;
 import java.awt.geom.Line2D;
-import java.awt.geom.Point2D;
 
 public class OrGate extends Gate {
 
@@ -14,10 +13,9 @@ public class OrGate extends Gate {
         body.append( new Line2D.Float( 0, 100, 75, 100 ), false );
         body.append( new Arc2D.Float( -50, 0, 100, 100, 270, 180, Arc2D.OPEN ), false );
 
-        input_pts[0]  = new Point2D.Float( 45, 30 );
-        input_pts[1]  = new Point2D.Float( 45, 70 );
+        input_nodes[0]  = new Node( this, 45, 30 );
+        input_nodes[1]  = new Node( this, 45, 70 );
 
-        output_pts[0] = new Point2D.Float( 125, 50 );
-        outputs[0]    = new Wire();
+        output_nodes[0] = new Node( this, 125, 50 );
     }
 }

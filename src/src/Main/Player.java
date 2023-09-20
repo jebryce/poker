@@ -4,6 +4,7 @@ import Gates.*;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
+import java.util.Arrays;
 
 public class Player {
     private final MouseHandler mouseHandler;
@@ -56,8 +57,13 @@ public class Player {
             playerMode = PlayerMode.PLACE_WIRE;
         }
         if ( mouseHandler.isMouseClicked() ) {
-            placedGates[numPlacedGates++] = heldGate;
-            heldGate = null;
+            if ( heldGate != null ) {
+                placedGates[numPlacedGates++] = heldGate;
+                heldGate = null;
+            }
+            if ( playerMode == PlayerMode.PLACE_WIRE ) {
+                findNearestNode( x, y );
+            }
         }
     }
 
@@ -70,4 +76,28 @@ public class Player {
         }
     }
 
+    private void findNearestNode( final int x, final int y ) {
+        Gate closestGate       = null;
+        double closestDistance = 0;
+        Point2D player         = new Point2D.Double( x, y );
+        for ( Gate gate : placedGates ) {
+            if ( gate == null ) {
+                break;
+            }
+            double gateDistance = gate.getCenter().distance( player );
+            if ( closestGate == null ) {
+                closestDistance = gateDistance;
+                closestGate = gate;
+                continue;
+            }
+            if ( gateDistance < closestDistance ) {
+                closestDistance = gateDistance;
+                closestGate = gate;
+            }
+        }
+        if ( closestGate == null ) {
+            return;
+        }
+
+    }
 }

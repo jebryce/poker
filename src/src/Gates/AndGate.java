@@ -3,7 +3,6 @@ package Gates;
 
 import java.awt.geom.Arc2D;
 import java.awt.geom.Line2D;
-import java.awt.geom.Point2D;
 
 public class AndGate extends Gate {
 
@@ -14,10 +13,9 @@ public class AndGate extends Gate {
         body.append( new Line2D.Float( 0, 100, 75, 100 ), false );
         body.append( new Line2D.Float( 0, 100, 0, 0 ), false );
 
-        input_pts[0]  = new Point2D.Float( 0, 30 );
-        input_pts[1]  = new Point2D.Float( 0, 70 );
+        input_nodes[0]  = new Node( this, 0, 30 );
+        input_nodes[1]  = new Node( this, 0, 70 );
 
-        output_pts[0] = new Point2D.Float( 125, 50 );
-        outputs[0]    = new Wire();
+        output_nodes[0] = new Node( this, 125, 50 );
     }
 }
