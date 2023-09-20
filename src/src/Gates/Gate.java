@@ -39,11 +39,25 @@ public class Gate {
         graphics2D.setStroke( new BasicStroke( 6 ) );
         graphics2D.translate( location.getX(), location.getY() );
         graphics2D.draw(body);
-
+        repaintIO( graphics2D );
         graphics2D.translate( -location.getX(), -location.getY() );
     }
 
-    public void denoteOpenNodes( final Graphics2D graphics2D ) {
-
+    private void repaintIO( final Graphics2D graphics2D ) {
+        for ( int index = 0; index < Constants.MAX_NUM_IO; index++ ) {
+            Node input  = input_nodes[index];
+            Node output = output_nodes[index];
+            if ( input == null && output == null ) {
+                break;
+            }
+            if ( input != null && inputs[index] == null ) {
+                graphics2D.drawLine( (int) ( input.getLocation().getX()-30), (int) input.getLocation().getY(),
+                        (int) input.getLocation().getX(), (int) input.getLocation().getY() );
+            }
+            if ( output != null && outputs[index] == null ) {
+                graphics2D.drawLine( (int) ( output.getLocation().getX()+30), (int) output.getLocation().getY(),
+                        (int) output.getLocation().getX(), (int) output.getLocation().getY() );
+            }
+        }
     }
 }

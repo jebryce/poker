@@ -20,6 +20,12 @@ public class Player {
     }
 
     public void repaint( final Graphics2D graphics2D  ) {
+        for ( Gate gate : placedGates ) {
+            if ( gate == null ) {
+                break;
+            }
+            gate.repaint( graphics2D );
+        }
         if ( heldGate != null ) {
             Point2D centerOffset = heldGate.getCenterOffset();
             heldGate.setLocation(
@@ -27,16 +33,6 @@ public class Player {
                     (int) (mouseHandler.yPos - centerOffset.getY())
             );
             heldGate.repaint( graphics2D );
-        }
-        for ( Gate gate : placedGates ) {
-            if ( gate == null ) {
-                break;
-            }
-            gate.repaint( graphics2D );
-        }
-
-        if ( playerMode == PlayerMode.PLACE_WIRE ) {
-            denoteWireNodes( graphics2D );
         }
 
     }
@@ -64,15 +60,6 @@ public class Player {
             if ( playerMode == PlayerMode.PLACE_WIRE ) {
                 findNearestNode( x, y );
             }
-        }
-    }
-
-    private void denoteWireNodes( final Graphics2D graphics2D ) {
-        for ( Gate gate : placedGates ) {
-            if ( gate == null ) {
-                break;
-            }
-            gate.denoteOpenNodes( graphics2D );
         }
     }
 
