@@ -11,7 +11,11 @@ public class Input extends IO_Gate {
         output_nodes[0] = new Node( this, 50, 25 );
     }
 
+    @Override
     public void flipState() {
+        if ( outputs[0] == null ) {
+            return;
+        }
         outputs[0].flipState();
     }
 }

@@ -72,7 +72,6 @@ public class Wire {
     }
 
     public void repaint( final Graphics2D graphics2D ) {
-        System.out.println( numNodes );
         if ( numNodes != 2 ) {
             return;
         }
