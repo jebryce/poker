@@ -6,7 +6,8 @@ import java.util.Arrays;
 
 public class KeyHandler implements KeyListener {
     public  boolean[]    numbersPressed = new boolean[10];
-    private boolean      escapePressed, wPressed;
+    private boolean[]    wPressed = new boolean[2];
+    private boolean      escapePressed;
     private boolean      endGamePressed, placeWirePressed;
 
 
@@ -23,7 +24,11 @@ public class KeyHandler implements KeyListener {
             escapePressed = true;
         }
         if ( code == KeyEvent.VK_W ) {
-            wPressed = true;
+            if ( !wPressed[0] ) {
+                wPressed[1] = true;
+            }
+            wPressed[0] = true;
+
         }
         checkKeyBinds();
     }
@@ -35,14 +40,13 @@ public class KeyHandler implements KeyListener {
             escapePressed = false;
         }
         if ( code == KeyEvent.VK_W ) {
-            wPressed = true;
+            wPressed[0] = false;
         }
         checkKeyBinds();
     }
 
     private void checkKeyBinds() {
         endGamePressed    = escapePressed;
-        placeWirePressed  = wPressed;
     }
 
     public boolean isEndGamePressed() {
@@ -54,8 +58,8 @@ public class KeyHandler implements KeyListener {
     }
 
     public boolean isPlaceWirePressed() {
-        if ( placeWirePressed ) {
-            placeWirePressed = false;
+        if ( wPressed[1] ) {
+            wPressed[1] = false;
             return true;
         }
         return false;

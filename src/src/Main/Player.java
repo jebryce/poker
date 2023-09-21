@@ -13,6 +13,7 @@ public class Player {
     private final Gate[]       placedGates    = new Gate[Constants.MAX_NUM_GATES];
     private       int          numPlacedGates = 0;
     private       PlayerMode   playerMode     = PlayerMode.NORMAL;
+    private       PlayerMode   lastPlayerMode     = PlayerMode.NORMAL;
     private final Nodes        nodes          = new Nodes();
     private       Node         closestNode    = null;
     private       Wire         heldWire       = null;
@@ -45,33 +46,68 @@ public class Player {
     }
 
     public void update() {
-        int x = mouseHandler.xPos;
-        int y = mouseHandler.yPos;
-        switch ( keyHandler.getNumberPressed() ) {
-            case -1 -> {}
-            case 1  -> heldGate = new Input( x, y );
-            case 2  -> heldGate = new Output( x, y );
-            case 3  -> heldGate = new AndGate( x, y );
-            case 4  -> heldGate = new OrGate( x, y );
-            case 5  -> heldGate = new NotGate( x, y );
-            default -> heldGate = null;
+        if ( lastPlayerMode != playerMode ) {
+            lastPlayerMode = playerMode;
+            System.out.println ( playerMode + " " + heldWire );
         }
+
+
+        switch ( playerMode ) {
+            case NORMAL     -> updateNORMAL();
+            case PLACE_GATE -> updatePLACE_GATE();
+            case PLACE_WIRE -> updatePLACE_WIRE();
+        }
+    }
+
+    private void updateNORMAL() {
         if ( keyHandler.isPlaceWirePressed() ) {
             playerMode = PlayerMode.PLACE_WIRE;
+            return;
+        }
+        checkHeldGate();
+    }
+
+    private void checkHeldGate() {
+        int x = mouseHandler.xPos;
+        int y = mouseHandler.yPos;
+        int numberPressed = keyHandler.getNumberPressed();
+        switch ( numberPressed ) {
+            case -1 -> {}
+            case 1  -> { heldGate = new Input( x, y );   playerMode = PlayerMode.PLACE_GATE; }
+            case 2  -> { heldGate = new Output( x, y );  playerMode = PlayerMode.PLACE_GATE; }
+            case 3  -> { heldGate = new AndGate( x, y ); playerMode = PlayerMode.PLACE_GATE; }
+            case 4  -> { heldGate = new OrGate( x, y );  playerMode = PlayerMode.PLACE_GATE; }
+            case 5  -> { heldGate = new NotGate( x, y ); playerMode = PlayerMode.PLACE_GATE; }
+            default -> { heldGate = null;                playerMode = PlayerMode.NORMAL; }
+        }
+    }
+
+    private void updatePLACE_GATE() {
+        checkHeldGate();
+        if ( heldGate == null ) {
+            playerMode = PlayerMode.NORMAL;
+            return;
         }
         if ( mouseHandler.isMouseClicked() ) {
-            if ( heldGate != null ) {
-                playerMode = PlayerMode.HOLD_GATE;
-                nodes.addNodesFromGate( heldGate );
-                placedGates[numPlacedGates++] = heldGate;
-                heldGate = null;
-            }
-            if ( playerMode == PlayerMode.PLACE_WIRE ) {
-                closestNode = nodes.findClosestNode( new Point2D.Double( x, y ) );
-                if ( closestNode != null ) {
-                    Gate attachedGate = closestNode.getAttachedGate();
-                    heldWire          = attachedGate.createWire( closestNode );
-                }
+            playerMode = PlayerMode.NORMAL;
+            nodes.addNodesFromGate( heldGate );
+            placedGates[numPlacedGates++] = heldGate;
+            heldGate = null;
+        }
+    }
+
+    private void updatePLACE_WIRE() {
+        if ( keyHandler.isPlaceWirePressed() ) {
+            playerMode = PlayerMode.NORMAL;
+            return;
+        }
+
+        if ( mouseHandler.isMouseClicked() ) {
+            playerMode = PlayerMode.NORMAL;
+            closestNode = nodes.findClosestNode( new Point2D.Double( mouseHandler.xPos, mouseHandler.yPos ) );
+            if ( closestNode != null ) {
+                Gate attachedGate = closestNode.getAttachedGate();
+                heldWire          = attachedGate.createWire( closestNode );
             }
         }
     }
