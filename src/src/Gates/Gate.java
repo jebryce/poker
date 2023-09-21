@@ -27,21 +27,32 @@ public class Gate {
         return new Point2D.Double( body.getBounds().getCenterX() , body.getBounds().getCenterY() );
     }
 
-    public Wire createWire( final Node wireNode ) {
+    public void attachWire( final Node wireNode, final Wire wire ) {
         for ( int index = 0; index < Constants.MAX_NUM_IO; index++ ) {
             if ( input_nodes[index] == null && output_nodes[index] == null ) {
                 break;
             }
             if ( input_nodes[index] == wireNode ) {
-                inputs[index] = new Wire( wireNode );
-                return inputs[index];
+                inputs[index] = wire;
             }
             if ( output_nodes[index] == wireNode ) {
-                outputs[index] = new Wire( wireNode );
-                return outputs[index];
+                outputs[index] = wire;
             }
         }
-        return null;
+    }
+
+    public void  detachWire( final Wire wire ) {
+        for ( int index = 0; index < Constants.MAX_NUM_IO; index++ ) {
+            if ( inputs[index] == null && outputs[index] == null ) {
+                break;
+            }
+            if ( inputs[index] == wire ) {
+                inputs[index] = null;
+            }
+            if ( outputs[index] == wire ) {
+                outputs[index] = null;
+            }
+        }
     }
 
     public Point2D getCenter() {

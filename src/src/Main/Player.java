@@ -11,9 +11,11 @@ public class Player {
     private final KeyHandler   keyHandler;
     private       Gate         heldGate;
     private final Gate[]       placedGates    = new Gate[Constants.MAX_NUM_GATES];
+    private final Wire[]       placedWires    = new Wire[Constants.MAX_NUM_GATES*Constants.MAX_NUM_IO/2];
     private       int          numPlacedGates = 0;
+    private       int          numPlacedWires = 0;
     private       PlayerMode   playerMode     = PlayerMode.NORMAL;
-    private       PlayerMode   lastPlayerMode     = PlayerMode.NORMAL;
+    private       PlayerMode   lastPlayerMode = PlayerMode.NORMAL;
     private final Nodes        nodes          = new Nodes();
     private       Node         closestNode    = null;
     private       Wire         heldWire       = null;
@@ -24,6 +26,12 @@ public class Player {
     }
 
     public void repaint( final Graphics2D graphics2D  ) {
+        for ( Wire wire : placedWires ) {
+            if ( wire == null ) {
+                break;
+            }
+            wire.repaint( graphics2D );
+        }
         for ( Gate gate : placedGates ) {
             if ( gate == null ) {
                 break;
@@ -48,9 +56,7 @@ public class Player {
     public void update() {
         if ( lastPlayerMode != playerMode ) {
             lastPlayerMode = playerMode;
-            System.out.println ( playerMode + " " + heldWire );
         }
-
 
         switch ( playerMode ) {
             case NORMAL     -> updateNORMAL();
@@ -98,17 +104,31 @@ public class Player {
 
     private void updatePLACE_WIRE() {
         if ( keyHandler.isPlaceWirePressed() ) {
+            if ( heldWire != null ) {
+                heldWire.detach();
+            }
+            heldWire = null;
             playerMode = PlayerMode.NORMAL;
             return;
         }
 
         if ( mouseHandler.isMouseClicked() ) {
-            playerMode = PlayerMode.NORMAL;
             closestNode = nodes.findClosestNode( new Point2D.Double( mouseHandler.xPos, mouseHandler.yPos ) );
-            if ( closestNode != null ) {
-                Gate attachedGate = closestNode.getAttachedGate();
-                heldWire          = attachedGate.createWire( closestNode );
+            if ( closestNode == null ) {
+                playerMode = PlayerMode.NORMAL;
+                return;
             }
+            if ( heldWire == null ) {
+                heldWire = new Wire();
+                heldWire.attachToNode( closestNode );
+            }
+            else if ( !heldWire.hasAttachedNode( closestNode ) ) {
+                playerMode = PlayerMode.NORMAL;
+                heldWire.attachToNode( closestNode );
+                placedWires[numPlacedWires++] = heldWire;
+                heldWire = null;
+            }
+
         }
     }
 }
