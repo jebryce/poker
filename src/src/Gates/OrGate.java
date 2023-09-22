@@ -14,8 +14,11 @@ public class OrGate extends Gate {
         body.append( new Arc2D.Float( -50, 0, 100, 100, 270, 180, Arc2D.OPEN ), false );
 
         input_nodes[0]  = new Node( this, 45, 30 );
+        inputs[0]       = new Wire( input_nodes[0] );
         input_nodes[1]  = new Node( this, 45, 70 );
+        inputs[1]       = new Wire( input_nodes[1] );
 
         output_nodes[0] = new Node( this, 125, 50 );
+        outputs[0]      = new Wire( output_nodes[0] );
     }
 }

@@ -41,7 +41,7 @@ public class Gate {
         }
     }
 
-    public void  detachWire( final Wire wire ) {
+    public void detachWire( final Wire wire ) {
         for ( int index = 0; index < Constants.MAX_NUM_IO; index++ ) {
             if ( inputs[index] == null && outputs[index] == null ) {
                 break;
@@ -78,12 +78,12 @@ public class Gate {
             if ( input == null && output == null ) {
                 break;
             }
-            if ( input != null && inputs[index] == null ) {
+            if ( input != null && inputs[index].getWireType() == WireType.UNCONNECTED ) {
                 Point2D inputLocation = input.getLocation();
                 graphics2D.drawLine( (int) ( inputLocation.getX()-30), (int) inputLocation.getY(),
                         (int) inputLocation.getX(), (int) inputLocation.getY() );
             }
-            if ( output != null && outputs[index] == null ) {
+            if ( output != null && outputs[index].getWireType() == WireType.UNCONNECTED ) {
                 Point2D outputLocation = output.getLocation();
                 graphics2D.drawLine( (int) ( outputLocation.getX()+30), (int) outputLocation.getY(),
                         (int) outputLocation.getX(), (int) outputLocation.getY() );

@@ -7,28 +7,54 @@ import java.awt.*;
 import java.awt.geom.Point2D;
 
 public class Wire {
-    private       boolean state         = false;
-    private final Node[]  attachedNodes = new Node[Constants.MAX_NUM_WIRE_NODES];
-    private       int     numNodes      = 0;
+    private       boolean  state         = false;
+    private final Node[]   attachedNodes = new Node[Constants.MAX_NUM_WIRE_NODES];
+    private final Gate[]   attachedGates = new Gate[Constants.MAX_NUM_WIRE_NODES];
+    private       int      numNodes      = 0;
+    private       WireType wireType      = WireType.UNCONNECTED;
+
+    public Wire() {}
+
+    public Wire( final Node node ) {
+        attachToNode( node );
+    }
+
+    public WireType getWireType() {
+        return wireType;
+    }
 
     public void attachToNode( final Node node ) {
         if ( node == null ) {
             return;
         }
-        node.getAttachedGate().attachWire( node, this );
+        Gate attachedGate = node.getAttachedGate();
+        attachedGate.attachWire( node, this );
         this.attachedNodes[numNodes++] = node;
+        for( int index = 0; index < Constants.MAX_NUM_WIRE_NODES; index++ ) {
+            if( attachedGates[index] == null ) {
+                attachedGates[index] = attachedGate;
+            }
+            if( attachedGates[index] == attachedGate ) {
+                break;
+            }
+        }
+        if ( numNodes > 1 ) {
+            wireType = WireType.CONNECTED;
+        }
     }
 
     public void detach() {
         for ( int index = 0; index < Constants.MAX_NUM_WIRE_NODES; index++ ) {
             Node node = attachedNodes[index];
             attachedNodes[index] = null;
+            attachedGates[index] = null;
             if ( node == null ) {
                 break;
             }
             node.getAttachedGate().detachWire( this );
         }
         numNodes = 0;
+        wireType = WireType.UNCONNECTED;
     }
 
     public boolean hasAttachedNode( final Node node ) {
@@ -57,6 +83,12 @@ public class Wire {
 
     protected void flipState() {
         state = !state;
+    }
+
+    private void rippleStateUpdate() {
+        for ( Gate gate : attachedGates ) {
+
+        }
     }
 
     public void repaintToHand( final Graphics2D graphics2D, final Point2D player ) {

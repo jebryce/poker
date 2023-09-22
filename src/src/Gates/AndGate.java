@@ -14,8 +14,11 @@ public class AndGate extends Gate {
         body.append( new Line2D.Float( 0, 100, 0, 0 ), false );
 
         input_nodes[0]  = new Node( this, 0, 30 );
+        inputs[0]       = new Wire( input_nodes[0] );
         input_nodes[1]  = new Node( this, 0, 70 );
+        inputs[1]       = new Wire( input_nodes[1] );
 
         output_nodes[0] = new Node( this, 125, 50 );
+        outputs[0]      = new Wire( output_nodes[0] );
     }
 }

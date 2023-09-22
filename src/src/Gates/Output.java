@@ -9,5 +9,6 @@ public class Output extends IO_Gate {
         body.append( new Ellipse2D.Float( 0, 0, 50, 50), false );
 
         input_nodes[0] = new Node( this, 0, 25 );
+        inputs[0]      = new Wire( input_nodes[0] );
     }
 }

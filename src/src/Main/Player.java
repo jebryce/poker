@@ -128,9 +128,6 @@ public class Player {
 
     private void updatePLACE_WIRE() {
         if ( keyHandler.isPlaceWirePressed() ) {
-            if ( heldWire != null ) {
-                heldWire.detach();
-            }
             heldWire = null;
             playerMode = PlayerMode.NORMAL;
             return;
@@ -143,12 +140,11 @@ public class Player {
                 return;
             }
             if ( heldWire == null ) {
-                heldWire = new Wire();
-                heldWire.attachToNode(closestNode);
+                heldWire = new Wire( closestNode );
             }
             else if ( !heldWire.hasAttachedNode(closestNode) ) {
                 playerMode = PlayerMode.NORMAL;
-                heldWire.attachToNode(closestNode);
+                heldWire.attachToNode( closestNode );
                 placedWires[numPlacedWires++] = heldWire;
                 heldWire = null;
             }

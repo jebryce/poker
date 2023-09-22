@@ -11,7 +11,9 @@ public class NotGate extends IO_Gate {
         body.append( new Line2D.Float( 0, 60, 0, 0 ), false );
 
         input_nodes[0]  = new Node( this, 0, 30 );
+        inputs[0]       = new Wire( input_nodes[0] );
 
         output_nodes[0] = new Node( this, 50, 30 );
+        outputs[0]      = new Wire( output_nodes[0] );
     }
 }
