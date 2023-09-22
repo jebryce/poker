@@ -109,12 +109,13 @@ public class Player {
         int numberPressed = keyHandler.getNumberPressed();
         switch ( numberPressed ) {
             case -1 -> {}
-            case 1  -> { heldGate = new Input( x, y );   playerMode = PlayerMode.PLACE_GATE; }
-            case 2  -> { heldGate = new Output( x, y );  playerMode = PlayerMode.PLACE_GATE; }
-            case 3  -> { heldGate = new AndGate( x, y ); playerMode = PlayerMode.PLACE_GATE; }
-            case 4  -> { heldGate = new OrGate( x, y );  playerMode = PlayerMode.PLACE_GATE; }
-            case 5  -> { heldGate = new NotGate( x, y ); playerMode = PlayerMode.PLACE_GATE; }
-            default -> { heldGate = null;                playerMode = PlayerMode.NORMAL; }
+            case 1  -> { heldGate = new Input( x, y );    playerMode = PlayerMode.PLACE_GATE; }
+            case 2  -> { heldGate = new Output( x, y );   playerMode = PlayerMode.PLACE_GATE; }
+            case 3  -> { heldGate = new AndGate( x, y );  playerMode = PlayerMode.PLACE_GATE; }
+            case 4  -> { heldGate = new OrGate( x, y );   playerMode = PlayerMode.PLACE_GATE; }
+            case 5  -> { heldGate = new NotGate( x, y );  playerMode = PlayerMode.PLACE_GATE; }
+            case 6  -> { heldGate = new NandGate( x, y ); playerMode = PlayerMode.PLACE_GATE; }
+            default -> { heldGate = null;                 playerMode = PlayerMode.NORMAL; }
         }
     }
 
