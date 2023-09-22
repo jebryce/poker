@@ -64,20 +64,13 @@ public class Wire {
     }
 
     protected void setState( final boolean newState ) {
-        state = newState;
+        if ( state != newState ) {
+            state = newState;
+        }
     }
 
     protected void flipState() {
         state = !state;
-    }
-
-    public void rippleStateUpdate() {
-        for ( Gate gate : attachedGates ) {
-            if ( gate == null ) {
-                break;
-            }
-            gate.update();
-        }
     }
 
     public void repaintToHand( final Graphics2D graphics2D, final Point2D player ) {

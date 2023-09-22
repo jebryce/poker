@@ -15,7 +15,6 @@ public class Player {
     private       int          numPlacedGates = 0;
     private       int          numPlacedWires = 0;
     private       PlayerMode   playerMode     = PlayerMode.NORMAL;
-    private       PlayerMode   lastPlayerMode = PlayerMode.NORMAL;
     private final Nodes        nodes          = new Nodes();
     private       Wire         heldWire       = null;
 
@@ -53,15 +52,11 @@ public class Player {
     }
 
     public void update() {
-        for ( Wire wire : placedWires ) {
-            if ( wire == null ) {
+        for ( Gate gate : placedGates ) {
+            if ( gate == null ) {
                 break;
             }
-            wire.rippleStateUpdate();
-        }
-
-        if ( lastPlayerMode != playerMode ) {
-            lastPlayerMode = playerMode;
+            gate.update();
         }
 
         switch ( playerMode ) {
@@ -115,6 +110,9 @@ public class Player {
             case 4  -> { heldGate = new OrGate( x, y );   playerMode = PlayerMode.PLACE_GATE; }
             case 5  -> { heldGate = new NotGate( x, y );  playerMode = PlayerMode.PLACE_GATE; }
             case 6  -> { heldGate = new NandGate( x, y ); playerMode = PlayerMode.PLACE_GATE; }
+            case 7  -> { heldGate = new NorGate( x, y );  playerMode = PlayerMode.PLACE_GATE; }
+            case 8  -> { heldGate = new XorGate( x, y );  playerMode = PlayerMode.PLACE_GATE; }
+            case 9  -> { heldGate = new XNorGate( x, y ); playerMode = PlayerMode.PLACE_GATE; }
             default -> { heldGate = null;                 playerMode = PlayerMode.NORMAL; }
         }
     }
