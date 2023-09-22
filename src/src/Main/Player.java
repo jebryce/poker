@@ -53,6 +53,13 @@ public class Player {
     }
 
     public void update() {
+        for ( Wire wire : placedWires ) {
+            if ( wire == null ) {
+                break;
+            }
+            wire.rippleStateUpdate();
+        }
+
         if ( lastPlayerMode != playerMode ) {
             lastPlayerMode = playerMode;
         }
@@ -87,7 +94,6 @@ public class Player {
                     closestGate = gate;
                 }
             }
-            System.out.println( closestGate );
             if ( closestGate != null ) {
                 closestGate.flipState();
             }

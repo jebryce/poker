@@ -16,4 +16,9 @@ public class NotGate extends IO_Gate {
         output_nodes[0] = new Node( this, 50, 30 );
         outputs[0]      = new Wire( output_nodes[0] );
     }
+
+    @Override
+    public void update() {
+        outputs[0].setState( !inputs[0].getState() );
+    }
 }

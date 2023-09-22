@@ -21,4 +21,9 @@ public class OrGate extends Gate {
         output_nodes[0] = new Node( this, 125, 50 );
         outputs[0]      = new Wire( output_nodes[0] );
     }
+
+    @Override
+    public void update() {
+        outputs[0].setState( inputs[0].getState() || inputs[1].getState() );
+    }
 }

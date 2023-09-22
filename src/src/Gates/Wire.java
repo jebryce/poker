@@ -43,20 +43,6 @@ public class Wire {
         }
     }
 
-    public void detach() {
-        for ( int index = 0; index < Constants.MAX_NUM_WIRE_NODES; index++ ) {
-            Node node = attachedNodes[index];
-            attachedNodes[index] = null;
-            attachedGates[index] = null;
-            if ( node == null ) {
-                break;
-            }
-            node.getAttachedGate().detachWire( this );
-        }
-        numNodes = 0;
-        wireType = WireType.UNCONNECTED;
-    }
-
     public boolean hasAttachedNode( final Node node ) {
         if ( node == null ) {
             return false;
@@ -85,9 +71,12 @@ public class Wire {
         state = !state;
     }
 
-    private void rippleStateUpdate() {
+    public void rippleStateUpdate() {
         for ( Gate gate : attachedGates ) {
-
+            if ( gate == null ) {
+                break;
+            }
+            gate.update();
         }
     }
 
