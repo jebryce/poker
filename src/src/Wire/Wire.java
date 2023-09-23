@@ -3,8 +3,10 @@ package Wire;
 import Gate.Gate;
 import Main.Constants;
 import Node.Node;
+import Node.NodeType;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 
 public class Wire {
     private       boolean  state         = false;
@@ -80,7 +82,13 @@ public class Wire {
     }
 
     private void repaintUNCONNECTED( final Graphics2D graphics2D ) {
-
+        for ( Node node : attachedNodes ) {
+            if ( node.getNodeType() == NodeType.INPUT ) {
+                Point2D location = node.getTrueLocation();
+                graphics2D.drawLine( (int) location.getX() - 40, (int) location.getY(),
+                        (int) location.getX(), (int) location.getY()  );
+            }
+        }
     }
 
     /*

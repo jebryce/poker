@@ -15,7 +15,6 @@ public class Node {
         location.setLocation( x, y );
         this.attachedGate = attachedGate;
         this.nodeType     = nodeType;
-        attachedGate.attachWire( this, new Wire( this ) );
     }
 
     public void setTrueLocation() {
@@ -39,4 +38,6 @@ public class Node {
     public Gate getAttachedGate() {
         return attachedGate;
     }
+
+    public NodeType getNodeType() { return nodeType; }
 }
