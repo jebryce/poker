@@ -74,4 +74,8 @@ public class Gate {
     public void flipState() {};
 
     public void update() {};
+
+    public Wire[] getWires() {
+        return wires;
+    }
 }

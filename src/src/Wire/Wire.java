@@ -83,11 +83,20 @@ public class Wire {
 
     private void repaintUNCONNECTED( final Graphics2D graphics2D ) {
         for ( Node node : attachedNodes ) {
-            if ( node.getNodeType() == NodeType.INPUT ) {
-                Point2D location = node.getTrueLocation();
-                graphics2D.drawLine( (int) location.getX() - 40, (int) location.getY(),
-                        (int) location.getX(), (int) location.getY()  );
+            if ( node == null ) {
+                return;
             }
+            int offset;
+            if ( node.getNodeType() == NodeType.INPUT ) {
+                offset = -40;
+            } else {
+                offset = 40;
+            }
+
+            Point2D location = node.getTrueLocation();
+            graphics2D.drawLine(
+                    (int) location.getX() + offset, (int) location.getY(), (int) location.getX(), (int) location.getY()
+            );
         }
     }
 

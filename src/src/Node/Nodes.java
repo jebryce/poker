@@ -17,7 +17,6 @@ public class Nodes {
             node.setTrueLocation();
             add_node( node );
         }
-
     }
 
     public void add_node( final Node newNode ) {

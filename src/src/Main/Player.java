@@ -7,6 +7,7 @@ import Gate.IOGates.Output;
 import Node.Node;
 import Node.Nodes;
 import Wire.Wire;
+import Wire.Wires;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -16,11 +17,11 @@ public class Player {
     private final KeyHandler   keyHandler;
     private       Gate         heldGate;
     private final Gate[]       placedGates    = new Gate[Constants.MAX_NUM_GATES];
-    private final Wire[]       placedWires    = new Wire[Constants.MAX_NUM_GATES*Constants.MAX_NUM_IO/2];
+    private final Wires        wires          = new Wires();
     private       int          numPlacedGates = 0;
     private       int          numPlacedWires = 0;
     private       PlayerMode   playerMode     = PlayerMode.NORMAL;
-    private final Nodes nodes          = new Nodes();
+    private final Nodes        nodes          = new Nodes();
     private       Wire         heldWire       = null;
 
     public Player( final MouseHandler mouseH, final KeyHandler keyH ) {
@@ -29,12 +30,7 @@ public class Player {
     }
 
     public void repaint( final Graphics2D graphics2D  ) {
-        for ( Wire wire : placedWires ) {
-            if ( wire == null ) {
-                break;
-            }
-            wire.repaint( graphics2D );
-        }
+        wires.repaint( graphics2D );
         for ( Gate gate : placedGates ) {
             if ( gate == null ) {
                 break;
@@ -131,6 +127,7 @@ public class Player {
         if ( mouseHandler.isMouseClicked() ) {
             playerMode = PlayerMode.NORMAL;
             nodes.addNodesFromGate( heldGate );
+            wires.addWiresFromGate( heldGate );
             placedGates[numPlacedGates++] = heldGate;
             heldGate = null;
         }
@@ -155,7 +152,6 @@ public class Player {
             else if ( !heldWire.hasAttachedNode(closestNode) ) {
                 playerMode = PlayerMode.NORMAL;
                 heldWire.attachToNode( closestNode );
-                placedWires[numPlacedWires++] = heldWire;
                 heldWire = null;
             }
 
