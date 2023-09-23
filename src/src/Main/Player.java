@@ -1,10 +1,15 @@
 package Main;
 
-import Gates.*;
+import Gate.*;
+import Gate.BaseGates.*;
+import Gate.IOGates.Input;
+import Gate.IOGates.Output;
+import Node.Node;
+import Node.Nodes;
+import Wire.Wire;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
-import java.util.Arrays;
 
 public class Player {
     private final MouseHandler mouseHandler;
@@ -15,7 +20,7 @@ public class Player {
     private       int          numPlacedGates = 0;
     private       int          numPlacedWires = 0;
     private       PlayerMode   playerMode     = PlayerMode.NORMAL;
-    private final Nodes        nodes          = new Nodes();
+    private final Nodes nodes          = new Nodes();
     private       Wire         heldWire       = null;
 
     public Player( final MouseHandler mouseH, final KeyHandler keyH ) {
@@ -37,7 +42,7 @@ public class Player {
             gate.repaint( graphics2D );
         }
         if ( heldWire != null ) {
-            heldWire.repaintToHand( graphics2D, new Point2D.Double( mouseHandler.xPos, mouseHandler.yPos ) );
+//            heldWire.repaintToHand( graphics2D, new Point2D.Double( mouseHandler.xPos, mouseHandler.yPos ) );
         }
 
         if ( heldGate != null ) {
@@ -106,10 +111,10 @@ public class Player {
             case -1 -> {}
             case 1  -> { heldGate = new Input( x, y );    playerMode = PlayerMode.PLACE_GATE; }
             case 2  -> { heldGate = new Output( x, y );   playerMode = PlayerMode.PLACE_GATE; }
-            case 3  -> { heldGate = new AndGate( x, y );  playerMode = PlayerMode.PLACE_GATE; }
-            case 4  -> { heldGate = new OrGate( x, y );   playerMode = PlayerMode.PLACE_GATE; }
-            case 5  -> { heldGate = new NotGate( x, y );  playerMode = PlayerMode.PLACE_GATE; }
-            case 6  -> { heldGate = new NandGate( x, y ); playerMode = PlayerMode.PLACE_GATE; }
+            case 3  -> { heldGate = new NotGate( x, y );  playerMode = PlayerMode.PLACE_GATE; }
+            case 4  -> { heldGate = new AndGate( x, y );  playerMode = PlayerMode.PLACE_GATE; }
+            case 5  -> { heldGate = new NandGate( x, y ); playerMode = PlayerMode.PLACE_GATE; }
+            case 6  -> { heldGate = new OrGate( x, y );   playerMode = PlayerMode.PLACE_GATE; }
             case 7  -> { heldGate = new NorGate( x, y );  playerMode = PlayerMode.PLACE_GATE; }
             case 8  -> { heldGate = new XorGate( x, y );  playerMode = PlayerMode.PLACE_GATE; }
             case 9  -> { heldGate = new XNorGate( x, y ); playerMode = PlayerMode.PLACE_GATE; }
@@ -145,7 +150,7 @@ public class Player {
                 return;
             }
             if ( heldWire == null ) {
-                heldWire = new Wire( closestNode );
+                heldWire = closestNode.getAttachedWire();
             }
             else if ( !heldWire.hasAttachedNode(closestNode) ) {
                 playerMode = PlayerMode.NORMAL;

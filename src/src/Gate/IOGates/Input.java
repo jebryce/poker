@@ -1,5 +1,9 @@
-package Gates;
+package Gate.IOGates;
 
+
+import Gate.IO_Gate;
+import Node.Node;
+import Node.NodeType;
 
 import java.awt.geom.Ellipse2D;
 
@@ -8,15 +12,14 @@ public class Input extends IO_Gate {
         super( x, y);
         body.append( new Ellipse2D.Float( 0, 0, 50, 50), false );
 
-        output_nodes[0] = new Node( this, 50, 25 );
-        outputs[0]      = new Wire( output_nodes[0] );
+        nodes[0] = new Node( this, NodeType.OUTPUT, 50, 25 );
     }
 
     @Override
     public void flipState() {
-        if ( outputs[0] == null ) {
+        if ( wires[0] == null ) {
             return;
         }
-        outputs[0].flipState();
+        wires[0].flipState();
     }
 }

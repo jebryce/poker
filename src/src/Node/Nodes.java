@@ -1,5 +1,6 @@
-package Gates;
+package Node;
 
+import Gate.Gate;
 import Main.Constants;
 
 import java.awt.geom.Point2D;
@@ -9,20 +10,14 @@ public class Nodes {
     private       int    num_nodes = 0;
 
     public void addNodesFromGate( final Gate newGate) {
-        for ( Node node : newGate.input_nodes ) {
+        for ( Node node : newGate.getNodes() ) {
             if ( node == null ) {
                 break;
             }
             node.setTrueLocation();
             add_node( node );
         }
-        for ( Node node : newGate.output_nodes ) {
-            if ( node == null ) {
-                break;
-            }
-            node.setTrueLocation();
-            add_node( node );
-        }
+
     }
 
     public void add_node( final Node newNode ) {

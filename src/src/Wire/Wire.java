@@ -1,10 +1,10 @@
-package Gates;
+package Wire;
 
-import Main.Colors;
+import Gate.Gate;
 import Main.Constants;
+import Node.Node;
 
 import java.awt.*;
-import java.awt.geom.Point2D;
 
 public class Wire {
     private       boolean  state         = false;
@@ -59,23 +59,32 @@ public class Wire {
         return false;
     }
 
-    protected boolean getState() {
+    public boolean getState() {
         return state;
     }
 
-    protected void setState( final boolean newState ) {
+    public void setState( final boolean newState ) {
         if ( state != newState ) {
             state = newState;
         }
     }
 
-    protected void flipState() {
+    public void flipState() {
         state = !state;
     }
 
+    public void repaint( final Graphics2D graphics2D ) {
+        switch ( wireType ) {
+            case UNCONNECTED -> repaintUNCONNECTED( graphics2D );
+        }
+    }
+
+    private void repaintUNCONNECTED( final Graphics2D graphics2D ) {
+
+    }
+
+    /*
     public void repaintToHand( final Graphics2D graphics2D, final Point2D player ) {
-        graphics2D.setColor( Colors.BLACK );
-        graphics2D.setStroke( new BasicStroke( Constants.LINE_THICKNESS ) );
         Point2D node = attachedNodes[numNodes - 1].getTrueLocation();
 
         int middleX = (int) ( (player.getX() + node.getX()) / 2 );
@@ -96,8 +105,6 @@ public class Wire {
             graphics2D.setColor( Colors.RED );
         }
 
-        graphics2D.setStroke( new BasicStroke( Constants.LINE_THICKNESS ) );
-
 
 
         Point2D node0 = attachedNodes[0].getTrueLocation();
@@ -107,5 +114,5 @@ public class Wire {
         graphics2D.drawLine( middleX, (int) node0.getY(), middleX, (int) node1.getY() );
         graphics2D.drawLine( middleX, (int) node1.getY(), (int) node1.getX(), (int) node1.getY() );
     }
-
+    */
 }
