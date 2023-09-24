@@ -25,6 +25,7 @@ public class Player {
     private       PlayerMode   playerMode     = PlayerMode.NORMAL;
     private final Nodes        nodes          = new Nodes();
     private       Wire         heldWire       = null;
+    private final Point2D      playerLocation = new Point2D.Double();
 
     public Player( final MouseHandler mouseH, final KeyHandler keyH ) {
         mouseHandler = mouseH;
@@ -39,15 +40,11 @@ public class Player {
             }
             gate.repaint( graphics2D );
         }
-        if ( heldWire != null ) {
-//            heldWire.repaintToHand( graphics2D, new Point2D.Double( mouseHandler.xPos, mouseHandler.yPos ) );
-        }
-
         if ( heldGate != null ) {
             Point2D centerOffset = heldGate.getCenterOffset();
             heldGate.setLocation(
-                    (int) (mouseHandler.xPos - centerOffset.getX()),
-                    (int) (mouseHandler.yPos - centerOffset.getY())
+                    (int) (playerLocation.getX() - centerOffset.getX()),
+                    (int) (playerLocation.getY()- centerOffset.getY())
             );
             heldGate.repaint( graphics2D );
             for ( Wire wire : heldGate.getWires() ) {
@@ -61,6 +58,7 @@ public class Player {
     }
 
     public void update() {
+        playerLocation.setLocation( mouseHandler.xPos, mouseHandler.yPos );
         for ( Gate gate : placedGates ) {
             if ( gate == null ) {
                 break;
@@ -83,12 +81,11 @@ public class Player {
         if ( mouseHandler.isMouseClicked() ) {
             Gate    closestGate     = null;
             double  closestDistance = 0;
-            Point2D location        = new Point2D.Double( mouseHandler.xPos, mouseHandler.yPos );
             for ( Gate gate : placedGates ) {
                 if ( gate == null ) {
                     break;
                 }
-                double gateDistance = gate.getCenter().distance( location );
+                double gateDistance = gate.getCenter().distance( playerLocation );
                 if ( closestGate == null ) {
                     closestDistance = gateDistance;
                     closestGate = gate;
@@ -108,8 +105,8 @@ public class Player {
     }
 
     private void checkHeldGate() {
-        int x = mouseHandler.xPos;
-        int y = mouseHandler.yPos;
+        int x = (int) playerLocation.getX();
+        int y = (int) playerLocation.getY();
         int numberPressed = keyHandler.getNumberPressed();
         switch ( numberPressed ) {
             case -1 -> {}
@@ -141,6 +138,7 @@ public class Player {
             playerMode = PlayerMode.NORMAL;
             nodes.addNodesFromGate( heldGate );
             wires.addWiresFromGate( heldGate );
+            heldGate.setWireTypes( WireType.UNCONNECTED );
             placedGates[numPlacedGates++] = heldGate;
             heldGate = null;
         }
@@ -148,19 +146,24 @@ public class Player {
 
     private void updatePLACE_WIRE() {
         if ( keyHandler.isPlaceWirePressed() ) {
+            if ( heldWire != null ) {
+                heldWire.detachFromPlayer();
+            }
             heldWire = null;
             playerMode = PlayerMode.NORMAL;
             return;
         }
 
         if ( mouseHandler.isMouseClicked() ) {
-            Node closestNode = nodes.findClosestNode(new Point2D.Double(mouseHandler.xPos, mouseHandler.yPos));
+            Node closestNode = nodes.findClosestNode( playerLocation );
             if ( closestNode == null ) {
                 playerMode = PlayerMode.NORMAL;
                 return;
             }
             if ( heldWire == null ) {
                 heldWire = closestNode.getAttachedWire();
+                heldWire.attachToPlayer( playerLocation );
+                heldWire.setWireType( WireType.HELD_IN_HAND );
             }
             else if ( !heldWire.hasAttachedNode(closestNode) ) {
                 playerMode = PlayerMode.NORMAL;

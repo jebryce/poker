@@ -33,6 +33,20 @@ public class Wire {
         this.wireType = wireType;
     }
 
+    public void attachToPlayer( final Point2D playerLocation ) {
+        attachedNodes[numNodes] = new Node( playerLocation );
+    }
+
+    public void detachFromPlayer() {
+        attachedNodes[numNodes] = null;
+        if ( numNodes < 2 ) {
+            wireType = WireType.UNCONNECTED;
+        }
+        else {
+            wireType = WireType.CONNECTED;
+        }
+    }
+
     public Wire attachToNode( final Node node ) {
         if ( node == null ) {
             return null;
@@ -101,36 +115,46 @@ public class Wire {
 
     public void repaint( final Graphics2D graphics2D ) {
         switch ( wireType ) {
-            case UNCONNECTED -> repaintUNCONNECTED( graphics2D );
-            case HELD_GATE   -> repaintHELDGATE( graphics2D );
-            case CONNECTED   -> repaintCONNECTED( graphics2D );
+            case UNCONNECTED  -> repaintUNCONNECTED( graphics2D );
+            case HELD_GATE    -> repaintHELD_GATE( graphics2D );
+            case HELD_IN_HAND -> repaintHELD_IN_HAND( graphics2D );
+            case CONNECTED    -> repaintCONNECTED( graphics2D );
         }
     }
 
     private void repaintUNCONNECTED( final Graphics2D graphics2D ) {
-        for ( Node node : attachedNodes ) {
-            if ( node == null ) {
-                break;
-            }
-            int offset;
-            if ( node.getNodeType() == NodeType.INPUT ) {
-                offset = -40;
-            } else {
-                offset = 40;
-            }
-
-            Point2D location = node.getLocation();
-            graphics2D.drawLine(
-                    (int) location.getX() + offset, (int) location.getY(), (int) location.getX(), (int) location.getY()
-            );
+        graphics2D.setColor( Colors.BLACK );
+        Node node = attachedNodes[0];
+        assert node != null;
+        int offset;
+        switch ( node.getNodeType() ) {
+            case INPUT  -> offset = -40;
+            case OUTPUT -> offset = 40;
+            default     -> offset = 0;
         }
+
+        Point2D location = node.getTrueLocation();
+        graphics2D.drawLine(
+                (int) location.getX() + offset, (int) location.getY(), (int) location.getX(), (int) location.getY()
+        );
     }
 
-    private void repaintHELDGATE( final Graphics2D graphics2D ) {
+    private void repaintHELD_GATE( final Graphics2D graphics2D ) {
         Point2D location = attachedGates[0].getLocation();
         graphics2D.translate( location.getX(), location.getY() );
         repaintUNCONNECTED( graphics2D );
         graphics2D.translate( -location.getX(), -location.getY() );
+    }
+
+    private void repaintHELD_IN_HAND( final Graphics2D graphics2D ) {
+        graphics2D.setColor( Colors.BLACK );
+        Point2D node0  = attachedNodes[0].getTrueLocation();
+        Point2D player = attachedNodes[1].getLocation();
+        int middleX = (int) ( node0.getX() + player.getX() ) / 2;
+        graphics2D.drawLine( (int) node0.getX(), (int) node0.getY(), middleX, (int) node0.getY() );
+        graphics2D.drawLine( (int) player.getX(), (int) player.getY(), middleX, (int) player.getY() );
+        graphics2D.drawLine( middleX, (int) node0.getY(), middleX, (int) player.getY() );
+
     }
 
     private void repaintCONNECTED( final Graphics2D graphics2D ) {
