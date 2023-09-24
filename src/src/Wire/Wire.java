@@ -73,14 +73,12 @@ public class Wire {
         if ( numNodes < 2 ) {
             return;
         }
-        if ( numNodes == 2 ) {
-            Point2D node0 = attachedNodes[0].getTrueLocation();
-            Point2D node1 = attachedNodes[1].getTrueLocation();
-            double middleX = ( node0.getX() + node1.getX() ) / 2;
-            wireSegments[numSegments++] = new WireSegment( node0, middleX, node0.getY() );
-            wireSegments[numSegments++] = new WireSegment( node1, middleX, node1.getY() );
-            wireSegments[numSegments++] = new WireSegment( middleX, node0.getY(), middleX, node1.getY() );
-        }
+        Point2D node0 = attachedNodes[numNodes - 2].getTrueLocation();
+        Point2D node1 = attachedNodes[numNodes-1].getTrueLocation();
+        double middleX = ( node0.getX() + node1.getX() ) / 2;
+        wireSegments[numSegments++] = new WireSegment( node0, middleX, node0.getY() );
+        wireSegments[numSegments++] = new WireSegment( node1, middleX, node1.getY() );
+        wireSegments[numSegments++] = new WireSegment( middleX, node0.getY(), middleX, node1.getY() );
     }
 
     public boolean hasAttachedNode( final Node node ) {
@@ -147,13 +145,14 @@ public class Wire {
     }
 
     private void repaintHELD_IN_HAND( final Graphics2D graphics2D ) {
+        repaintCONNECTED( graphics2D );
         graphics2D.setColor( Colors.BLACK );
-        Point2D node0  = attachedNodes[0].getTrueLocation();
-        Point2D player = attachedNodes[1].getLocation();
+        Point2D player = attachedNodes[numNodes].getLocation();
+        Point2D node0 = attachedNodes[numNodes-1].getTrueLocation();
         int middleX = (int) ( node0.getX() + player.getX() ) / 2;
-        graphics2D.drawLine( (int) node0.getX(), (int) node0.getY(), middleX, (int) node0.getY() );
-        graphics2D.drawLine( (int) player.getX(), (int) player.getY(), middleX, (int) player.getY() );
-        graphics2D.drawLine( middleX, (int) node0.getY(), middleX, (int) player.getY() );
+        graphics2D.drawLine((int) node0.getX(), (int) node0.getY(), middleX, (int) node0.getY());
+        graphics2D.drawLine((int) player.getX(), (int) player.getY(), middleX, (int) player.getY());
+        graphics2D.drawLine(middleX, (int) node0.getY(), middleX, (int) player.getY());
 
     }
 
@@ -171,37 +170,4 @@ public class Wire {
             wireSegment.repaint( graphics2D );
         }
     }
-
-    /*
-    public void repaintToHand( final Graphics2D graphics2D, final Point2D player ) {
-        Point2D node = attachedNodes[numNodes - 1].getTrueLocation();
-
-        int middleX = (int) ( (player.getX() + node.getX()) / 2 );
-
-        graphics2D.drawLine( (int) node.getX(), (int) node.getY(), middleX, (int) node.getY() );
-        graphics2D.drawLine( middleX, (int) node.getY(), middleX, (int) player.getY() );
-        graphics2D.drawLine( middleX, (int) player.getY(), (int) player.getX(), (int) player.getY() );
-    }
-
-    public void repaint( final Graphics2D graphics2D ) {
-        if ( numNodes != 2 ) {
-            return;
-        }
-        if ( state ) {
-            graphics2D.setColor( Colors.GREEN );
-        }
-        else {
-            graphics2D.setColor( Colors.RED );
-        }
-
-
-
-        Point2D node0 = attachedNodes[0].getTrueLocation();
-        Point2D node1 = attachedNodes[1].getTrueLocation();
-        int middleX = (int) ( ( node0.getX() + node1.getX() ) / 2 );
-        graphics2D.drawLine( (int) node0.getX(), (int) node0.getY(), middleX, (int) node0.getY() );
-        graphics2D.drawLine( middleX, (int) node0.getY(), middleX, (int) node1.getY() );
-        graphics2D.drawLine( middleX, (int) node1.getY(), (int) node1.getX(), (int) node1.getY() );
-    }
-    */
 }

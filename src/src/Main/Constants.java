@@ -1,7 +1,7 @@
 package Main;
 
 public class Constants {
-    public static final int    UPDATES_PER_SECOND    = 60;
+    public static final int    MAX_UPS               = 60;
     public static final int    MAX_FPS               = 250;
     public static final int    SCREEN_HEIGHT         = 750;
     public static final int    SCREEN_WIDTH          = 750;

@@ -33,6 +33,10 @@ public class Gate {
         return location;
     }
 
+    public boolean isPointWithin( final Point2D point2D ) {
+        return body.contains( point2D.getX() - location.getX(), point2D.getY() - location.getY() );
+    }
+
     public Node[] getNodes() { return nodes; }
 
     public Wire attachWire( final Node wireNode, final Wire wire ) {

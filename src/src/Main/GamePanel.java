@@ -25,38 +25,42 @@ public class GamePanel extends JPanel implements Runnable {
 
     @Override
     public void run() {
-        final long updateFPSInterval  = Constants.NANO_SEC_PER_SEC / 10;
-        final long updateGameInterval = Constants.NANO_SEC_PER_SEC / Constants.UPDATES_PER_SECOND;
+        final long updateFPSInterval  = Constants.NANO_SEC_PER_SEC / 5;
+        final long updateGameInterval = Constants.NANO_SEC_PER_SEC / Constants.MAX_UPS;
         final long repaintInterval    = Constants.NANO_SEC_PER_SEC / Constants.MAX_FPS;
-        long       sleepTime;
         long       lastRepaintTime    = 0;
         long       lastUpdateTime     = 0;
         long       currentTime;
         long       lastFPSTime        = 0;
         long       numFrames          = 0;
+        long       numUpdates         = 0;
         double     FPS;
+        double     UPS;
+        boolean repaint = false;
 
         // main game loop
         while ( gameThread != null) {
             currentTime = System.nanoTime();
             if ( currentTime - lastUpdateTime > updateGameInterval ) {
                 update();
+                numUpdates++;
                 lastUpdateTime = currentTime;
             }
             if ( currentTime - lastFPSTime > updateFPSInterval ) {
-                FPS = (double) ( numFrames * Constants.NANO_SEC_PER_SEC ) / ( currentTime - lastFPSTime );
-                System.out.format("FPS: [%.1f]\r", FPS);
+                FPS = (double) ( numFrames  * Constants.NANO_SEC_PER_SEC ) / ( currentTime - lastFPSTime );
+                UPS = (double) ( numUpdates * Constants.NANO_SEC_PER_SEC ) / ( currentTime - lastFPSTime );
+                System.out.format("FPS: [%.1f] UPS: [%.1f]\r", FPS, UPS);
                 numFrames = 0;
+                numUpdates = 0;
                 lastFPSTime = currentTime;
             }
             if ( currentTime - lastRepaintTime > repaintInterval ) {
                 repaint();
                 numFrames++;
-                lastRepaintTime = currentTime;
-                sleepTime = repaintInterval - ( System.nanoTime() - currentTime) ;
+                long sleepTime = repaintInterval - ( System.nanoTime() - currentTime) ;
                 if ( sleepTime > 0 ) {
                     try {
-                        Thread.sleep(sleepTime / Constants.NANO_SEC_PER_M_SEC);
+                        Thread.sleep( sleepTime / Constants.NANO_SEC_PER_M_SEC );
                     } catch ( InterruptedException e ) {
                         throw new RuntimeException(e);
                     }

@@ -30,6 +30,14 @@ public class Player {
     public Player( final MouseHandler mouseH, final KeyHandler keyH ) {
         mouseHandler = mouseH;
         keyHandler = keyH;
+
+        Gate in1 = placeGate( new Input( 100, 100 ) );
+        Gate in2 = placeGate( new Input( 100, 500 ) );
+        Gate and = placeGate( new AndGate( 400, 400 ) );
+        Gate out = placeGate( new Output( 800, 600 ) );
+        attachWireToNode( in1.getWires()[0], and.getNodes()[0] );
+        attachWireToNode( in2.getWires()[0], and.getNodes()[1] );
+        attachWireToNode( and.getWires()[2], out.getNodes()[0] );
     }
 
     public void repaint( final Graphics2D graphics2D  ) {
@@ -79,28 +87,16 @@ public class Player {
             return;
         }
         if ( mouseHandler.isMouseClicked() ) {
-            Gate    closestGate     = null;
-            double  closestDistance = 0;
             for ( Gate gate : placedGates ) {
                 if ( gate == null ) {
                     break;
                 }
-                double gateDistance = gate.getCenter().distance( playerLocation );
-                if ( closestGate == null ) {
-                    closestDistance = gateDistance;
-                    closestGate = gate;
+                if ( gate.isPointWithin( playerLocation ) ) {
+                    gate.flipState();
+                    break;
                 }
-                if ( gateDistance < closestDistance ) {
-                    closestDistance = gateDistance;
-                    closestGate = gate;
-                }
-            }
-            if ( closestGate != null ) {
-                closestGate.flipState();
             }
         }
-
-
         checkHeldGate();
     }
 
@@ -136,12 +132,17 @@ public class Player {
         }
         if ( mouseHandler.isMouseClicked() ) {
             playerMode = PlayerMode.NORMAL;
-            nodes.addNodesFromGate( heldGate );
-            wires.addWiresFromGate( heldGate );
-            heldGate.setWireTypes( WireType.UNCONNECTED );
-            placedGates[numPlacedGates++] = heldGate;
+            placeGate( heldGate );
             heldGate = null;
         }
+    }
+
+    private Gate placeGate( final Gate gate) {
+        nodes.addNodesFromGate( gate );
+        wires.addWiresFromGate( gate );
+        gate.setWireTypes( WireType.UNCONNECTED );
+        placedGates[numPlacedGates++] = gate;
+        return gate;
     }
 
     private void updatePLACE_WIRE() {
@@ -167,11 +168,14 @@ public class Player {
             }
             else if ( !heldWire.hasAttachedNode(closestNode) ) {
                 playerMode = PlayerMode.NORMAL;
-                Wire disconnectedWire = heldWire.attachToNode( closestNode );
-                wires.remove_wire( disconnectedWire );
+                attachWireToNode( heldWire, closestNode );
                 heldWire = null;
             }
 
         }
+    }
+
+    private void attachWireToNode( final Wire wire, final Node node ) {
+        wires.remove_wire( wire.attachToNode( node ) );
     }
 }
