@@ -25,12 +25,16 @@ public class Wire {
         return wireType;
     }
 
-    public void attachToNode( final Node node ) {
+    public void setWireType( final WireType wireType ) {
+        this.wireType = wireType;
+    }
+
+    public Wire attachToNode( final Node node ) {
         if ( node == null ) {
-            return;
+            return null;
         }
         Gate attachedGate = node.getAttachedGate();
-        attachedGate.attachWire( node, this );
+        Wire disconnectedWire = attachedGate.attachWire( node, this );
         this.attachedNodes[numNodes++] = node;
         for( int index = 0; index < Constants.MAX_NUM_WIRE_NODES; index++ ) {
             if( attachedGates[index] == null ) {
@@ -43,6 +47,7 @@ public class Wire {
         if ( numNodes > 1 ) {
             wireType = WireType.CONNECTED;
         }
+        return disconnectedWire;
     }
 
     public boolean hasAttachedNode( final Node node ) {
@@ -78,13 +83,21 @@ public class Wire {
     public void repaint( final Graphics2D graphics2D ) {
         switch ( wireType ) {
             case UNCONNECTED -> repaintUNCONNECTED( graphics2D );
+            case HELD_GATE   -> repaintHELDGATE( graphics2D );
         }
+    }
+
+    private void repaintHELDGATE( final Graphics2D graphics2D ) {
+        Point2D location = attachedGates[0].getLocation();
+        graphics2D.translate( location.getX(), location.getY() );
+        repaintUNCONNECTED( graphics2D );
+        graphics2D.translate( -location.getX(), -location.getY() );
     }
 
     private void repaintUNCONNECTED( final Graphics2D graphics2D ) {
         for ( Node node : attachedNodes ) {
             if ( node == null ) {
-                return;
+                break;
             }
             int offset;
             if ( node.getNodeType() == NodeType.INPUT ) {
@@ -93,7 +106,7 @@ public class Wire {
                 offset = 40;
             }
 
-            Point2D location = node.getTrueLocation();
+            Point2D location = node.getLocation();
             graphics2D.drawLine(
                     (int) location.getX() + offset, (int) location.getY(), (int) location.getX(), (int) location.getY()
             );

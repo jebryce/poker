@@ -4,10 +4,12 @@ import Main.Colors;
 import Main.Constants;
 import Node.Node;
 import Wire.Wire;
+import Wire.WireType;
 
 import java.awt.*;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
+import java.util.Arrays;
 
 public class Gate {
     protected final Path2D  body         = new Path2D.Float();
@@ -33,16 +35,20 @@ public class Gate {
 
     public Node[] getNodes() { return nodes; }
 
-    public void attachWire( final Node wireNode, final Wire wire ) {
+    public Wire attachWire( final Node wireNode, final Wire wire ) {
+        Wire disconnectedWire = null;
         for ( int index = 0; index < Constants.MAX_NUM_IO; index++ ) {
             Node node = nodes[index];
             if ( node == null ) {
                 break;
             }
             if ( node == wireNode ) {
+                disconnectedWire = wires[index];
                 wires[index] = wire;
+                break;
             }
         }
+        return disconnectedWire;
     }
 
     public Wire getWireAtNode( final Node wireNode ) {
@@ -77,5 +83,14 @@ public class Gate {
 
     public Wire[] getWires() {
         return wires;
+    }
+
+    public void setWireTypes( final WireType wireType ) {
+        for( Wire wire : wires ) {
+            if ( wire == null ) {
+                return;
+            }
+            wire.setWireType( wireType );
+        }
     }
 }
