@@ -28,6 +28,7 @@ public class Wires {
                 return;
             }
         }
+        num_wires--;
         while ( wires[index] != null ) {
             wires[index] = wires[++index];
         }
@@ -44,18 +45,11 @@ public class Wires {
     }
 
     public void repaint( final Graphics2D graphics2D ) {
-        boolean line = false;
         for ( Wire wire : wires ) {
             if ( wire == null ) {
                 break;
             }
             wire.repaint( graphics2D );
-            System.out.print( wire + " ");
-            line = true;
         }
-        if (line) {
-            System.out.println();
-        }
-
     }
 }

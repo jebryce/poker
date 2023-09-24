@@ -1,19 +1,23 @@
 package Wire;
 
 import Gate.Gate;
+import Main.Colors;
 import Main.Constants;
 import Node.Node;
 import Node.NodeType;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
+import java.util.Objects;
 
 public class Wire {
-    private       boolean  state         = false;
-    private final Node[]   attachedNodes = new Node[Constants.MAX_NUM_WIRE_NODES];
-    private final Gate[]   attachedGates = new Gate[Constants.MAX_NUM_WIRE_NODES];
-    private       int      numNodes      = 0;
-    private       WireType wireType      = WireType.UNCONNECTED;
+    private       boolean       state         = false;
+    private final Node[]        attachedNodes = new Node[Constants.MAX_NUM_WIRE_NODES];
+    private       int           numNodes      = 0;
+    private final Gate[]        attachedGates = new Gate[Constants.MAX_NUM_WIRE_NODES];
+    private final WireSegment[] wireSegments  = new WireSegment[Constants.MAX_NUM_WIRE_SEGMENTS];
+    private       int           numSegments   = 0;
+    private       WireType      wireType      = WireType.UNCONNECTED;
 
     public Wire() {}
 
@@ -46,8 +50,23 @@ public class Wire {
         }
         if ( numNodes > 1 ) {
             wireType = WireType.CONNECTED;
+            generateSegments();
         }
         return disconnectedWire;
+    }
+
+    private void generateSegments() {
+        if ( numNodes < 2 ) {
+            return;
+        }
+        if ( numNodes == 2 ) {
+            Point2D node0 = attachedNodes[0].getTrueLocation();
+            Point2D node1 = attachedNodes[1].getTrueLocation();
+            double middleX = ( node0.getX() + node1.getX() ) / 2;
+            wireSegments[numSegments++] = new WireSegment( node0, middleX, node0.getY() );
+            wireSegments[numSegments++] = new WireSegment( node1, middleX, node1.getY() );
+            wireSegments[numSegments++] = new WireSegment( middleX, node0.getY(), middleX, node1.getY() );
+        }
     }
 
     public boolean hasAttachedNode( final Node node ) {
@@ -84,14 +103,8 @@ public class Wire {
         switch ( wireType ) {
             case UNCONNECTED -> repaintUNCONNECTED( graphics2D );
             case HELD_GATE   -> repaintHELDGATE( graphics2D );
+            case CONNECTED   -> repaintCONNECTED( graphics2D );
         }
-    }
-
-    private void repaintHELDGATE( final Graphics2D graphics2D ) {
-        Point2D location = attachedGates[0].getLocation();
-        graphics2D.translate( location.getX(), location.getY() );
-        repaintUNCONNECTED( graphics2D );
-        graphics2D.translate( -location.getX(), -location.getY() );
     }
 
     private void repaintUNCONNECTED( final Graphics2D graphics2D ) {
@@ -110,6 +123,28 @@ public class Wire {
             graphics2D.drawLine(
                     (int) location.getX() + offset, (int) location.getY(), (int) location.getX(), (int) location.getY()
             );
+        }
+    }
+
+    private void repaintHELDGATE( final Graphics2D graphics2D ) {
+        Point2D location = attachedGates[0].getLocation();
+        graphics2D.translate( location.getX(), location.getY() );
+        repaintUNCONNECTED( graphics2D );
+        graphics2D.translate( -location.getX(), -location.getY() );
+    }
+
+    private void repaintCONNECTED( final Graphics2D graphics2D ) {
+        if ( state ) {
+            graphics2D.setColor( Colors.GREEN );
+        }
+        else {
+            graphics2D.setColor( Colors.RED );
+        }
+        for ( WireSegment wireSegment : wireSegments ) {
+            if ( wireSegment == null ) {
+                break;
+            }
+            wireSegment.repaint( graphics2D );
         }
     }
 
