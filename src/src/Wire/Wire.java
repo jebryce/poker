@@ -18,6 +18,7 @@ public class Wire {
     private final WireSegment[] wireSegments  = new WireSegment[Constants.MAX_NUM_WIRE_SEGMENTS];
     private       int           numSegments   = 0;
     private       WireType      wireType      = WireType.UNCONNECTED;
+    private final Point2D[]     bounds        = new Point2D[2];
 
     public Wire() {}
 
@@ -73,12 +74,14 @@ public class Wire {
         if ( numNodes < 2 ) {
             return;
         }
-        Point2D node0 = attachedNodes[numNodes - 2].getTrueLocation();
+        Point2D node0 = attachedNodes[numNodes-2].getTrueLocation();
         Point2D node1 = attachedNodes[numNodes-1].getTrueLocation();
         double middleX = ( node0.getX() + node1.getX() ) / 2;
         wireSegments[numSegments++] = new WireSegment( node0, middleX, node0.getY() );
         wireSegments[numSegments++] = new WireSegment( node1, middleX, node1.getY() );
         wireSegments[numSegments++] = new WireSegment( middleX, node0.getY(), middleX, node1.getY() );
+        bounds[0] = new Point2D.Double( Math.min( node0.getX(), node1.getX() ), Math.min( node0.getY(), node1.getY() ) );
+        bounds[1] = new Point2D.Double( Math.max( node0.getX(), node1.getX() ), Math.max( node0.getY(), node1.getY() ) );
     }
 
     public boolean hasAttachedNode( final Node node ) {
@@ -109,6 +112,41 @@ public class Wire {
 
     public void flipState() {
         state = !state;
+    }
+
+    protected boolean isPointWithinBounds( final Point2D point ) {
+        if ( point.getX() < bounds[0].getX() ) {
+            return false;
+        }
+        if ( point.getX() > bounds[1].getX() ) {
+            return false;
+        }
+        if ( point.getY() < bounds[0].getY() ) {
+            return false;
+        }
+        if ( point.getY() > bounds[1].getY() ) {
+            return false;
+        }
+        return true;
+    }
+
+    protected WireSegment isPointNear( final Point2D point ) {
+
+        WireSegment nearestSegment = null;
+        for ( WireSegment wireSegment : wireSegments ) {
+            if ( wireSegment == null ) {
+                break;
+            }
+            if ( wireSegment.isPointNear( point ) ) {
+                if ( nearestSegment == null ) {
+                    nearestSegment = wireSegment;
+                }
+                else if ( wireSegment.getLength() < nearestSegment.getLength() ) {
+                    nearestSegment = wireSegment;
+                }
+            }
+        }
+        return nearestSegment;
     }
 
     public void repaint( final Graphics2D graphics2D ) {

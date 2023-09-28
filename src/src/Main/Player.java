@@ -12,7 +12,6 @@ import Wire.Wires;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
-import java.util.Arrays;
 
 public class Player {
     private final MouseHandler mouseHandler;
@@ -74,62 +73,71 @@ public class Player {
             gate.update();
         }
 
+        checkKeyPresses();
+
         switch ( playerMode ) {
             case NORMAL     -> updateNORMAL();
             case PLACE_GATE -> updatePLACE_GATE();
             case PLACE_WIRE -> updatePLACE_WIRE();
         }
+
     }
 
-    private void updateNORMAL() {
+    private void checkKeyPresses() {
         if ( keyHandler.isPlaceWirePressed() ) {
-            playerMode = PlayerMode.PLACE_WIRE;
+            if ( heldWire != null ) {
+                heldWire.detachFromPlayer();
+                heldWire = null;
+                playerMode = PlayerMode.NORMAL;
+            }
+            else {
+                playerMode = PlayerMode.PLACE_WIRE;
+            }
             return;
         }
-        if ( mouseHandler.isMouseClicked() ) {
-            for ( Gate gate : placedGates ) {
-                if ( gate == null ) {
-                    break;
-                }
-                if ( gate.isPointWithin( playerLocation ) ) {
-                    gate.flipState();
-                    break;
-                }
-            }
-        }
-        checkHeldGate();
-    }
 
-    private void checkHeldGate() {
         int x = (int) playerLocation.getX();
         int y = (int) playerLocation.getY();
         int numberPressed = keyHandler.getNumberPressed();
         switch ( numberPressed ) {
             case -1 -> {}
-            case 1  -> { heldGate = new Input( x, y );    updateHeldGate(); }
-            case 2  -> { heldGate = new Output( x, y );   updateHeldGate(); }
-            case 3  -> { heldGate = new NotGate( x, y );  updateHeldGate(); }
-            case 4  -> { heldGate = new AndGate( x, y );  updateHeldGate(); }
-            case 5  -> { heldGate = new NandGate( x, y ); updateHeldGate(); }
-            case 6  -> { heldGate = new OrGate( x, y );   updateHeldGate(); }
-            case 7  -> { heldGate = new NorGate( x, y );  updateHeldGate(); }
-            case 8  -> { heldGate = new XorGate( x, y );  updateHeldGate(); }
-            case 9  -> { heldGate = new XNorGate( x, y ); updateHeldGate(); }
+            case 1  -> { heldGate = new Input( x, y );    handleNewHeldGate(); }
+            case 2  -> { heldGate = new Output( x, y );   handleNewHeldGate(); }
+            case 3  -> { heldGate = new NotGate( x, y );  handleNewHeldGate(); }
+            case 4  -> { heldGate = new AndGate( x, y );  handleNewHeldGate(); }
+            case 5  -> { heldGate = new NandGate( x, y ); handleNewHeldGate(); }
+            case 6  -> { heldGate = new OrGate( x, y );   handleNewHeldGate(); }
+            case 7  -> { heldGate = new NorGate( x, y );  handleNewHeldGate(); }
+            case 8  -> { heldGate = new XorGate( x, y );  handleNewHeldGate(); }
+            case 9  -> { heldGate = new XNorGate( x, y ); handleNewHeldGate(); }
             default -> { heldGate = null;                 playerMode = PlayerMode.NORMAL; }
         }
     }
 
-    private void updateHeldGate() {
+    private void handleNewHeldGate() {
+        heldWire = null;
         playerMode = PlayerMode.PLACE_GATE;
         heldGate.setWireTypes( WireType.HELD_GATE);
     }
 
-    private void updatePLACE_GATE() {
-        checkHeldGate();
-        if ( heldGate == null ) {
-            playerMode = PlayerMode.NORMAL;
-            return;
+    private void updateNORMAL() {
+        if ( mouseHandler.isMouseClicked() ) {
+            for ( Gate gate : placedGates ) {
+                if ( gate == null ) {
+                    break;
+                }
+                if ( gate.isPointWithin(playerLocation) ) {
+                    gate.flipState();
+                    break;
+                }
+            }
         }
+        if ( mouseHandler.isMouseHeld() ) {
+
+        }
+    }
+
+    private void updatePLACE_GATE() {
         if ( mouseHandler.isMouseClicked() ) {
             playerMode = PlayerMode.NORMAL;
             placeGate( heldGate );
@@ -146,15 +154,6 @@ public class Player {
     }
 
     private void updatePLACE_WIRE() {
-        if ( keyHandler.isPlaceWirePressed() ) {
-            if ( heldWire != null ) {
-                heldWire.detachFromPlayer();
-            }
-            heldWire = null;
-            playerMode = PlayerMode.NORMAL;
-            return;
-        }
-
         if ( mouseHandler.isMouseClicked() ) {
             Node closestNode = nodes.findClosestNode( playerLocation );
             if ( closestNode == null ) {
@@ -171,7 +170,6 @@ public class Player {
                 attachWireToNode( heldWire, closestNode );
                 heldWire = null;
             }
-
         }
     }
 

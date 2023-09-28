@@ -4,6 +4,7 @@ import Gate.Gate;
 import Main.Constants;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 
 public class Wires {
     private final Wire[] wires     = new Wire[Constants.MAX_NUM_GATES*Constants.MAX_NUM_IO];
@@ -42,6 +43,31 @@ public class Wires {
             return;
         }
         wires[num_wires++] = newWire;
+    }
+
+    public Wire findContainingWire( final Point2D point ) {
+        Wire containingWire = null;
+        WireSegment shortestSegment = null;
+        for ( Wire wire : wires ) {
+            if ( wire == null ) {
+                break;
+            }
+            if ( !wire.isPointWithinBounds( point ) ) {
+                continue;
+            }
+            WireSegment segmentNear = wire.isPointNear( point );
+            if ( segmentNear != null ) {
+                if ( containingWire == null ) {
+                    containingWire = wire;
+                    shortestSegment = segmentNear;
+                }
+                else if ( segmentNear.getLength() < shortestSegment.getLength() ) {
+                    containingWire = wire;
+                    shortestSegment = segmentNear;
+                }
+            }
+        }
+        return containingWire;
     }
 
     public void repaint( final Graphics2D graphics2D ) {
