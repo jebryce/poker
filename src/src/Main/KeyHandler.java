@@ -5,10 +5,10 @@ import java.awt.event.KeyListener;
 import java.util.Arrays;
 
 public class KeyHandler implements KeyListener {
-    public  boolean[]    numbersPressed = new boolean[10];
-    private boolean[]    wPressed = new boolean[2];
-    private boolean      escapePressed;
-    private boolean      endGamePressed, placeWirePressed;
+    private static final int       MAX_NUM_KEYS = 256;
+    private        final boolean[] keyPressed   = new boolean[MAX_NUM_KEYS];
+    private        final boolean[] keyPressRead = new boolean[MAX_NUM_KEYS];
+    private        final boolean[] keyHeld      = new boolean[MAX_NUM_KEYS];
 
 
     @Override
@@ -17,61 +17,35 @@ public class KeyHandler implements KeyListener {
     @Override
     public void keyPressed( KeyEvent event ) {
         int code = event.getKeyCode();
-        if ( code >= KeyEvent.VK_0 && code <= KeyEvent.VK_9 ) {
-            numbersPressed[code - KeyEvent.VK_0] = true;
+        assert code >= 0 && code < MAX_NUM_KEYS : "Key [" + code + "] not implemented!";
+        if ( !keyPressed[code] ) {
+            keyPressed[code]   = true;
+            keyPressRead[code] = false;
         }
-        if ( code == KeyEvent.VK_ESCAPE ) {
-            escapePressed = true;
-        }
-        if ( code == KeyEvent.VK_W ) {
-            if ( !wPressed[0] ) {
-                wPressed[1] = true;
-            }
-            wPressed[0] = true;
-
-        }
-        checkKeyBinds();
+        keyHeld[code] = true;
     }
 
     @Override
     public void keyReleased( KeyEvent event ) {
         int code = event.getKeyCode();
-        if ( code == KeyEvent.VK_ESCAPE ) {
-            escapePressed = false;
-        }
-        if ( code == KeyEvent.VK_W ) {
-            wPressed[0] = false;
-        }
-        checkKeyBinds();
+        assert code >= 0 && code < MAX_NUM_KEYS : "Key [" + code + "] not implemented!";
+        keyPressed[code] = false;
+        keyHeld[code] = false;
     }
 
-    private void checkKeyBinds() {
-        endGamePressed    = escapePressed;
-    }
-
-    public boolean isEndGamePressed() {
-        if ( endGamePressed ) {
-            endGamePressed = false;
-            return true;
+    public boolean isKeyPressed( final int keyCode ) {
+        assert keyCode >= 0 && keyCode < MAX_NUM_KEYS : "Key [" + keyCode + "] not implemented!";
+        if ( !keyPressRead[keyCode] ) {
+            keyPressRead[keyCode] = true;
+            return keyPressed[keyCode];
         }
         return false;
     }
 
-    public boolean isPlaceWirePressed() {
-        if ( wPressed[1] ) {
-            wPressed[1] = false;
-            return true;
-        }
-        return false;
+    public boolean isKeyHeld( final int keyCode ) {
+        assert keyCode >= 0 && keyCode < MAX_NUM_KEYS : "Key [" + keyCode + "] not implemented!";
+        return keyHeld[keyCode];
     }
 
-    public int getNumberPressed() {
-        for( int index = 0; index < 10; index++ ) {
-            if ( numbersPressed[index] ) {
-                numbersPressed[index] = false;
-                return index;
-            }
-        }
-        return -1;
-    }
+
 }

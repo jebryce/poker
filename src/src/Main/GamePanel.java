@@ -87,9 +87,6 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     private void update() {
-        if ( keyHandler.isEndGamePressed() ) {
-            System.exit(0);
-        }
         player.update();
     }
 }

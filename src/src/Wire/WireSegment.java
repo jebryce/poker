@@ -6,31 +6,13 @@ import java.awt.geom.Point2D;
 import Main.Constants;
 
 public class WireSegment {
-    private final Point2D     start       = new Point2D.Double();
-    private final Point2D     end         = new Point2D.Double();
+    private final Point2D     start;
+    private final Point2D     end;
     private       SegmentType segmentType = SegmentType.NEITHER;
 
-    public WireSegment( final Point2D start, final Point2D end ) {
-        this.start.setLocation( start );
-        this.end.setLocation( end );
-        setSegmentType();
-    }
-
-    public WireSegment( final Point2D start, final double endX, final double endY ) {
-        this.start.setLocation( start );
-        this.end.setLocation( endX, endY );
-        setSegmentType();
-    }
-
-    public WireSegment( final double startX, final double startY, final Point2D end ) {
-        start.setLocation( startX, startY );
-        end.setLocation( end );
-        setSegmentType();
-    }
-
-    public WireSegment( final double startX, final double startY, final double endX, final double endY ) {
-        start.setLocation( startX, startY );
-        end.setLocation( endX, endY );
+    protected WireSegment( final Point2D start, final Point2D end ) {
+        this.start = start;
+        this.end   = end;
         setSegmentType();
     }
 

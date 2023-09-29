@@ -84,7 +84,8 @@ public class Player {
     }
 
     private void checkKeyPresses() {
-        if ( keyHandler.isPlaceWirePressed() ) {
+        if ( keyHandler.isKeyPressed( KeyBinds.placeWire ) ) {
+            heldGate = null;
             if ( heldWire != null ) {
                 heldWire.detachFromPlayer();
                 heldWire = null;
@@ -93,28 +94,50 @@ public class Player {
             else {
                 playerMode = PlayerMode.PLACE_WIRE;
             }
-            return;
         }
 
         int x = (int) playerLocation.getX();
         int y = (int) playerLocation.getY();
-        int numberPressed = keyHandler.getNumberPressed();
-        switch ( numberPressed ) {
-            case -1 -> {}
-            case 1  -> { heldGate = new Input( x, y );    handleNewHeldGate(); }
-            case 2  -> { heldGate = new Output( x, y );   handleNewHeldGate(); }
-            case 3  -> { heldGate = new NotGate( x, y );  handleNewHeldGate(); }
-            case 4  -> { heldGate = new AndGate( x, y );  handleNewHeldGate(); }
-            case 5  -> { heldGate = new NandGate( x, y ); handleNewHeldGate(); }
-            case 6  -> { heldGate = new OrGate( x, y );   handleNewHeldGate(); }
-            case 7  -> { heldGate = new NorGate( x, y );  handleNewHeldGate(); }
-            case 8  -> { heldGate = new XorGate( x, y );  handleNewHeldGate(); }
-            case 9  -> { heldGate = new XNorGate( x, y ); handleNewHeldGate(); }
-            default -> { heldGate = null;                 playerMode = PlayerMode.NORMAL; }
+        boolean makeGateNot = keyHandler.isKeyHeld( KeyBinds.makeGateNOT );
+        if ( keyHandler.isKeyPressed( KeyBinds.newIOGate ) ) {
+            if ( makeGateNot ) { heldGate = new Output( x, y ); }
+            else               { heldGate = new Input( x, y ); }
+            handleNewHeldGate();
+        }
+        else if ( keyHandler.isKeyPressed( KeyBinds.newNOTGate ) ) {
+                                 heldGate = new NotGate( x, y );
+            handleNewHeldGate();
+        }
+        else if ( keyHandler.isKeyPressed( KeyBinds.newANDGate ) ) {
+            if ( makeGateNot ) { heldGate = new NandGate( x, y ); }
+            else               { heldGate = new AndGate( x, y ); }
+            handleNewHeldGate();
+        }
+        else if ( keyHandler.isKeyPressed( KeyBinds.newORGate ) ) {
+            if ( makeGateNot ) { heldGate = new NorGate( x, y ); }
+            else               { heldGate = new OrGate( x, y ); }
+            handleNewHeldGate();
+        }
+        else if ( keyHandler.isKeyPressed( KeyBinds.newXORGate ) ) {
+            if ( makeGateNot ) { heldGate = new XNorGate( x, y ); }
+            else               { heldGate = new XorGate( x, y ); }
+            handleNewHeldGate();
+        }
+
+        if ( keyHandler.isKeyPressed( KeyBinds.clearHand ) ) {
+            if ( heldWire != null ) {
+                heldWire.detachFromPlayer();
+            }
+            heldGate = null;
+            heldWire = null;
+            playerMode = PlayerMode.NORMAL;
         }
     }
 
     private void handleNewHeldGate() {
+        if ( heldWire != null ) {
+            heldWire.detachFromPlayer();
+        }
         heldWire = null;
         playerMode = PlayerMode.PLACE_GATE;
         heldGate.setWireTypes( WireType.HELD_GATE);

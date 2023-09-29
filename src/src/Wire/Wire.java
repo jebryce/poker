@@ -74,12 +74,14 @@ public class Wire {
         if ( numNodes < 2 ) {
             return;
         }
-        Point2D node0 = attachedNodes[numNodes-2].getTrueLocation();
-        Point2D node1 = attachedNodes[numNodes-1].getTrueLocation();
-        double middleX = ( node0.getX() + node1.getX() ) / 2;
-        wireSegments[numSegments++] = new WireSegment( node0, middleX, node0.getY() );
-        wireSegments[numSegments++] = new WireSegment( node1, middleX, node1.getY() );
-        wireSegments[numSegments++] = new WireSegment( middleX, node0.getY(), middleX, node1.getY() );
+        Point2D node0   = attachedNodes[numNodes-2].getTrueLocation();
+        Point2D node1   = attachedNodes[numNodes-1].getTrueLocation();
+        double middleX  = ( node0.getX() + node1.getX() ) / 2;
+        Point2D middle0 = new Point2D.Double( middleX, node0.getY() );
+        Point2D middle1 = new Point2D.Double( middleX, node1.getY() );
+        wireSegments[numSegments++] = new WireSegment( node0, middle0 );
+        wireSegments[numSegments++] = new WireSegment( node1, middle1 );
+        wireSegments[numSegments++] = new WireSegment( middle0, middle1 );
         bounds[0] = new Point2D.Double( Math.min( node0.getX(), node1.getX() ), Math.min( node0.getY(), node1.getY() ) );
         bounds[1] = new Point2D.Double( Math.max( node0.getX(), node1.getX() ), Math.max( node0.getY(), node1.getY() ) );
     }
