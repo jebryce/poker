@@ -7,30 +7,38 @@ import java.awt.event.MouseMotionListener;
 public class MouseHandler implements MouseMotionListener, MouseListener {
     public int xPos;
     public int yPos;
-    private boolean mouseClicked, mouseHeld;
+    private boolean mouseClicked, mouseHeld, mouseClickRead;
 
     @Override
     public void mouseDragged( MouseEvent e ) {
+        xPos = (int) ( e.getX() / Constants.SCREEN_SCALE );
+        yPos = (int) ( e.getY() / Constants.SCREEN_SCALE );
     }
 
     @Override
     public void mouseMoved( MouseEvent e ) {
-        xPos = (int) (e.getX() / Constants.SCREEN_SCALE);
-        yPos = (int) (e.getY() / Constants.SCREEN_SCALE);
+        xPos = (int) ( e.getX() / Constants.SCREEN_SCALE );
+        yPos = (int) ( e.getY() / Constants.SCREEN_SCALE );
     }
 
     @Override
     public void mouseClicked( MouseEvent e ) {
-        mouseClicked = true;
     }
 
     @Override
     public void mousePressed( MouseEvent e ) {
+        if ( !mouseClicked ) {
+            mouseClicked   = true;
+            mouseClickRead = false;
+        }
         mouseHeld = true;
     }
 
     @Override
-    public void mouseReleased( MouseEvent e ) { mouseHeld = false; }
+    public void mouseReleased( MouseEvent e ) {
+        mouseHeld    = false;
+        mouseClicked = false;
+    }
 
     @Override
     public void mouseEntered( MouseEvent e ) {}
@@ -39,8 +47,8 @@ public class MouseHandler implements MouseMotionListener, MouseListener {
     public void mouseExited( MouseEvent e ) { }
 
     public boolean isMouseClicked() {
-        if ( mouseClicked ) {
-            mouseClicked = false;
+        if ( !mouseClickRead && mouseClicked ) {
+            mouseClickRead = true;
             return true;
         }
         return false;

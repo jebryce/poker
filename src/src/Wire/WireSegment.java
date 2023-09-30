@@ -39,7 +39,7 @@ public class WireSegment {
                 if ( point.getX() > Math.max( start.getX(), end.getX() ) + Constants.LINE_GRAB_RADIUS ) {
                     return false;
                 }
-                if ( point.getX() < Math.min( start.getX(), end.getX() ) + Constants.LINE_GRAB_RADIUS ) {
+                if ( point.getX() < Math.min( start.getX(), end.getX() ) - Constants.LINE_GRAB_RADIUS ) {
                     return false;
                 }
                 if ( point.getY() > Math.max( start.getY(), end.getY() ) ) {
@@ -59,12 +59,27 @@ public class WireSegment {
                 if ( point.getY() > Math.max( start.getY(), end.getY() ) + Constants.LINE_GRAB_RADIUS ) {
                     return false;
                 }
-                if ( point.getY() < Math.min( start.getY(), end.getY() ) + Constants.LINE_GRAB_RADIUS ) {
+                if ( point.getY() < Math.min( start.getY(), end.getY() ) - Constants.LINE_GRAB_RADIUS ) {
                     return false;
                 }
             }
         }
         return true;
+    }
+
+    public void moveSegment( final Point2D location ) {
+        switch ( segmentType ) {
+            case NEITHER -> {
+            }
+            case VERTICAL -> {
+                start.setLocation( location.getX(), start.getY() );
+                end.setLocation(   location.getX(), end.getY() );
+            }
+            case HORIZONTAL -> {
+                start.setLocation( start.getX(), location.getY() );
+                end.setLocation(   end.getX(),   location.getY() );
+            }
+        }
     }
 
     protected void repaint( final Graphics2D graphics2D ) {

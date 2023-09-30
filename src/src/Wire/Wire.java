@@ -133,7 +133,6 @@ public class Wire {
     }
 
     protected WireSegment isPointNear( final Point2D point ) {
-
         WireSegment nearestSegment = null;
         for ( WireSegment wireSegment : wireSegments ) {
             if ( wireSegment == null ) {

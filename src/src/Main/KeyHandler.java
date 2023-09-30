@@ -35,9 +35,9 @@ public class KeyHandler implements KeyListener {
 
     public boolean isKeyPressed( final int keyCode ) {
         assert keyCode >= 0 && keyCode < MAX_NUM_KEYS : "Key [" + keyCode + "] not implemented!";
-        if ( !keyPressRead[keyCode] ) {
+        if ( !keyPressRead[keyCode] && keyPressed[keyCode] ) {
             keyPressRead[keyCode] = true;
-            return keyPressed[keyCode];
+            return true;
         }
         return false;
     }

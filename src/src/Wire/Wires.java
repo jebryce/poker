@@ -45,8 +45,7 @@ public class Wires {
         wires[num_wires++] = newWire;
     }
 
-    public Wire findContainingWire( final Point2D point ) {
-        Wire containingWire = null;
+    public WireSegment findContainingWireSegment( final Point2D point ) {
         WireSegment shortestSegment = null;
         for ( Wire wire : wires ) {
             if ( wire == null ) {
@@ -57,17 +56,15 @@ public class Wires {
             }
             WireSegment segmentNear = wire.isPointNear( point );
             if ( segmentNear != null ) {
-                if ( containingWire == null ) {
-                    containingWire = wire;
+                if ( shortestSegment == null ) {
                     shortestSegment = segmentNear;
                 }
                 else if ( segmentNear.getLength() < shortestSegment.getLength() ) {
-                    containingWire = wire;
                     shortestSegment = segmentNear;
                 }
             }
         }
-        return containingWire;
+        return shortestSegment;
     }
 
     public void repaint( final Graphics2D graphics2D ) {

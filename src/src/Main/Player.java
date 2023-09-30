@@ -7,6 +7,7 @@ import Gate.IOGates.Output;
 import Node.Node;
 import Node.Nodes;
 import Wire.Wire;
+import Wire.WireSegment;
 import Wire.WireType;
 import Wire.Wires;
 
@@ -24,6 +25,7 @@ public class Player {
     private       PlayerMode   playerMode     = PlayerMode.NORMAL;
     private final Nodes        nodes          = new Nodes();
     private       Wire         heldWire       = null;
+    private       WireSegment  draggedWire    = null;
     private final Point2D      playerLocation = new Point2D.Double();
 
     public Player( final MouseHandler mouseH, final KeyHandler keyH ) {
@@ -76,9 +78,10 @@ public class Player {
         checkKeyPresses();
 
         switch ( playerMode ) {
-            case NORMAL     -> updateNORMAL();
-            case PLACE_GATE -> updatePLACE_GATE();
-            case PLACE_WIRE -> updatePLACE_WIRE();
+            case NORMAL        -> updateNORMAL();
+            case PLACE_GATE    -> updatePLACE_GATE();
+            case PLACE_WIRE    -> updatePLACE_WIRE();
+            case DRAGGING_WIRE -> updateDRAGGING_WIRE();
         }
 
     }
@@ -156,7 +159,10 @@ public class Player {
             }
         }
         if ( mouseHandler.isMouseHeld() ) {
-
+            draggedWire = wires.findContainingWireSegment( playerLocation );
+            if ( draggedWire != null ) {
+                playerMode  = PlayerMode.DRAGGING_WIRE;
+            }
         }
     }
 
@@ -198,5 +204,13 @@ public class Player {
 
     private void attachWireToNode( final Wire wire, final Node node ) {
         wires.remove_wire( wire.attachToNode( node ) );
+    }
+
+    private void updateDRAGGING_WIRE() {
+        draggedWire.moveSegment( playerLocation );
+        if ( !mouseHandler.isMouseHeld() ) {
+            draggedWire = null;
+            playerMode  = PlayerMode.NORMAL;
+        }
     }
 }
