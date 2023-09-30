@@ -9,10 +9,12 @@ public class WireSegment {
     private final Point2D     start;
     private final Point2D     end;
     private       SegmentType segmentType = SegmentType.NEITHER;
+    private final Wire        containingWire;
 
-    protected WireSegment( final Point2D start, final Point2D end ) {
-        this.start = start;
-        this.end   = end;
+    protected WireSegment( final Wire wire, final Point2D start, final Point2D end ) {
+        this.containingWire = wire;
+        this.start          = start;
+        this.end            = end;
         setSegmentType();
     }
 
@@ -67,10 +69,9 @@ public class WireSegment {
         return true;
     }
 
-    public void moveSegment( final Point2D location ) {
+    protected void moveSegment( final Point2D location ) {
         switch ( segmentType ) {
-            case NEITHER -> {
-            }
+            case NEITHER -> {}
             case VERTICAL -> {
                 start.setLocation( location.getX(), start.getY() );
                 end.setLocation(   location.getX(), end.getY() );
@@ -80,6 +81,18 @@ public class WireSegment {
                 end.setLocation(   end.getX(),   location.getY() );
             }
         }
+    }
+
+    public Wire getContainingWire() {
+        return containingWire;
+    }
+
+    protected Point2D getStartPoint() {
+        return (Point2D) start.clone();
+    }
+
+    protected Point2D getEndPoint() {
+        return (Point2D) start.clone();
     }
 
     protected void repaint( final Graphics2D graphics2D ) {

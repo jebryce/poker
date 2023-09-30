@@ -45,6 +45,7 @@ public class Wire {
         }
         else {
             wireType = WireType.CONNECTED;
+            calculateBounds();
         }
     }
 
@@ -79,11 +80,36 @@ public class Wire {
         double middleX  = ( node0.getX() + node1.getX() ) / 2;
         Point2D middle0 = new Point2D.Double( middleX, node0.getY() );
         Point2D middle1 = new Point2D.Double( middleX, node1.getY() );
-        wireSegments[numSegments++] = new WireSegment( node0, middle0 );
-        wireSegments[numSegments++] = new WireSegment( node1, middle1 );
-        wireSegments[numSegments++] = new WireSegment( middle0, middle1 );
-        bounds[0] = new Point2D.Double( Math.min( node0.getX(), node1.getX() ), Math.min( node0.getY(), node1.getY() ) );
-        bounds[1] = new Point2D.Double( Math.max( node0.getX(), node1.getX() ), Math.max( node0.getY(), node1.getY() ) );
+        wireSegments[numSegments++] = new WireSegment( this, node0, middle0 );
+        wireSegments[numSegments++] = new WireSegment( this, node1, middle1 );
+        wireSegments[numSegments++] = new WireSegment( this, middle0, middle1 );
+        calculateBounds();
+    }
+
+    private void calculateBounds() {
+        assert numSegments > 0;
+        bounds[0] = wireSegments[0].getStartPoint();
+        bounds[1] = wireSegments[0].getEndPoint();
+        double minX = bounds[0].getX();
+        double minY = bounds[0].getY();
+        double maxX = bounds[1].getX();
+        double maxY = bounds[1].getY();
+
+        for ( WireSegment wireSegment : wireSegments ) {
+            if ( wireSegment == null ) {
+                break;
+            }
+            Point2D start = wireSegment.getStartPoint();
+            Point2D end   = wireSegment.getEndPoint();
+            minX = Math.min( minX, Math.min( start.getX(), end.getX() ) );
+            minY = Math.min( minY, Math.min( start.getY(), end.getY() ) );
+
+            maxX = Math.max( maxX, Math.max( start.getX(), end.getX() ) );
+            maxY = Math.max( maxY, Math.max( start.getY(), end.getY() ) );
+        }
+
+        bounds[0].setLocation( minX, minY );
+        bounds[1].setLocation( maxX, maxY );
     }
 
     public boolean hasAttachedNode( final Node node ) {
@@ -148,6 +174,12 @@ public class Wire {
             }
         }
         return nearestSegment;
+    }
+
+    public void moveSegment( final WireSegment wireSegment, final Point2D location ) {
+        assert wireSegment != null;
+        assert location    != null;
+        wireSegment.moveSegment( location );
     }
 
     public void repaint( final Graphics2D graphics2D ) {

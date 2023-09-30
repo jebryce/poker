@@ -161,6 +161,7 @@ public class Player {
         if ( mouseHandler.isMouseHeld() ) {
             draggedWire = wires.findContainingWireSegment( playerLocation );
             if ( draggedWire != null ) {
+                heldWire    = draggedWire.getContainingWire();
                 playerMode  = PlayerMode.DRAGGING_WIRE;
             }
         }
@@ -207,8 +208,12 @@ public class Player {
     }
 
     private void updateDRAGGING_WIRE() {
-        draggedWire.moveSegment( playerLocation );
+        assert heldWire != null;
+        assert draggedWire != null;
+        heldWire.moveSegment( draggedWire, playerLocation );
         if ( !mouseHandler.isMouseHeld() ) {
+            heldWire.detachFromPlayer();
+            heldWire = null;
             draggedWire = null;
             playerMode  = PlayerMode.NORMAL;
         }
