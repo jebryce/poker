@@ -10,12 +10,22 @@ public class WireSegment {
     private final Point2D     end;
     private       SegmentType segmentType = SegmentType.NEITHER;
     private final Wire        containingWire;
+    private       boolean     attachedToGate;
 
-    protected WireSegment( final Wire wire, final Point2D start, final Point2D end ) {
+    protected WireSegment( final Wire wire, final Point2D start, final Point2D end, final boolean attachedToGate ) {
         this.containingWire = wire;
         this.start          = start;
         this.end            = end;
+        this.attachedToGate = attachedToGate;
         setSegmentType();
+    }
+
+    protected boolean isAttachedToGate() {
+        return attachedToGate;
+    }
+
+    protected void detachFromGate() {
+        attachedToGate = false;
     }
 
     private void setSegmentType() {
@@ -87,12 +97,28 @@ public class WireSegment {
         return containingWire;
     }
 
-    protected Point2D getStartPoint() {
+    protected Point2D getStartClone() {
         return (Point2D) start.clone();
     }
 
+    protected Point2D getEndClone() {
+        return (Point2D) end.clone();
+    }
+
+    protected Point2D getStartPoint() {
+        return start;
+    }
+
     protected Point2D getEndPoint() {
-        return (Point2D) start.clone();
+        return end;
+    }
+
+    protected void setStartX( final double x ) {
+        start.setLocation( x, start.getY() );
+    }
+
+    protected void setEndX( final double x ) {
+        end.setLocation( x, end.getY() );
     }
 
     protected void repaint( final Graphics2D graphics2D ) {

@@ -4,11 +4,9 @@ import Gate.Gate;
 import Main.Colors;
 import Main.Constants;
 import Node.Node;
-import Node.NodeType;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
-import java.util.Objects;
 
 public class Wire {
     private       boolean       state         = false;
@@ -18,9 +16,11 @@ public class Wire {
     private final WireSegment[] wireSegments  = new WireSegment[Constants.MAX_NUM_WIRE_SEGMENTS];
     private       int           numSegments   = 0;
     private       WireType      wireType      = WireType.UNCONNECTED;
-    private final Point2D[]     bounds        = new Point2D[2];
+    private       Point2D       minBound;
+    private       Point2D       maxBound;
 
-    public Wire() {}
+    public Wire() {
+    }
 
     public Wire( final Node node ) {
         attachToNode( node );
@@ -45,7 +45,6 @@ public class Wire {
         }
         else {
             wireType = WireType.CONNECTED;
-            calculateBounds();
         }
     }
 
@@ -80,36 +79,9 @@ public class Wire {
         double middleX  = ( node0.getX() + node1.getX() ) / 2;
         Point2D middle0 = new Point2D.Double( middleX, node0.getY() );
         Point2D middle1 = new Point2D.Double( middleX, node1.getY() );
-        wireSegments[numSegments++] = new WireSegment( this, node0, middle0 );
-        wireSegments[numSegments++] = new WireSegment( this, node1, middle1 );
-        wireSegments[numSegments++] = new WireSegment( this, middle0, middle1 );
-        calculateBounds();
-    }
-
-    private void calculateBounds() {
-        assert numSegments > 0;
-        bounds[0] = wireSegments[0].getStartPoint();
-        bounds[1] = wireSegments[0].getEndPoint();
-        double minX = bounds[0].getX();
-        double minY = bounds[0].getY();
-        double maxX = bounds[1].getX();
-        double maxY = bounds[1].getY();
-
-        for ( WireSegment wireSegment : wireSegments ) {
-            if ( wireSegment == null ) {
-                break;
-            }
-            Point2D start = wireSegment.getStartPoint();
-            Point2D end   = wireSegment.getEndPoint();
-            minX = Math.min( minX, Math.min( start.getX(), end.getX() ) );
-            minY = Math.min( minY, Math.min( start.getY(), end.getY() ) );
-
-            maxX = Math.max( maxX, Math.max( start.getX(), end.getX() ) );
-            maxY = Math.max( maxY, Math.max( start.getY(), end.getY() ) );
-        }
-
-        bounds[0].setLocation( minX, minY );
-        bounds[1].setLocation( maxX, maxY );
+        addSegment( node0, middle0 );
+        addSegment( middle1, node1 );
+        addSegment( middle0, middle1 );
     }
 
     public boolean hasAttachedNode( final Node node ) {
@@ -143,16 +115,16 @@ public class Wire {
     }
 
     protected boolean isPointWithinBounds( final Point2D point ) {
-        if ( point.getX() < bounds[0].getX() ) {
+        if ( point.getX() < minBound.getX() ) {
             return false;
         }
-        if ( point.getX() > bounds[1].getX() ) {
+        if ( point.getX() > maxBound.getX() ) {
             return false;
         }
-        if ( point.getY() < bounds[0].getY() ) {
+        if ( point.getY() < minBound.getY() ) {
             return false;
         }
-        if ( point.getY() > bounds[1].getY() ) {
+        if ( point.getY() > maxBound.getY() ) {
             return false;
         }
         return true;
@@ -179,7 +151,69 @@ public class Wire {
     public void moveSegment( final WireSegment wireSegment, final Point2D location ) {
         assert wireSegment != null;
         assert location    != null;
+        if ( wireSegment.isAttachedToGate() ) {
+            for ( Node node : attachedNodes ) {
+                assert node != null : "Wire segment boolean [isAttachedToGate] shouldn't be true";
+
+                Point2D nodeLocation = node.getTrueLocation();
+                if ( nodeLocation.distance( wireSegment.getStartClone() ) == 0 ) {
+                    double endX = nodeLocation.getX() + Constants.MIN_LINE_LENGTH;
+                    Point2D segmentLocation = wireSegment.getStartPoint();
+                    wireSegment.setStartX( endX );
+                    Point2D middle = new Point2D.Double( endX, nodeLocation.getY() );
+                    addSegment( nodeLocation, middle );
+                    addSegment( middle, segmentLocation );
+                    break;
+                }
+
+                if ( nodeLocation.distance( wireSegment.getEndClone() ) == 0 ) {
+                    double startX = nodeLocation.getX() - Constants.MIN_LINE_LENGTH;
+                    Point2D segmentLocation = wireSegment.getEndPoint();
+                    wireSegment.setEndX( startX );
+                    Point2D middle = new Point2D.Double( startX, nodeLocation.getY() );
+                    addSegment( segmentLocation, middle );
+                    addSegment( middle, nodeLocation );
+                    break;
+                }
+            }
+            wireSegment.detachFromGate();
+        }
         wireSegment.moveSegment( location );
+    }
+
+    private void addSegment( final Point2D start, final Point2D end ) {
+        assert start != null;
+        assert end != null;
+        boolean isAttachedToGate = false;
+
+        for( Node node : attachedNodes ) {
+            if ( node == null ) {
+                break;
+            }
+            Point2D nodeLocation = node.getTrueLocation();
+            if ( nodeLocation.distance( start ) == 0 || nodeLocation.distance( end ) == 0 ) {
+                isAttachedToGate = true;
+                break;
+            }
+        }
+
+        wireSegments[numSegments++] = new WireSegment( this, start, end, isAttachedToGate );
+        if ( maxBound == null ) {
+            maxBound = new Point2D.Double();
+            maxBound.setLocation( start );
+        }
+        if ( minBound == null ) {
+            minBound = new Point2D.Double();
+            minBound.setLocation( start );
+        }
+
+        double minX = Math.min( minBound.getX(), Math.min( start.getX(), end.getX() ) );
+        double minY = Math.min( minBound.getY(), Math.min( start.getY(), end.getY() ) );
+        minBound.setLocation( minX, minY );
+
+        double maxX = Math.max( maxBound.getX(), Math.max( start.getX(), end.getX() ) );
+        double maxY = Math.max( maxBound.getY(), Math.max( start.getY(), end.getY() ) );
+        maxBound.setLocation( maxX, maxY );
     }
 
     public void repaint( final Graphics2D graphics2D ) {

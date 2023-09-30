@@ -13,5 +13,6 @@ public class Constants {
     public static final double SCREEN_SCALE          = 0.4;
     public static final int    MAX_NUM_GATES         = 1000;
     public static final int    LINE_THICKNESS        = 6;
-    public static final int    LINE_GRAB_RADIUS      = (int) (8 / SCREEN_SCALE);
+    public static final int    LINE_GRAB_RADIUS      = (int) ( 8 / SCREEN_SCALE );
+    public static final int    MIN_LINE_LENGTH       = 40;
 }
