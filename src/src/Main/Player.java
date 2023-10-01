@@ -21,7 +21,6 @@ public class Player {
     private final Gate[]       placedGates    = new Gate[Constants.MAX_NUM_GATES];
     private final Wires        wires          = new Wires();
     private       int          numPlacedGates = 0;
-    private       int          numPlacedWires = 0;
     private       PlayerMode   playerMode     = PlayerMode.NORMAL;
     private final Nodes        nodes          = new Nodes();
     private       Wire         heldWire       = null;
@@ -210,7 +209,7 @@ public class Player {
     private void updateDRAGGING_WIRE() {
         assert heldWire != null;
         assert draggedWire != null;
-        heldWire.moveSegment( draggedWire, playerLocation );
+        draggedWire = heldWire.moveSegment( draggedWire, playerLocation );
         if ( !mouseHandler.isMouseHeld() ) {
             heldWire.detachFromPlayer();
             heldWire = null;

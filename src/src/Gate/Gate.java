@@ -4,11 +4,13 @@ import Main.Colors;
 import Main.Constants;
 import Node.Node;
 import Wire.Wire;
+import Wire.SegmentType;
 import Wire.WireType;
 
 import java.awt.*;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.Arrays;
 
 public class Gate {
@@ -35,6 +37,54 @@ public class Gate {
 
     public boolean isPointWithin( final Point2D point2D ) {
         return body.contains( point2D.getX() - location.getX(), point2D.getY() - location.getY() );
+    }
+
+    public boolean isPointNear( final Point2D point2D ) {
+        double x = point2D.getX() - location.getX();
+        double y = point2D.getY() - location.getY();
+        Rectangle2D bounds = body.getBounds2D();
+        final double maxX = bounds.getMaxX() + Constants.MIN_LINE_LENGTH;
+        final double minX = bounds.getMinX() - Constants.MIN_LINE_LENGTH;
+        final double maxY = bounds.getMaxY() + Constants.MIN_LINE_LENGTH;
+        final double minY = bounds.getMinY() - Constants.MIN_LINE_LENGTH;
+
+        if ( x > maxX ) {
+            return false;
+        }
+        if ( x < minX ) {
+            return false;
+        }
+        if ( y > maxY ) {
+            return false;
+        }
+        if ( y < minY ) {
+            return false;
+        }
+        return true;
+    }
+
+    public double getNearestEdge( final double coord, final SegmentType segmentType ) {
+        assert segmentType == SegmentType.HORIZONTAL || segmentType == SegmentType.VERTICAL;
+        Rectangle2D bounds = body.getBounds2D();
+        if ( segmentType == SegmentType.HORIZONTAL ) {
+            double y = coord - location.getY();
+            final double centerY = bounds.getCenterY();
+
+            if ( y > centerY ) {
+                return bounds.getMaxY() + Constants.MIN_LINE_LENGTH + location.getX() + 1;
+            }
+            else {
+                return bounds.getMinY() - Constants.MIN_LINE_LENGTH + location.getY() - 1;
+            }
+        }
+        double x = coord - location.getX();
+        final double centerX = bounds.getCenterX();
+        if ( x > centerX ) {
+            return bounds.getMaxX() + Constants.MIN_LINE_LENGTH + location.getX() + 1;
+        }
+        else {
+            return bounds.getMinX() - Constants.MIN_LINE_LENGTH + location.getX() - 1;
+        }
     }
 
     public Node[] getNodes() { return nodes; }
