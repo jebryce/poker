@@ -1,9 +1,13 @@
-package Main;
+package Player;
 
 import Gate.*;
 import Gate.BaseGates.*;
 import Gate.IOGates.Input;
 import Gate.IOGates.Output;
+import Main.Constants;
+import Main.KeyBinds;
+import Main.KeyHandler;
+import Main.MouseHandler;
 import Node.Node;
 import Node.Nodes;
 import Wire.Wire;
@@ -16,7 +20,7 @@ import java.awt.geom.Point2D;
 
 public class Player {
     private final MouseHandler mouseHandler;
-    private final KeyHandler   keyHandler;
+    private final KeyHandler keyHandler;
     private       Gate         heldGate;
     private final Gate[]       placedGates    = new Gate[Constants.MAX_NUM_GATES];
     private final Wires        wires          = new Wires();

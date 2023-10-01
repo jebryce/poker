@@ -1,5 +1,7 @@
 package Main;
 
+import Player.Player;
+
 import java.awt.*;
 
 import javax.swing.*;
@@ -9,7 +11,7 @@ public class GamePanel extends JPanel implements Runnable {
     private       Thread           gameThread;
     private final KeyHandler       keyHandler       = new KeyHandler();
     private final MouseHandler     mouseHandler     = new MouseHandler();
-    private final Player           player           = new Player( mouseHandler, keyHandler );
+    private final Player player           = new Player( mouseHandler, keyHandler );
 
 
     public GamePanel() {
