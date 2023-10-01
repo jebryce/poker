@@ -109,16 +109,8 @@ public class WireSegment {
         return start;
     }
 
-    protected Point2D getEndPoint() {
-        return end;
-    }
-
-    protected void setStartX( final double x ) {
-        start.setLocation( x, start.getY() );
-    }
-
-    protected void setEndX( final double x ) {
-        end.setLocation( x, end.getY() );
+    protected void moveStartX( final double delta ) {
+        start.setLocation( start.getX() + delta, start.getY() );
     }
 
     protected void repaint( final Graphics2D graphics2D ) {
