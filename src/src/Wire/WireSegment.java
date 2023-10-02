@@ -2,10 +2,11 @@ package Wire;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
+import Container.ListItem;
 
 import Main.Constants;
 
-public class WireSegment {
+public class WireSegment extends ListItem {
     private final Point2D     start;
     private final Point2D     end;
     private       SegmentType segmentType = SegmentType.NEITHER;
