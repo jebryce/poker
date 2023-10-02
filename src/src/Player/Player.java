@@ -28,6 +28,7 @@ public class Player {
     private       PlayerMode   playerMode     = PlayerMode.NORMAL;
     private final Nodes        nodes          = new Nodes();
     private       Wire         heldWire       = null;
+    private       boolean      justPlacedWire = false;
     private       WireSegment  draggedWire    = null;
     private final Point2D      playerLocation = new Point2D.Double();
 
@@ -161,12 +162,15 @@ public class Player {
                 }
             }
         }
-        if ( mouseHandler.isMouseHeld() ) {
+        if ( mouseHandler.isMouseHeld() && !justPlacedWire ) {
             draggedWire = wires.findContainingWireSegment( playerLocation );
             if ( draggedWire != null ) {
                 heldWire    = draggedWire.getContainingWire();
                 playerMode  = PlayerMode.DRAGGING_WIRE;
             }
+        }
+        else if ( !mouseHandler.isMouseHeld() ) {
+            justPlacedWire = false;
         }
     }
 
@@ -201,6 +205,7 @@ public class Player {
             else if ( !heldWire.hasAttachedNode(closestNode) ) {
                 playerMode = PlayerMode.NORMAL;
                 attachWireToNode( heldWire, closestNode );
+                justPlacedWire = true;
                 heldWire = null;
             }
         }
@@ -213,8 +218,10 @@ public class Player {
     private void updateDRAGGING_WIRE() {
         assert heldWire != null;
         assert draggedWire != null;
+        assert !justPlacedWire;
         draggedWire = heldWire.moveSegment( draggedWire, playerLocation );
         if ( !mouseHandler.isMouseHeld() ) {
+            heldWire.remove0LengthSegments();
             heldWire.detachFromPlayer();
             heldWire = null;
             draggedWire = null;

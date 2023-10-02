@@ -12,7 +12,6 @@ public class WireSegment {
     private final Wire        containingWire;
     private       boolean     attachedToGate;
     private       WireSegment next        = null;
-    boolean test = false;
 
     protected WireSegment( final Wire wire, final Point2D start, final Point2D end, final boolean attachedToGate ) {
         this.containingWire = wire;
@@ -133,9 +132,5 @@ public class WireSegment {
 
     protected void repaint( final Graphics2D graphics2D ) {
         graphics2D.drawLine( (int) start.getX(), (int) start.getY(), (int) end.getX(), (int) end.getY() );
-        if ( test ) {
-//            graphics2D.drawOval( (int) start.getX() - 10, (int) start.getY() - 10, 20, 20 );
-            graphics2D.drawOval( (int) end.getX() - 10, (int) end.getY() - 10, 20, 20 );
-        }
     }
 }

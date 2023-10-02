@@ -205,7 +205,7 @@ public class Wire {
             double edge = overlappedGate.getNearestEdge( gatePoint.getX(), SegmentType.VERTICAL );
             double y = overlappedGate.getNearestEdge( location.getY(), SegmentType.HORIZONTAL );
 
-            if ( edge != location.getX() && y != wirePoint.getY() ) {
+            if ( edge != location.getX() && y != gatePoint.getY() && y != wirePoint.getY() ) {
                 Point2D cornerPoint = new Point2D.Double( edge, y );
                 Point2D edgePoint   = new Point2D.Double( location.getX(), y );
 
@@ -217,6 +217,44 @@ public class Wire {
             }
         }
         return returnSegment;
+    }
+
+    public void remove0LengthSegments() {
+        for ( WireSegment wireSegment = headWireSegment; wireSegment != null; wireSegment = wireSegment.getNext() ) {
+            if ( wireSegment.getLength() == 0.0 ) {
+                removeSegment( wireSegment );
+                reconnectSegmentsFrom0LengthSegment( wireSegment );
+            }
+        }
+    }
+
+    private void reconnectSegmentsFrom0LengthSegment( final WireSegment wireSegment0Length ) {
+        final Point2D start = wireSegment0Length.getStartPoint();
+        final Point2D end   = wireSegment0Length.getEndPoint();
+        Point2D newStart = null;
+        Point2D newEnd   = null;
+        for ( WireSegment wireSegment = headWireSegment; wireSegment != null; wireSegment = wireSegment.getNext() ) {
+            assert wireSegment != wireSegment0Length;
+            if ( wireSegment.getStartPoint() == start ) {
+                newStart = wireSegment.getEndPoint();
+                removeSegment( wireSegment );
+            }
+            if ( wireSegment.getEndPoint()   == start ) {
+                newStart = wireSegment.getStartPoint();
+                removeSegment( wireSegment );
+            }
+            if ( wireSegment.getStartPoint() == end ) {
+                newEnd = wireSegment.getEndPoint();
+                removeSegment( wireSegment );
+            }
+            if ( wireSegment.getEndPoint()   == end ) {
+                newEnd = wireSegment.getStartPoint();
+                removeSegment( wireSegment );
+            }
+        }
+        assert newStart != null;
+        assert newEnd   != null;
+        addSegment( newStart, newEnd );
     }
 
     private void removeSegment( final WireSegment wireSegment ) {
@@ -241,9 +279,6 @@ public class Wire {
     private WireSegment addSegment( final Point2D start, final Point2D end ) {
         assert start != null;
         assert end != null;
-        if ( start.distance(end ) == 0.0  ) {
-            start.clone();
-        }
         assert start.distance( end ) != 0.0;
         boolean isAttachedToGate = false;
 

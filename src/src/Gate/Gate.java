@@ -69,21 +69,20 @@ public class Gate {
         if ( segmentType == SegmentType.HORIZONTAL ) {
             double y = coord - location.getY();
             final double centerY = bounds.getCenterY();
-
             if ( y > centerY ) {
-                return bounds.getMaxY() + Constants.MIN_LINE_LENGTH + location.getX() + 1;
+                return bounds.getMaxY() + Constants.MIN_LINE_LENGTH + location.getY();
             }
             else {
-                return bounds.getMinY() - Constants.MIN_LINE_LENGTH + location.getY() - 1;
+                return bounds.getMinY() - Constants.MIN_LINE_LENGTH + location.getY();
             }
         }
         double x = coord - location.getX();
         final double centerX = bounds.getCenterX();
         if ( x > centerX ) {
-            return bounds.getMaxX() + Constants.MIN_LINE_LENGTH + location.getX() + 1;
+            return bounds.getMaxX() + Constants.MIN_LINE_LENGTH + location.getX();
         }
         else {
-            return bounds.getMinX() - Constants.MIN_LINE_LENGTH + location.getX() - 1;
+            return bounds.getMinX() - Constants.MIN_LINE_LENGTH + location.getX();
         }
     }
 
