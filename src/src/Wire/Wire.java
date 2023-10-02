@@ -50,9 +50,6 @@ public class Wire extends LinkedList<WireSegment> {
         }
         Gate attachedGate = node.getAttachedGate();
         Wire disconnectedWire = attachedGate.attachWire( node, this );
-        if ( disconnectedWire != null ) {
-            System.out.println( disconnectedWire.wireType );
-        }
         this.attachedNodes[numNodes++] = node;
         for( int index = 0; index < Constants.MAX_NUM_WIRE_NODES; index++ ) {
             if( attachedGates[index] == null ) {

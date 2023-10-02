@@ -7,19 +7,19 @@ public class LinkedList< W extends ListItem> implements Iterable<W> {
 
     public Iterator< W > iterator() {
         return new Iterator<>() {
-            private ListItem currentItem = head;
+            private ListItem currentItem = null;
+            private ListItem nextItem    = head;
 
             @Override
             public boolean hasNext() {
-                if ( currentItem == null ) {
-                    return false;
-                }
-                return currentItem.hasNext();
+                return nextItem != null;
             }
 
             @Override
             public W next() {
-                return (W) ( currentItem = currentItem.getNext() );
+                currentItem = nextItem;
+                nextItem = nextItem.getNext();
+                return (W) currentItem;
             }
         };
     }
@@ -30,12 +30,8 @@ public class LinkedList< W extends ListItem> implements Iterable<W> {
     }
 
     public void remove( final W itemToRemove ) {
-        Iterator<W> thisIterator = iterator();
-        ListItem currentItem;
-        ListItem previousItem = null;
-        while ( thisIterator.hasNext() ) {
-            currentItem = thisIterator.next();
-            assert currentItem != null;
+        W previousItem = null;
+        for ( W currentItem : this ) {
             if ( currentItem == itemToRemove ) {
                 if ( previousItem == null ) {
                     head = currentItem.getNext();
