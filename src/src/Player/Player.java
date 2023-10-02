@@ -212,7 +212,8 @@ public class Player {
     }
 
     private void attachWireToNode( final Wire wire, final Node node ) {
-        wires.remove_wire( wire.attachToNode( node ) );
+        wire.attachToNode( node );
+//        wires.remove( wire.attachToNode( node ) );
     }
 
     private void updateDRAGGING_WIRE() {
