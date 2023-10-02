@@ -163,6 +163,7 @@ public class Wire {
         }
 
         wireSegment.moveSegment( location );
+        snapSegment( wireSegment );
         updateBounds( wireSegment );
 
         if ( gatePoint != null && gatePoint.getY() != location.getY()  ) {
@@ -219,6 +220,22 @@ public class Wire {
         return returnSegment;
     }
 
+    private void snapSegment( final WireSegment heldSegment ) {
+        for ( WireSegment wireSegment = headWireSegment; wireSegment != null; wireSegment = wireSegment.getNext() ) {
+            if ( heldSegment == wireSegment ) {
+                continue;
+            }
+            Point2D pointToMoveTo = wireSegment.getNonConnectedPoint( heldSegment );
+            if ( pointToMoveTo == null ) {
+                continue;
+            }
+            if ( wireSegment.getLength() > Constants.LINE_THICKNESS ) {
+                continue;
+            }
+            heldSegment.moveSegment( pointToMoveTo );
+        }
+    }
+
     public void remove0LengthSegments() {
         for ( WireSegment wireSegment = headWireSegment; wireSegment != null; wireSegment = wireSegment.getNext() ) {
             if ( wireSegment.getLength() == 0.0 ) {
@@ -229,28 +246,21 @@ public class Wire {
     }
 
     private void reconnectSegmentsFrom0LengthSegment( final WireSegment wireSegment0Length ) {
-        final Point2D start = wireSegment0Length.getStartPoint();
-        final Point2D end   = wireSegment0Length.getEndPoint();
         Point2D newStart = null;
         Point2D newEnd   = null;
         for ( WireSegment wireSegment = headWireSegment; wireSegment != null; wireSegment = wireSegment.getNext() ) {
             assert wireSegment != wireSegment0Length;
-            if ( wireSegment.getStartPoint() == start ) {
-                newStart = wireSegment.getEndPoint();
-                removeSegment( wireSegment );
+            Point2D nonConnectedPoint = wireSegment.getNonConnectedPoint( wireSegment0Length );
+            if ( nonConnectedPoint == null ) {
+                continue;
             }
-            if ( wireSegment.getEndPoint()   == start ) {
-                newStart = wireSegment.getStartPoint();
-                removeSegment( wireSegment );
+            removeSegment( wireSegment );
+            if ( newStart == null ) {
+                newStart = nonConnectedPoint;
+                continue;
             }
-            if ( wireSegment.getStartPoint() == end ) {
-                newEnd = wireSegment.getEndPoint();
-                removeSegment( wireSegment );
-            }
-            if ( wireSegment.getEndPoint()   == end ) {
-                newEnd = wireSegment.getStartPoint();
-                removeSegment( wireSegment );
-            }
+            newEnd = nonConnectedPoint;
+            break;
         }
         assert newStart != null;
         assert newEnd   != null;

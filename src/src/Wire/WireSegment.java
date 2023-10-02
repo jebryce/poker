@@ -106,6 +106,22 @@ public class WireSegment {
         }
     }
 
+    protected Point2D getNonConnectedPoint( final WireSegment wireSegment ) {
+        if ( this.start == wireSegment.start ) {
+            return this.end;
+        }
+        if ( this.start == wireSegment.end   ) {
+            return this.end;
+        }
+        if ( this.end   == wireSegment.start ) {
+            return this.start;
+        }
+        if ( this.end   == wireSegment.end   ) {
+            return this.start;
+        }
+        return null;
+    }
+
     public Wire getContainingWire() {
         return containingWire;
     }
