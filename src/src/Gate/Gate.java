@@ -12,8 +12,9 @@ import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Arrays;
+import Container.ListItem;
 
-public class Gate {
+public class Gate extends ListItem {
     protected final Path2D  body         = new Path2D.Float();
     protected final Point2D location     = new Point2D.Float( 0, 0 );
     protected final Node[]  nodes        = new Node[Constants.MAX_NUM_IO];

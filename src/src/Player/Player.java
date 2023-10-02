@@ -20,11 +20,10 @@ import java.awt.geom.Point2D;
 
 public class Player {
     private final MouseHandler mouseHandler;
-    private final KeyHandler keyHandler;
+    private final KeyHandler   keyHandler;
     private       Gate         heldGate;
-    private final Gate[]       placedGates    = new Gate[Constants.MAX_NUM_GATES];
+    private final Gates        placedGates    = new Gates();
     private final Wires        wires          = new Wires();
-    private       int          numPlacedGates = 0;
     private       PlayerMode   playerMode     = PlayerMode.NORMAL;
     private final Nodes        nodes          = new Nodes();
     private       Wire         heldWire       = null;
@@ -47,12 +46,7 @@ public class Player {
 
     public void repaint( final Graphics2D graphics2D  ) {
         wires.repaint( graphics2D );
-        for ( Gate gate : placedGates ) {
-            if ( gate == null ) {
-                break;
-            }
-            gate.repaint( graphics2D );
-        }
+        placedGates.repaint( graphics2D );
         if ( heldGate != null ) {
             Point2D centerOffset = heldGate.getCenterOffset();
             heldGate.setLocation(
@@ -186,7 +180,7 @@ public class Player {
         nodes.addNodesFromGate( gate );
         wires.addWiresFromGate( gate );
         gate.setWireTypes( WireType.UNCONNECTED );
-        placedGates[numPlacedGates++] = gate;
+        placedGates.add( gate );
         return gate;
     }
 

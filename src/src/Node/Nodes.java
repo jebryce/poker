@@ -1,13 +1,11 @@
 package Node;
 
+import Container.LinkedList;
 import Gate.Gate;
-import Main.Constants;
 
 import java.awt.geom.Point2D;
 
-public class Nodes {
-    private final Node[] nodes     = new Node[Constants.MAX_NUM_GATES*Constants.MAX_NUM_IO];
-    private       int    num_nodes = 0;
+public class Nodes extends LinkedList<Node> {
 
     public void addNodesFromGate( final Gate newGate) {
         for ( Node node : newGate.getNodes() ) {
@@ -15,21 +13,14 @@ public class Nodes {
                 break;
             }
             node.setTrueLocation();
-            add_node( node );
+            add( node );
         }
-    }
-
-    public void add_node( final Node newNode ) {
-        if ( newNode == null ) {
-            return;
-        }
-        nodes[num_nodes++] = newNode;
     }
 
     public Node findClosestNode( final Point2D location ) {
         Node closestNode       = null;
         double closestDistance = 0;
-        for ( Node node : nodes ) {
+        for ( Node node : this ) {
             if ( node == null ) {
                 break;
             }
