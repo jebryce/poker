@@ -2,12 +2,11 @@ package Container;
 
 import java.util.Iterator;
 
-public class LinkedList< W extends ListItem> implements Iterable<W> {
+public class LinkedList< W extends ListItem > extends ListItem implements Iterable< W > {
     private ListItem head = null;
 
     public Iterator< W > iterator() {
         return new Iterator<>() {
-            private ListItem currentItem = null;
             private ListItem nextItem    = head;
 
             @Override
@@ -17,7 +16,7 @@ public class LinkedList< W extends ListItem> implements Iterable<W> {
 
             @Override
             public W next() {
-                currentItem = nextItem;
+                ListItem currentItem = nextItem;
                 nextItem = nextItem.getNext();
                 return (W) currentItem;
             }
@@ -25,7 +24,7 @@ public class LinkedList< W extends ListItem> implements Iterable<W> {
     }
 
     public void add( final W newItem ) {
-        newItem.setNext( head);
+        newItem.setNext( head );
         head = newItem;
     }
 

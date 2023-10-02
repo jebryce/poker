@@ -1,11 +1,11 @@
 package Wire;
 
 import Gate.Gate;
-import Main.Constants;
+
+import Container.LinkedList;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
-import java.util.LinkedList;
 
 public class Wires extends LinkedList<Wire> {
 

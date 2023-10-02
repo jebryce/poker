@@ -10,8 +10,4 @@ public class ListItem {
     protected ListItem getNext() {
         return next;
     }
-
-    protected boolean hasNext() {
-        return next != null;
-    }
 }
