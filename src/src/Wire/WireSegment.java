@@ -11,7 +11,6 @@ public class WireSegment {
     private       SegmentType segmentType = SegmentType.NEITHER;
     private final Wire        containingWire;
     private       boolean     attachedToGate;
-    private       WireSegment next        = null;
 
     protected WireSegment( final Wire wire, final Point2D start, final Point2D end, final boolean attachedToGate ) {
         this.containingWire = wire;
@@ -19,14 +18,6 @@ public class WireSegment {
         this.end            = end;
         this.attachedToGate = attachedToGate;
         setSegmentType();
-    }
-
-    protected void setNext( final WireSegment next ) {
-        this.next = next;
-    }
-
-    protected WireSegment getNext() {
-        return next;
     }
 
     protected boolean isAttachedToGate() {
