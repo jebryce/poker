@@ -10,6 +10,8 @@ import java.awt.geom.Point2D;
 
 import Container.LinkedList;
 
+import javax.swing.event.MenuDragMouseListener;
+
 public class Wire extends LinkedList<WireSegment> {
     private       boolean       state         = false;
     private final Node[]        attachedNodes = new Node[Constants.MAX_NUM_WIRE_NODES];
@@ -70,14 +72,50 @@ public class Wire extends LinkedList<WireSegment> {
         if ( numNodes < 2 ) {
             return;
         }
-        Point2D node0   = attachedNodes[numNodes-2].getTrueLocation();
-        Point2D node1   = attachedNodes[numNodes-1].getTrueLocation();
-        double middleX  = ( node0.getX() + node1.getX() ) / 2;
-        Point2D middle0 = new Point2D.Double( middleX, node0.getY() );
-        Point2D middle1 = new Point2D.Double( middleX, node1.getY() );
-        addSegment( node0, middle0 );
-        addSegment( middle1, node1 );
-        addSegment( middle0, middle1 );
+        else if ( numNodes == 2 ) {
+            Point2D node0   = attachedNodes[0].getTrueLocation();
+            Point2D node1   = attachedNodes[1].getTrueLocation();
+            double middleX  = ( node0.getX() + node1.getX() ) / 2;
+            Point2D middle0 = new Point2D.Double( middleX, node0.getY() );
+            Point2D middle1 = new Point2D.Double( middleX, node1.getY() );
+            addSegment( node0, middle0 );
+            addSegment( middle1, node1 );
+            addSegment( middle0, middle1 );
+            return;
+        }
+        WireSegment segmentToBranchFrom = null;
+        for ( WireSegment wireSegment : this ) {
+            if ( wireSegment.isAttachedToGate() ) {
+                continue;
+            }
+            segmentToBranchFrom = wireSegment;
+        }
+        assert segmentToBranchFrom != null;
+        Point2D start = segmentToBranchFrom.getStartPoint();
+        Point2D end   = segmentToBranchFrom.getEndPoint();
+        Point2D min, max;
+        if ( start.getY() < end.getY() ) {
+            min = start;
+            max = end;
+        }
+        else {
+            min = end;
+            max = start;
+        }
+        Point2D newNode = attachedNodes[numNodes-1].getTrueLocation();
+        Point2D middle = new Point2D.Double( start.getX(), newNode.getY() );
+        if ( newNode.getY() < min.getY() ) {
+            addSegment( middle, min );
+        }
+        else if ( newNode.getY() > max.getY() ) {
+            addSegment( middle, max );
+        }
+        else {
+            remove( segmentToBranchFrom );
+            addSegment( min, middle );
+            addSegment( middle, max);
+        }
+        addSegment( newNode, middle );
     }
 
     public boolean hasAttachedNode( final Node node ) {

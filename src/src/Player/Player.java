@@ -38,10 +38,16 @@ public class Player {
         Gate in1 = placeGate( new Input( 100, 100 ) );
         Gate in2 = placeGate( new Input( 100, 500 ) );
         Gate and = placeGate( new AndGate( 400, 400 ) );
-        Gate out = placeGate( new Output( 800, 600 ) );
+        Gate out1 = placeGate( new Output( 800, 600 ) );
+        Gate out2 = placeGate( new Output( 850, 700 ) );
+        Gate out3 = placeGate( new Output( 800, 200 ) );
+        Gate out4 = placeGate( new Output( 850, 500 ) );
         attachWireToNode( in1.getWires()[0], and.getNodes()[0] );
         attachWireToNode( in2.getWires()[0], and.getNodes()[1] );
-        attachWireToNode( and.getWires()[2], out.getNodes()[0] );
+        attachWireToNode( and.getWires()[2], out1.getNodes()[0] );
+        attachWireToNode( and.getWires()[2], out2.getNodes()[0] );
+        attachWireToNode( and.getWires()[2], out3.getNodes()[0] );
+        attachWireToNode( and.getWires()[2], out4.getNodes()[0] );
     }
 
     public void repaint( final Graphics2D graphics2D  ) {
