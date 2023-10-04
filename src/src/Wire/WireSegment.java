@@ -7,13 +7,13 @@ import Container.ListItem;
 import Main.Constants;
 
 public class WireSegment extends ListItem {
-    private final Point2D     start;
-    private final Point2D     end;
-    private       SegmentType segmentType = SegmentType.NEITHER;
-    private final Wire        containingWire;
-    private       boolean     attachedToGate;
+    private final WireSegmentNode start;
+    private final WireSegmentNode end;
+    private       SegmentType     segmentType = SegmentType.NEITHER;
+    private final Wire            containingWire;
+    private       boolean         attachedToGate;
 
-    protected WireSegment( final Wire wire, final Point2D start, final Point2D end, final boolean attachedToGate ) {
+    protected WireSegment( final Wire wire, final WireSegmentNode start, final WireSegmentNode end, final boolean attachedToGate ) {
         this.containingWire = wire;
         this.start          = start;
         this.end            = end;
@@ -27,6 +27,11 @@ public class WireSegment extends ListItem {
 
     protected void detachFromGate() {
         attachedToGate = false;
+    }
+
+    protected void detachFromSegmentNodes() {
+        end.removeSegment(this);
+        start.removeSegment(this);
     }
 
     private void setSegmentType() {
@@ -98,7 +103,7 @@ public class WireSegment extends ListItem {
         }
     }
 
-    protected Point2D getNonConnectedPoint( final WireSegment wireSegment ) {
+    protected WireSegmentNode getNonConnectedPoint( final WireSegment wireSegment ) {
         if ( this.start == wireSegment.start ) {
             return this.end;
         }
@@ -118,19 +123,19 @@ public class WireSegment extends ListItem {
         return containingWire;
     }
 
-    protected Point2D getStartClone() {
-        return (Point2D) start.clone();
+    protected WireSegmentNode getStartClone() {
+        return (WireSegmentNode) start.clone();
     }
 
-    protected Point2D getEndClone() {
-        return (Point2D) end.clone();
+    protected WireSegmentNode getEndClone() {
+        return (WireSegmentNode) end.clone();
     }
 
-    protected Point2D getStartPoint() {
+    protected WireSegmentNode getStartPoint() {
         return start;
     }
 
-    protected Point2D getEndPoint() {
+    protected WireSegmentNode getEndPoint() {
         return end;
     }
 
@@ -138,7 +143,21 @@ public class WireSegment extends ListItem {
         start.setLocation( start.getX() + delta, start.getY() );
     }
 
+    protected WireSegmentNode getOtherNode( final WireSegmentNode wireSegmentNode ) {
+        if ( start == wireSegmentNode ) {
+            return end;
+        }
+        else if ( end == wireSegmentNode ) {
+            return start;
+        }
+        assert false : "wireSegmentNode not part of this wire segment.";
+        return null;
+    }
+
     protected void repaint( final Graphics2D graphics2D ) {
         graphics2D.drawLine( (int) start.getX(), (int) start.getY(), (int) end.getX(), (int) end.getY() );
+
+//        graphics2D.drawString( String.valueOf( start.getNumSegments() ), (int) start.getX(), (int) start.getY() );
+//        graphics2D.drawString( String.valueOf( end.getNumSegments() ), (int) end.getX(), (int) end.getY() );
     }
 }
