@@ -18,7 +18,7 @@ public class Input extends IO_Gate {
     }
 
     @Override
-    public void flipState() {
+    public void select() {
         if ( wires[0] == null ) {
             return;
         }

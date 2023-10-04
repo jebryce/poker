@@ -6,12 +6,13 @@ import Node.Node;
 import Wire.Wire;
 import Wire.SegmentType;
 import Wire.WireType;
+import Node.NodeType;
 
 import java.awt.*;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.Arrays;
+
 import Container.ListItem;
 
 public class Gate extends ListItem {
@@ -131,7 +132,7 @@ public class Gate extends ListItem {
         graphics2D.translate( -location.getX(), -location.getY() );
     }
 
-    public void flipState() {};
+    public void select() {};
 
     public void update() {};
 
@@ -145,6 +146,17 @@ public class Gate extends ListItem {
                 return;
             }
             wire.setWireType( wireType );
+        }
+    }
+
+    protected void addNode( final NodeType nodeType, final int x, final int y ) {
+        for ( int index = 0; index < Constants.MAX_NUM_IO; index++ ) {
+            if ( nodes[index] != null ) {
+                continue;
+            }
+            nodes[index] = new Node( this, nodeType, x, y );
+            wires[index] = new Wire( nodes[index] );
+            break;
         }
     }
 }

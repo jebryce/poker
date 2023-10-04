@@ -10,6 +10,7 @@ public class KeyBinds {
     public static int newANDGate  = KeyEvent.VK_3;
     public static int newORGate   = KeyEvent.VK_4;
     public static int newXORGate  = KeyEvent.VK_5;
+    public static int newChip     = KeyEvent.VK_6;
     public static int clearHand   = KeyEvent.VK_ESCAPE;
 
 }

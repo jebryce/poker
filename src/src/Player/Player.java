@@ -2,9 +2,9 @@ package Player;
 
 import Gate.*;
 import Gate.BaseGates.*;
+import Gate.Chip.Chip;
 import Gate.IOGates.Input;
 import Gate.IOGates.Output;
-import Main.Constants;
 import Main.KeyBinds;
 import Main.KeyHandler;
 import Main.MouseHandler;
@@ -18,14 +18,11 @@ import Wire.Wires;
 import java.awt.*;
 import java.awt.geom.Point2D;
 
-public class Player {
+public class Player extends PlacedObjects {
     private final MouseHandler mouseHandler;
     private final KeyHandler   keyHandler;
     private       Gate         heldGate;
-    private final Gates        placedGates    = new Gates();
-    private final Wires        wires          = new Wires();
     private       PlayerMode   playerMode     = PlayerMode.NORMAL;
-    private final Nodes        nodes          = new Nodes();
     private       Wire         heldWire       = null;
     private       boolean      justPlacedWire = false;
     private       WireSegment  draggedWire    = null;
@@ -50,9 +47,9 @@ public class Player {
         attachWireToNode( and.getWires()[2], out4.getNodes()[0] );
     }
 
+    @Override
     public void repaint( final Graphics2D graphics2D  ) {
-        wires.repaint( graphics2D );
-        placedGates.repaint( graphics2D );
+        super.repaint( graphics2D );
         if ( heldGate != null ) {
             Point2D centerOffset = heldGate.getCenterOffset();
             heldGate.setLocation(
@@ -70,14 +67,11 @@ public class Player {
 
     }
 
+    @Override
     public void update() {
+        super.update();
+
         playerLocation.setLocation( mouseHandler.xPos, mouseHandler.yPos );
-        for ( Gate gate : placedGates ) {
-            if ( gate == null ) {
-                break;
-            }
-            gate.update();
-        }
 
         checkKeyPresses();
 
@@ -130,6 +124,10 @@ public class Player {
             else               { heldGate = new XorGate( x, y ); }
             handleNewHeldGate();
         }
+        else if ( keyHandler.isKeyPressed( KeyBinds.newChip ) ) {
+            heldGate = new Chip( x, y );
+            handleNewHeldGate();
+        }
 
         if ( keyHandler.isKeyPressed( KeyBinds.clearHand ) ) {
             if ( heldWire != null ) {
@@ -156,8 +154,8 @@ public class Player {
                 if ( gate == null ) {
                     break;
                 }
-                if ( gate.isPointWithin(playerLocation) ) {
-                    gate.flipState();
+                if ( gate.isPointWithin( playerLocation ) ) {
+                    gate.select();
                     break;
                 }
             }
@@ -182,14 +180,6 @@ public class Player {
         }
     }
 
-    private Gate placeGate( final Gate gate) {
-        nodes.addNodesFromGate( gate );
-        wires.addWiresFromGate( gate );
-        gate.setWireTypes( WireType.UNCONNECTED );
-        placedGates.add( gate );
-        return gate;
-    }
-
     private void updatePLACE_WIRE() {
         if ( mouseHandler.isMouseClicked() ) {
             Node closestNode = nodes.findClosestNode( playerLocation );
@@ -209,10 +199,6 @@ public class Player {
                 heldWire = null;
             }
         }
-    }
-
-    private void attachWireToNode( final Wire wire, final Node node ) {
-        wires.remove( wire.attachToNode( node ) );
     }
 
     private void updateDRAGGING_WIRE() {
