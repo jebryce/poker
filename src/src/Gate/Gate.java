@@ -3,6 +3,7 @@ package Gate;
 import Main.Colors;
 import Main.Constants;
 import Node.Node;
+import Player.PlacedObjects;
 import Wire.Wire;
 import Wire.SegmentType;
 import Wire.WireType;
@@ -132,7 +133,9 @@ public class Gate extends ListItem {
         graphics2D.translate( -location.getX(), -location.getY() );
     }
 
-    public void select() {};
+    public PlacedObjects select() {
+        return null;
+    };
 
     public void update() {};
 

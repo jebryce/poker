@@ -16,40 +16,41 @@ import Wire.WireType;
 import Wire.Wires;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.geom.Point2D;
 
-public class Player extends PlacedObjects {
-    private final MouseHandler mouseHandler;
-    private final KeyHandler   keyHandler;
-    private       Gate         heldGate;
-    private       PlayerMode   playerMode     = PlayerMode.NORMAL;
-    private       Wire         heldWire       = null;
-    private       boolean      justPlacedWire = false;
-    private       WireSegment  draggedWire    = null;
-    private final Point2D      playerLocation = new Point2D.Double();
+public class Player {
+    private final MouseHandler  mouseHandler;
+    private final KeyHandler    keyHandler;
+    private       Gate          heldGate;
+    private       PlayerMode    playerMode     = PlayerMode.NORMAL;
+    private       Wire          heldWire       = null;
+    private       boolean       justPlacedWire = false;
+    private       WireSegment   draggedWire    = null;
+    private final Point2D       playerLocation = new Point2D.Double();
+    private       PlacedObjects placedObjects = new PlacedObjects();
 
     public Player( final MouseHandler mouseH, final KeyHandler keyH ) {
         mouseHandler = mouseH;
         keyHandler = keyH;
 
-        Gate in1 = placeGate( new Input( 100, 100 ) );
-        Gate in2 = placeGate( new Input( 100, 500 ) );
-        Gate and = placeGate( new AndGate( 400, 400 ) );
-        Gate out1 = placeGate( new Output( 800, 600 ) );
-        Gate out2 = placeGate( new Output( 850, 700 ) );
-        Gate out3 = placeGate( new Output( 800, 200 ) );
-        Gate out4 = placeGate( new Output( 850, 500 ) );
-        attachWireToNode( in1.getWires()[0], and.getNodes()[0] );
-        attachWireToNode( in2.getWires()[0], and.getNodes()[1] );
-        attachWireToNode( and.getWires()[2], out1.getNodes()[0] );
-        attachWireToNode( and.getWires()[2], out2.getNodes()[0] );
-        attachWireToNode( and.getWires()[2], out3.getNodes()[0] );
-        attachWireToNode( and.getWires()[2], out4.getNodes()[0] );
+        Gate in1  = placedObjects.placeGate( new Input( 100, 100 ) );
+        Gate in2  = placedObjects.placeGate( new Input( 100, 500 ) );
+        Gate and  = placedObjects.placeGate( new AndGate( 400, 400 ) );
+        Gate out1 = placedObjects.placeGate( new Output( 800, 600 ) );
+        Gate out2 = placedObjects.placeGate( new Output( 850, 700 ) );
+        Gate out3 = placedObjects.placeGate( new Output( 800, 200 ) );
+        Gate out4 = placedObjects.placeGate( new Output( 850, 500 ) );
+        placedObjects.attachWireToNode( in1.getWires()[0], and.getNodes()[0] );
+        placedObjects.attachWireToNode( in2.getWires()[0], and.getNodes()[1] );
+        placedObjects.attachWireToNode( and.getWires()[2], out1.getNodes()[0] );
+        placedObjects.attachWireToNode( and.getWires()[2], out2.getNodes()[0] );
+        placedObjects.attachWireToNode( and.getWires()[2], out3.getNodes()[0] );
+        placedObjects.attachWireToNode( and.getWires()[2], out4.getNodes()[0] );
     }
 
-    @Override
     public void repaint( final Graphics2D graphics2D  ) {
-        super.repaint( graphics2D );
+        placedObjects.repaint( graphics2D );
         if ( heldGate != null ) {
             Point2D centerOffset = heldGate.getCenterOffset();
             heldGate.setLocation(
@@ -67,9 +68,8 @@ public class Player extends PlacedObjects {
 
     }
 
-    @Override
     public void update() {
-        super.update();
+        placedObjects.update();
 
         playerLocation.setLocation( mouseHandler.xPos, mouseHandler.yPos );
 
@@ -85,6 +85,12 @@ public class Player extends PlacedObjects {
     }
 
     private void checkKeyPresses() {
+        if ( keyHandler.isKeyPressed( KeyBinds.previousChip ) ) {
+            if ( placedObjects.getPrevious() != null ) {
+                placedObjects = placedObjects.getPrevious();
+            }
+        }
+
         if ( keyHandler.isKeyPressed( KeyBinds.placeWire ) ) {
             heldGate = null;
             if ( heldWire != null ) {
@@ -150,18 +156,10 @@ public class Player extends PlacedObjects {
 
     private void updateNORMAL() {
         if ( mouseHandler.isMouseClicked() ) {
-            for ( Gate gate : placedGates ) {
-                if ( gate == null ) {
-                    break;
-                }
-                if ( gate.isPointWithin( playerLocation ) ) {
-                    gate.select();
-                    break;
-                }
-            }
+            placedObjects = placedObjects.selectGate( playerLocation );
         }
         if ( mouseHandler.isMouseHeld() && !justPlacedWire ) {
-            draggedWire = wires.findContainingWireSegment( playerLocation );
+            draggedWire = placedObjects.findContainingWireSegment( playerLocation );
             if ( draggedWire != null ) {
                 heldWire    = draggedWire.getContainingWire();
                 playerMode  = PlayerMode.DRAGGING_WIRE;
@@ -175,14 +173,14 @@ public class Player extends PlacedObjects {
     private void updatePLACE_GATE() {
         if ( mouseHandler.isMouseClicked() ) {
             playerMode = PlayerMode.NORMAL;
-            placeGate( heldGate );
+            placedObjects.placeGate( heldGate );
             heldGate = null;
         }
     }
 
     private void updatePLACE_WIRE() {
         if ( mouseHandler.isMouseClicked() ) {
-            Node closestNode = nodes.findClosestNode( playerLocation );
+            Node closestNode = placedObjects.findClosestNode( playerLocation );
             if ( closestNode == null ) {
                 playerMode = PlayerMode.NORMAL;
                 return;
@@ -194,7 +192,7 @@ public class Player extends PlacedObjects {
             }
             else if ( !heldWire.hasAttachedNode(closestNode) ) {
                 playerMode = PlayerMode.NORMAL;
-                attachWireToNode( heldWire, closestNode );
+                placedObjects.attachWireToNode( heldWire, closestNode );
                 justPlacedWire = true;
                 heldWire = null;
             }

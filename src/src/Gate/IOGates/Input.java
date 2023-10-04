@@ -4,6 +4,7 @@ package Gate.IOGates;
 import Gate.IO_Gate;
 import Node.Node;
 import Node.NodeType;
+import Player.PlacedObjects;
 import Wire.Wire;
 
 import java.awt.geom.Ellipse2D;
@@ -18,10 +19,11 @@ public class Input extends IO_Gate {
     }
 
     @Override
-    public void select() {
+    public PlacedObjects select() {
         if ( wires[0] == null ) {
-            return;
+            return null;
         }
         wires[0].flipState();
+        return null;
     }
 }

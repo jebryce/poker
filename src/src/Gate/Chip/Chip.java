@@ -3,6 +3,7 @@ package Gate.Chip;
 import Gate.Gate;
 import Main.Colors;
 import Node.NodeType;
+import Player.PlacedObjects;
 import Wire.Wire;
 
 import java.awt.*;
@@ -10,7 +11,8 @@ import java.awt.geom.Arc2D;
 import java.awt.geom.Rectangle2D;
 
 public class Chip extends Gate {
-    private final Arc2D notch = new Arc2D.Double( 40, -20, 40, 40, 180, 180, Arc2D.OPEN );
+    private final Arc2D         notch = new Arc2D.Double( 40, -20, 40, 40, 180, 180, Arc2D.OPEN );
+    private final PlacedObjects contents = new PlacedObjects();
 
 
     public Chip( int x, int y ) {
@@ -29,8 +31,8 @@ public class Chip extends Gate {
     }
 
     @Override
-    public void select() {
-
+    public PlacedObjects select() {
+        return contents;
     }
 
     @Override
