@@ -3,17 +3,20 @@ package Gate;
 import Main.Colors;
 import Main.Constants;
 import Node.Node;
+import Player.PlacedObjects;
 import Wire.Wire;
 import Wire.SegmentType;
 import Wire.WireType;
+import Node.NodeType;
 
 import java.awt.*;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.Arrays;
 
-public class Gate {
+import Container.ListItem;
+
+public class Gate extends ListItem {
     protected final Path2D  body         = new Path2D.Float();
     protected final Point2D location     = new Point2D.Float( 0, 0 );
     protected final Node[]  nodes        = new Node[Constants.MAX_NUM_IO];
@@ -130,7 +133,9 @@ public class Gate {
         graphics2D.translate( -location.getX(), -location.getY() );
     }
 
-    public void flipState() {};
+    public PlacedObjects select() {
+        return null;
+    };
 
     public void update() {};
 
@@ -144,6 +149,17 @@ public class Gate {
                 return;
             }
             wire.setWireType( wireType );
+        }
+    }
+
+    protected void addNode( final NodeType nodeType, final int x, final int y ) {
+        for ( int index = 0; index < Constants.MAX_NUM_IO; index++ ) {
+            if ( nodes[index] != null ) {
+                continue;
+            }
+            nodes[index] = new Node( this, nodeType, x, y );
+            wires[index] = new Wire( nodes[index] );
+            break;
         }
     }
 }

@@ -1,11 +1,12 @@
 package Node;
 
+import Container.ListItem;
 import Gate.Gate;
 import Wire.Wire;
 
 import java.awt.geom.Point2D;
 
-public class Node {
+public class Node extends ListItem {
     private final Gate     attachedGate;
     private final Point2D  location;
     private final Point2D  trueLocation = new Point2D.Double();

@@ -7,7 +7,9 @@ import Node.Node;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
-import java.util.LinkedList;
+
+import Container.LinkedList;
+
 
 public class Wire extends LinkedList<WireSegment> {
     private       boolean       state         = false;
@@ -69,14 +71,50 @@ public class Wire extends LinkedList<WireSegment> {
         if ( numNodes < 2 ) {
             return;
         }
-        Point2D node0   = attachedNodes[numNodes-2].getTrueLocation();
-        Point2D node1   = attachedNodes[numNodes-1].getTrueLocation();
-        double middleX  = ( node0.getX() + node1.getX() ) / 2;
-        Point2D middle0 = new Point2D.Double( middleX, node0.getY() );
-        Point2D middle1 = new Point2D.Double( middleX, node1.getY() );
-        addSegment( node0, middle0 );
-        addSegment( middle1, node1 );
-        addSegment( middle0, middle1 );
+        else if ( numNodes == 2 ) {
+            WireSegmentNode node0   = new WireSegmentNode( attachedNodes[0].getTrueLocation() );
+            WireSegmentNode node1   = new WireSegmentNode( attachedNodes[1].getTrueLocation() );
+            double middleX  = ( node0.getX() + node1.getX() ) / 2;
+            WireSegmentNode middle0 = new WireSegmentNode( middleX, node0.getY() );
+            WireSegmentNode middle1 = new WireSegmentNode( middleX, node1.getY() );
+            addSegment( node0, middle0 );
+            addSegment( middle1, node1 );
+            addSegment( middle0, middle1 );
+            return;
+        }
+        WireSegment segmentToBranchFrom = null;
+        for ( WireSegment wireSegment : this ) {
+            if ( wireSegment.isAttachedToGate() ) {
+                continue;
+            }
+            segmentToBranchFrom = wireSegment;
+        }
+        assert segmentToBranchFrom != null;
+        WireSegmentNode start = segmentToBranchFrom.getStartPoint();
+        WireSegmentNode end   = segmentToBranchFrom.getEndPoint();
+        WireSegmentNode min, max;
+        if ( start.getY() < end.getY() ) {
+            min = start;
+            max = end;
+        }
+        else {
+            min = end;
+            max = start;
+        }
+        WireSegmentNode newNode = new WireSegmentNode( attachedNodes[numNodes-1].getTrueLocation() );
+        WireSegmentNode middle  = new WireSegmentNode( start.getX(), newNode.getY() );
+        if ( newNode.getY() < min.getY() ) {
+            addSegment( middle, min );
+        }
+        else if ( newNode.getY() > max.getY() ) {
+            addSegment( middle, max );
+        }
+        else {
+            remove( segmentToBranchFrom );
+            addSegment( min, middle );
+            addSegment( middle, max);
+        }
+        addSegment( newNode, middle );
     }
 
     public boolean hasAttachedNode( final Node node ) {
@@ -145,10 +183,10 @@ public class Wire extends LinkedList<WireSegment> {
 
     public WireSegment moveSegment( final WireSegment wireSegment, final Point2D location ) {
         assert wireSegment != null;
-        assert location    != null;
-        Point2D gatePoint      = null;
-        Point2D wirePoint      = null;
-        Gate    overlappedGate = null;
+        assert location != null;
+        WireSegmentNode gatePoint = null;
+        WireSegmentNode wirePoint = null;
+        Gate overlappedGate = null;
         WireSegment returnSegment = wireSegment;
 
         if ( wireSegment.isAttachedToGate() ) {
@@ -156,39 +194,46 @@ public class Wire extends LinkedList<WireSegment> {
             wirePoint = wireSegment.getStartPoint();
         }
 
-        wireSegment.moveSegment( location );
-        snapSegment( wireSegment );
-        updateBounds( wireSegment );
+        // if the wireSegment we are trying has a node shared with (at least) 2 other wire segments
+        if ( wireSegment.getEndPoint().getNumSegments() > 2 ) {
+            returnSegment = detachSharedSegmentFromPoint( returnSegment, returnSegment.getEndPoint(), location );
+        }
+        if ( wireSegment.getStartPoint().getNumSegments() > 2 ) {
+            returnSegment = detachSharedSegmentFromPoint( returnSegment, returnSegment.getStartPoint(), location );
+        }
 
-        if ( gatePoint != null && gatePoint.getY() != location.getY()  ) {
-            // if the wireSegment we are trying to move is attached to a gate, split the segment in two and leave a little bit attached
+        returnSegment.moveSegment(location);
+        snapSegment(returnSegment);
+        updateBounds(returnSegment);
+
+        // if the wireSegment we are trying to move is attached to a gate, split the segment in two and leave a little bit attached
+        if ( gatePoint != null && gatePoint.getY() != location.getY() ) {
             double offset = Constants.MIN_LINE_LENGTH;
-            if ( wirePoint.getX() > wireSegment.getEndClone().getX() ) {
+            if ( wirePoint.getX() > returnSegment.getEndClone().getX() ) {
                 offset *= -1;
             }
-            wireSegment.moveStartX( offset );
-            wireSegment.detachFromGate();
-            Point2D midPoint = new Point2D.Double( wirePoint.getX(), gatePoint.getY() );
-            addSegment( gatePoint, midPoint );
-            addSegment( midPoint, wirePoint );
+            returnSegment.moveStartX(offset);
+            returnSegment.detachFromGate();
+            WireSegmentNode midPoint = new WireSegmentNode(wirePoint.getX(), gatePoint.getY());
+            addSegment(gatePoint, midPoint);
+            addSegment(midPoint, wirePoint);
             return returnSegment;
         }
 
-        for ( Gate gate : attachedGates ) { // if we try to move a wire segment, don't allow it to overlap an attached gate
+        // if we try to move a wire segment, don't allow it to overlap an attached gate
+        for ( Gate gate : attachedGates ) {
             if ( gate == null ) {
                 break;
             }
-            Point2D start = wireSegment.getStartPoint();
-            Point2D end   = wireSegment.getEndPoint();
-            if ( gate.isPointNear( start ) ) {
+            WireSegmentNode start = wireSegment.getStartPoint();
+            WireSegmentNode end = wireSegment.getEndPoint();
+            if ( gate.isPointNear(start) ) {
                 gatePoint = start;
                 wirePoint = end;
-            }
-            else if ( gate.isPointNear( end ) ) {
+            } else if ( gate.isPointNear(end) ) {
                 gatePoint = end;
                 wirePoint = start;
-            }
-            else {
+            } else {
                 continue;
             }
             overlappedGate = gate;
@@ -197,18 +242,40 @@ public class Wire extends LinkedList<WireSegment> {
 
         if ( overlappedGate != null && wireSegment.getSegmentType() == SegmentType.VERTICAL ) {
             assert gatePoint != null;
-            double edge = overlappedGate.getNearestEdge( gatePoint.getX(), SegmentType.VERTICAL );
-            double y = overlappedGate.getNearestEdge( location.getY(), SegmentType.HORIZONTAL );
+            double edge = overlappedGate.getNearestEdge(gatePoint.getX(), SegmentType.VERTICAL);
+            double y = overlappedGate.getNearestEdge(location.getY(), SegmentType.HORIZONTAL);
 
             if ( edge != location.getX() && y != gatePoint.getY() && y != wirePoint.getY() ) {
-                Point2D cornerPoint = new Point2D.Double( edge, y );
-                Point2D edgePoint   = new Point2D.Double( location.getX(), y );
+                WireSegmentNode cornerPoint = new WireSegmentNode(edge, y);
+                WireSegmentNode edgePoint = new WireSegmentNode(location.getX(), y);
 
-                gatePoint.setLocation( edge, gatePoint.getY() );
-                addSegment( gatePoint, cornerPoint );
-                addSegment( cornerPoint, edgePoint );
+                gatePoint.setLocation(edge, gatePoint.getY());
+                addSegment(gatePoint, cornerPoint);
+                addSegment(cornerPoint, edgePoint);
+                remove(wireSegment);
+                returnSegment = addSegment(edgePoint, wirePoint);
+            }
+        }
+        return returnSegment;
+    }
+
+    private WireSegment detachSharedSegmentFromPoint( final WireSegment wireSegment, final WireSegmentNode segmentNode, final Point2D offset ) {
+        WireSegment returnSegment = wireSegment;
+        for ( WireSegment attachedSegment : segmentNode ) {
+            if ( attachedSegment.getSegmentType() != wireSegment.getSegmentType() ) {
+                continue;
+            }
+            if ( attachedSegment == wireSegment ) {
+                continue;
+            }
+            if ( wireSegment.getSegmentType() == SegmentType.VERTICAL ) {
+                WireSegmentNode newNode = new WireSegmentNode( offset.getX(), segmentNode.getY() );
+                WireSegmentNode otherNode = wireSegment.getOtherNode( segmentNode );
+                otherNode.setLocation( offset.getX(), otherNode.getY() );
+                returnSegment = addSegment( otherNode, newNode );
+                addSegment( segmentNode, newNode );
                 remove( wireSegment );
-                returnSegment = addSegment( edgePoint, wirePoint );
+                break;
             }
         }
         return returnSegment;
@@ -240,11 +307,11 @@ public class Wire extends LinkedList<WireSegment> {
     }
 
     private void reconnectSegmentsFrom0LengthSegment( final WireSegment wireSegment0Length ) {
-        Point2D newStart = null;
-        Point2D newEnd   = null;
+        WireSegmentNode newStart = null;
+        WireSegmentNode newEnd   = null;
         for ( WireSegment wireSegment : this ) {
             assert wireSegment != wireSegment0Length;
-            Point2D nonConnectedPoint = wireSegment.getNonConnectedPoint( wireSegment0Length );
+            WireSegmentNode nonConnectedPoint = wireSegment.getNonConnectedPoint( wireSegment0Length );
             if ( nonConnectedPoint == null ) {
                 continue;
             }
@@ -261,14 +328,14 @@ public class Wire extends LinkedList<WireSegment> {
         addSegment( newStart, newEnd );
     }
 
-    private WireSegment addSegment( final Point2D start, final Point2D end ) {
+    private WireSegment addSegment( final WireSegmentNode start, final WireSegmentNode end ) {
         assert start != null;
         assert end != null;
-        assert start.distance( end ) != 0.0;
+//        assert start.distance( end ) != 0.0;
         boolean isAttachedToGate = false;
 
-        Point2D node0 = start;
-        Point2D node1 = end;
+        WireSegmentNode node0 = start;
+        WireSegmentNode node1 = end;
 
         for ( Node node : attachedNodes ) {
             if ( node == null ) {
@@ -286,8 +353,10 @@ public class Wire extends LinkedList<WireSegment> {
                 break;
             }
         }
-        WireSegment newSegment = new WireSegment(this, node0, node1, isAttachedToGate);
+        WireSegment newSegment = new WireSegment( this, node0, node1, isAttachedToGate );
         add( newSegment );
+        start.addSegment( newSegment );
+        end.addSegment( newSegment );
 
         if ( maxBound == null ) {
             maxBound = new Point2D.Double();
@@ -300,6 +369,12 @@ public class Wire extends LinkedList<WireSegment> {
 
         updateBounds( newSegment );
         return newSegment;
+    }
+
+    @Override
+    public void remove( final WireSegment wireSegment ) {
+        wireSegment.detachFromSegmentNodes();
+        super.remove( wireSegment );
     }
 
     // @TODO: BUG  updateBounds can never shrink the bounds
