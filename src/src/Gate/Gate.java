@@ -2,12 +2,6 @@ package Gate;
 
 import Main.Colors;
 import Main.Constants;
-import Node.Node;
-import Player.PlacedObjects;
-import Wire.Wire;
-import Wire.SegmentType;
-import Wire.WireType;
-import Node.NodeType;
 
 import java.awt.*;
 import java.awt.geom.Path2D;
@@ -19,14 +13,12 @@ import Container.ListItem;
 public class Gate extends ListItem {
     protected final Path2D  body         = new Path2D.Float();
     protected final Point2D location     = new Point2D.Float( 0, 0 );
-    protected final Node[]  nodes        = new Node[Constants.MAX_NUM_IO];
-    protected final Wire[]  wires        = new Wire[Constants.MAX_NUM_IO];
 
-    public Gate( final int x, final int y ) {
-        location.setLocation( x, y );
+    public Gate( final Point2D location ) {
+        this.location.setLocation( location );
     }
 
-    public void setLocation( final int x, final int y ) {
+    public void setLocation( final double x, final double y ) {
         location.setLocation( x, y );
     }
 
@@ -66,59 +58,6 @@ public class Gate extends ListItem {
         return true;
     }
 
-    public double getNearestEdge( final double coord, final SegmentType segmentType ) {
-        assert segmentType == SegmentType.HORIZONTAL || segmentType == SegmentType.VERTICAL;
-        Rectangle2D bounds = body.getBounds2D();
-        if ( segmentType == SegmentType.HORIZONTAL ) {
-            double y = coord - location.getY();
-            final double centerY = bounds.getCenterY();
-            if ( y > centerY ) {
-                return bounds.getMaxY() + Constants.MIN_LINE_LENGTH + location.getY();
-            }
-            else {
-                return bounds.getMinY() - Constants.MIN_LINE_LENGTH + location.getY();
-            }
-        }
-        double x = coord - location.getX();
-        final double centerX = bounds.getCenterX();
-        if ( x > centerX ) {
-            return bounds.getMaxX() + Constants.MIN_LINE_LENGTH + location.getX();
-        }
-        else {
-            return bounds.getMinX() - Constants.MIN_LINE_LENGTH + location.getX();
-        }
-    }
-
-    public Node[] getNodes() { return nodes; }
-
-    public Wire attachWire( final Node wireNode, final Wire wire ) {
-        Wire disconnectedWire = null;
-        for ( int index = 0; index < Constants.MAX_NUM_IO; index++ ) {
-            Node node = nodes[index];
-            if ( node == null ) {
-                break;
-            }
-            if ( node == wireNode ) {
-                disconnectedWire = wires[index];
-                wires[index] = wire;
-                break;
-            }
-        }
-        return disconnectedWire;
-    }
-
-    public Wire getWireAtNode( final Node wireNode ) {
-        for ( int index = 0; index < Constants.MAX_NUM_IO; index++ ) {
-            if ( nodes[index] == null ) {
-                break;
-            }
-            if ( nodes[index] == wireNode ) {
-                return wires[index];
-            }
-        }
-        return null;
-    }
-
     public Point2D getCenter() {
         Point2D centerOffset = getCenterOffset();
         return new Point2D.Double(
@@ -133,33 +72,5 @@ public class Gate extends ListItem {
         graphics2D.translate( -location.getX(), -location.getY() );
     }
 
-    public PlacedObjects select() {
-        return null;
-    };
-
     public void update() {};
-
-    public Wire[] getWires() {
-        return wires;
-    }
-
-    public void setWireTypes( final WireType wireType ) {
-        for( Wire wire : wires ) {
-            if ( wire == null ) {
-                return;
-            }
-            wire.setWireType( wireType );
-        }
-    }
-
-    protected void addNode( final NodeType nodeType, final int x, final int y ) {
-        for ( int index = 0; index < Constants.MAX_NUM_IO; index++ ) {
-            if ( nodes[index] != null ) {
-                continue;
-            }
-            nodes[index] = new Node( this, nodeType, x, y );
-            wires[index] = new Wire( nodes[index] );
-            break;
-        }
-    }
 }

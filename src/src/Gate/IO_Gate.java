@@ -4,10 +4,11 @@ import Gate.Gate;
 import Main.Colors;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 
 public class IO_Gate extends Gate {
-    public IO_Gate( int x, int y ) {
-        super(x, y);
+    public IO_Gate( final Point2D location ) {
+        super( location );
     }
 
     @Override

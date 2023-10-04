@@ -9,11 +9,12 @@ import Wire.Wire;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
 
 public class NorGate extends Gate {
 
-    public NorGate( final int x, final int y ) {
-        super( x, y);
+    public NorGate( final Point2D location ) {
+        super( location );
         body.append( new Line2D.Float( 0, 0, 75, 0 ), false );
         body.append( new Arc2D.Float( 25, 0, 100, 100, 270, 180, Arc2D.OPEN ), false );
         body.append( new Line2D.Float( 0, 100, 75, 100 ), false );
