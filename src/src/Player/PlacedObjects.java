@@ -19,7 +19,7 @@ public class PlacedObjects {
 
     private       PlacedObjects previous       = this;
 
-    protected Gate placeGate( final Gate gate) {
+    public Gate placeGate( final Gate gate) {
         nodes.addNodesFromGate( gate );
         wires.addWiresFromGate( gate );
         gate.setWireTypes( WireType.UNCONNECTED );
