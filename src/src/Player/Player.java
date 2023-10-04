@@ -15,8 +15,6 @@ public class Player {
     private final MouseHandler  mouseHandler;
     private final KeyHandler    keyHandler;
     private       Gate          heldGate;
-    private       PlayerMode    playerMode     = PlayerMode.NORMAL;
-    private       boolean       justPlacedWire = false;
     private final Point2D       playerLocation = new Point2D.Double();
 
     public Player( final MouseHandler mouseH, final KeyHandler keyH ) {
@@ -59,35 +57,26 @@ public class Player {
         if ( keyHandler.isKeyPressed( KeyBinds.newIOGate ) ) {
             if ( makeGateNot ) { heldGate = new Output( playerLocation ); }
             else               { heldGate = new Input( playerLocation ); }
-            handleNewHeldGate();
         }
         else if ( keyHandler.isKeyPressed( KeyBinds.newNOTGate ) ) {
                                  heldGate = new NotGate( playerLocation );
-            handleNewHeldGate();
         }
         else if ( keyHandler.isKeyPressed( KeyBinds.newANDGate ) ) {
             if ( makeGateNot ) { heldGate = new NandGate( playerLocation ); }
             else               { heldGate = new AndGate( playerLocation ); }
-            handleNewHeldGate();
         }
         else if ( keyHandler.isKeyPressed( KeyBinds.newORGate ) ) {
             if ( makeGateNot ) { heldGate = new NorGate( playerLocation ); }
             else               { heldGate = new OrGate( playerLocation ); }
-            handleNewHeldGate();
         }
         else if ( keyHandler.isKeyPressed( KeyBinds.newXORGate ) ) {
             if ( makeGateNot ) { heldGate = new XNorGate( playerLocation ); }
             else               { heldGate = new XorGate( playerLocation ); }
-            handleNewHeldGate();
         }
 
         if ( keyHandler.isKeyPressed( KeyBinds.clearHand ) ) {
             heldGate = null;
-            playerMode = PlayerMode.NORMAL;
         }
     }
 
-    private void handleNewHeldGate() {
-        playerMode = PlayerMode.PLACE_GATE;
-    }
 }
