@@ -2,6 +2,9 @@ package Gate;
 
 import Main.Colors;
 import Main.Constants;
+import Wire.Node.NodeType;
+import Wire.Wire;
+import Wire.Wires;
 
 import java.awt.*;
 import java.awt.geom.Path2D;
@@ -10,9 +13,11 @@ import java.awt.geom.Rectangle2D;
 
 import Container.ListItem;
 
-public class Gate extends ListItem {
+public abstract class Gate extends ListItem {
     protected final Path2D  body         = new Path2D.Float();
     protected final Point2D location     = new Point2D.Float( 0, 0 );
+    protected final Wires   inputWires   = new Wires( 4 );
+    protected final Wires   outputWires  = new Wires( 4 );
 
     public Gate( final Point2D location ) {
         this.location.setLocation( location );
@@ -66,11 +71,24 @@ public class Gate extends ListItem {
     }
 
     public void repaint( final Graphics2D graphics2D ) {
-        graphics2D.setColor( Colors.BLACK );
         graphics2D.translate( location.getX(), location.getY() );
+        inputWires.repaint( graphics2D );
+        outputWires.repaint( graphics2D );
+        graphics2D.setColor( Colors.BLACK );
         graphics2D.draw(body);
         graphics2D.translate( -location.getX(), -location.getY() );
     }
 
     public void update() {};
+
+    protected void addWire( final NodeType nodeType, final int x, final int y ) {
+        assert nodeType == NodeType.INPUT || nodeType == NodeType.OUTPUT :
+                "Cannot add a wire to a gate that isn't an input or output";
+        if ( nodeType == NodeType.INPUT ) {
+            inputWires.add( new Wire( nodeType, x, y ) );
+        }
+        if ( nodeType == NodeType.OUTPUT ) {
+            outputWires.add( new Wire( nodeType, x, y ) );
+        }
+    }
 }

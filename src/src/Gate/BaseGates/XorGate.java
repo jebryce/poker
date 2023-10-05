@@ -2,9 +2,7 @@ package Gate.BaseGates;
 
 
 import Gate.Gate;
-import Node.Node;
-import Node.NodeType;
-import Wire.Wire;
+import Wire.Node.NodeType;
 
 import java.awt.geom.Arc2D;
 import java.awt.geom.Line2D;
@@ -20,17 +18,14 @@ public class XorGate extends Gate {
         body.append( new Arc2D.Float( -25, 0, 50, 100, 270, 180, Arc2D.OPEN ), false );
         body.append( new Arc2D.Float( -35, 5, 45, 90, 270, 180, Arc2D.OPEN ), false );
 
-        nodes[0] = new Node( this, NodeType.INPUT, 20, 30 );
-        wires[0] = new Wire( nodes[0] );
-        nodes[1] = new Node( this, NodeType.INPUT, 20, 70 );
-        wires[1] = new Wire( nodes[1] );
+        addWire( NodeType.INPUT, 20, 30 );
+        addWire( NodeType.INPUT, 20, 70 );
 
-        nodes[2] = new Node( this, NodeType.OUTPUT, 125, 50 );
-        wires[2] = new Wire( nodes[2] );
+        addWire( NodeType.OUTPUT, 125, 50 );
     }
 
     @Override
     public void update() {
-        wires[2].setState( wires[1].getState() != wires[0].getState() );
+        outputWires.getFirst().setState( inputWires.xor() );
     }
 }

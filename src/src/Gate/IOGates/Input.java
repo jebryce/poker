@@ -2,9 +2,8 @@ package Gate.IOGates;
 
 
 import Gate.IO_Gate;
-import Node.Node;
-import Node.NodeType;
 import Wire.Wire;
+import Wire.Node.NodeType;
 
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
@@ -14,16 +13,6 @@ public class Input extends IO_Gate {
         super( location );
         body.append( new Ellipse2D.Float( 0, 0, 50, 50), false );
 
-        nodes[0] = new Node( this, NodeType.OUTPUT, 50, 25 );
-        wires[0] = new Wire( nodes[0] );
-    }
-
-    @Override
-    public PlacedObjects select() {
-        if ( wires[0] == null ) {
-            return null;
-        }
-        wires[0].flipState();
-        return null;
+        addWire( NodeType.OUTPUT, 50, 25 );
     }
 }

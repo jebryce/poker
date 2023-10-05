@@ -15,7 +15,7 @@ public class IterableArray<W> implements Iterable<W>{
     }
 
     public boolean add( final W newItem) {
-        if ( currentLength <= maxLength ) {
+        if ( currentLength < maxLength ) {
             contents[currentLength++] = newItem;
             return true;
         }
@@ -33,6 +33,10 @@ public class IterableArray<W> implements Iterable<W>{
             }
         }
         return isItemRemoved;
+    }
+
+    public W getFirst() {
+        return (W) contents[0];
     }
 
     @Override

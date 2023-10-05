@@ -2,19 +2,28 @@ package Gate;
 
 import Gate.Gate;
 import Main.Colors;
+import Wire.Node.NodeType;
+import Wire.Wire;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
 
-public class IO_Gate extends Gate {
+public abstract class IO_Gate extends Gate {
+    private Wire wire = null;
+
     public IO_Gate( final Point2D location ) {
         super( location );
     }
 
     @Override
+    protected void addWire( final NodeType nodeType, final int x, final int y ) {
+        wire = new Wire( nodeType, x, y );
+    }
+
+    @Override
     public void repaint( Graphics2D graphics2D ) {
         graphics2D.translate( location.getX(), location.getY() );
-        if ( wires[0] != null && wires[0].getState() ) {
+        if ( wire != null && wire.getState() ) {
             graphics2D.setColor( Colors.GREEN );
         }
         else {
