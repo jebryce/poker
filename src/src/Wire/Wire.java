@@ -8,9 +8,12 @@ import Container.LinkedList;
 import Wire.Node.NodeType;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 public class Wire extends LinkedList<Node> {
-    private boolean state = false;
+    private boolean     state  = false;
+    private Rectangle2D bounds = new Rectangle2D.Double();
 
     public Wire( final NodeType nodeType, final int x, final int y ) {
         Node start = new Node( x, y );
@@ -26,12 +29,23 @@ public class Wire extends LinkedList<Node> {
         start.connectNode( end );
     }
 
+    @Override
+    public Node add( final Node newNode ) {
+        super.add( newNode );
+        bounds.add( newNode.getLocation() );
+        return newNode;
+    }
+
     public void setState( final boolean newState ) {
         state = newState;
     }
 
     public boolean getState() {
         return state;
+    }
+
+    public boolean isPointWithinBounds( final Point2D point ) {
+        return bounds.contains( point );
     }
 
     public void repaint( final Graphics2D graphics2D ) {

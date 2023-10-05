@@ -1,6 +1,5 @@
 package Gate;
 
-import Gate.Gate;
 import Main.Colors;
 import Wire.Node.NodeType;
 import Wire.Wire;
@@ -17,7 +16,13 @@ public abstract class IO_Gate extends Gate {
 
     @Override
     protected void addWire( final NodeType nodeType, final int x, final int y ) {
-        wire = new Wire( nodeType, x, y );
+        super.addWire( nodeType, x, y );
+        if ( nodeType == NodeType.INPUT ) {
+            wire = inputWires.getFirst();
+        }
+        if ( nodeType == NodeType.OUTPUT ) {
+            wire = outputWires.getFirst();
+        }
     }
 
     @Override

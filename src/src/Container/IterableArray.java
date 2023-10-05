@@ -14,12 +14,12 @@ public class IterableArray<W> implements Iterable<W>{
         contents = new Object[maxLength];
     }
 
-    public boolean add( final W newItem) {
+    public W add( final W newItem) {
         if ( currentLength < maxLength ) {
             contents[currentLength++] = newItem;
-            return true;
+            return newItem;
         }
-        return false;
+        return newItem;
     }
 
     public boolean remove( final W itemToRemove ) {

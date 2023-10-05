@@ -42,4 +42,8 @@ public class Node extends ListItem {
             );
         }
     }
+
+    public Point2D getLocation() {
+        return (Point2D) location.clone();
+    }
 }

@@ -7,6 +7,7 @@ import Gate.IOGates.Output;
 import Main.KeyBinds;
 import Main.KeyHandler;
 import Main.MouseHandler;
+import Wire.Node.Node;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -16,27 +17,22 @@ public class Player {
     private final KeyHandler    keyHandler;
     private       Gate          heldGate;
     private final Point2D       playerLocation = new Point2D.Double();
+    private final Gates         gates          = new Gates();
+    private       PlayerMode    playerMode     = PlayerMode.NORMAL;
 
     public Player( final MouseHandler mouseH, final KeyHandler keyH ) {
         mouseHandler = mouseH;
         keyHandler = keyH;
 
-//        Gate in1  = placedObjects.placeGate( new Input( 100, 100 ) );
-//        Gate in2  = placedObjects.placeGate( new Input( 100, 500 ) );
-//        Gate and  = placedObjects.placeGate( new AndGate( 400, 400 ) );
-//        Gate out1 = placedObjects.placeGate( new Output( 800, 600 ) );
-//        Gate out2 = placedObjects.placeGate( new Output( 850, 700 ) );
-//        Gate out3 = placedObjects.placeGate( new Output( 800, 200 ) );
-//        Gate out4 = placedObjects.placeGate( new Output( 850, 500 ) );
-//        placedObjects.attachWireToNode( in1.getWires()[0], and.getNodes()[0] );
-//        placedObjects.attachWireToNode( in2.getWires()[0], and.getNodes()[1] );
-//        placedObjects.attachWireToNode( and.getWires()[2], out1.getNodes()[0] );
-//        placedObjects.attachWireToNode( and.getWires()[2], out2.getNodes()[0] );
-//        placedObjects.attachWireToNode( and.getWires()[2], out3.getNodes()[0] );
-//        placedObjects.attachWireToNode( and.getWires()[2], out4.getNodes()[0] );
+        Gate in1  = gates.add( new Input(   new Point2D.Double( 100, 100 ) ) );
+        Gate in2  = gates.add( new Input(   new Point2D.Double( 100, 500 ) ) );
+        Gate and  = gates.add( new AndGate( new Point2D.Double( 400, 400 ) ) );
+        Gate out1 = gates.add( new Output(  new Point2D.Double( 800, 600 ) ) );
     }
 
     public void repaint( final Graphics2D graphics2D  ) {
+        gates.repaint( graphics2D );
+
         if ( heldGate != null ) {
             Point2D centerOffset = heldGate.getCenterOffset();
             heldGate.setLocation( playerLocation.getX() - centerOffset.getX(), playerLocation.getY() - centerOffset.getY() );
@@ -45,38 +41,84 @@ public class Player {
     }
 
     public void update() {
+        gates.update();
 
         playerLocation.setLocation( mouseHandler.xPos, mouseHandler.yPos );
 
         checkKeyPresses();
 
+        switch ( playerMode ) {
+            case NORMAL        -> updateNORMAL();
+            case PLACE_GATE    -> updatePLACE_GATE();
+            case PLACE_WIRE    -> updatePLACE_WIRE();
+        }
     }
 
     private void checkKeyPresses() {
+        if ( keyHandler.isKeyPressed( KeyBinds.placeWire ) ) {
+            clearHand();
+            playerMode = PlayerMode.PLACE_WIRE;
+        }
+
         boolean makeGateNot = keyHandler.isKeyHeld( KeyBinds.makeGateNOT );
         if ( keyHandler.isKeyPressed( KeyBinds.newIOGate ) ) {
-            if ( makeGateNot ) { heldGate = new Output( playerLocation ); }
-            else               { heldGate = new Input( playerLocation ); }
+            clearHand();
+            if ( makeGateNot ) { heldGate = new Output(   playerLocation ); }
+            else               { heldGate = new Input(    playerLocation ); }
+            playerMode = PlayerMode.PLACE_GATE;
         }
         else if ( keyHandler.isKeyPressed( KeyBinds.newNOTGate ) ) {
-                                 heldGate = new NotGate( playerLocation );
+            clearHand();
+                                 heldGate = new NotGate(  playerLocation );
+            playerMode = PlayerMode.PLACE_GATE;
         }
         else if ( keyHandler.isKeyPressed( KeyBinds.newANDGate ) ) {
+            clearHand();
             if ( makeGateNot ) { heldGate = new NandGate( playerLocation ); }
-            else               { heldGate = new AndGate( playerLocation ); }
+            else               { heldGate = new AndGate(  playerLocation ); }
+            playerMode = PlayerMode.PLACE_GATE;
         }
         else if ( keyHandler.isKeyPressed( KeyBinds.newORGate ) ) {
-            if ( makeGateNot ) { heldGate = new NorGate( playerLocation ); }
-            else               { heldGate = new OrGate( playerLocation ); }
+            clearHand();
+            if ( makeGateNot ) { heldGate = new NorGate(  playerLocation ); }
+            else               { heldGate = new OrGate(   playerLocation ); }
+            playerMode = PlayerMode.PLACE_GATE;
         }
         else if ( keyHandler.isKeyPressed( KeyBinds.newXORGate ) ) {
+            clearHand();
             if ( makeGateNot ) { heldGate = new XNorGate( playerLocation ); }
-            else               { heldGate = new XorGate( playerLocation ); }
+            else               { heldGate = new XorGate(  playerLocation ); }
+            playerMode = PlayerMode.PLACE_GATE;
         }
 
         if ( keyHandler.isKeyPressed( KeyBinds.clearHand ) ) {
-            heldGate = null;
+            clearHand();
         }
     }
 
+    private void clearHand() {
+        heldGate = null;
+        playerMode = PlayerMode.NORMAL;
+    }
+
+
+
+    private void updateNORMAL() {
+    }
+
+    private void updatePLACE_GATE() {
+        if ( mouseHandler.isMouseClicked() ) {
+            if ( heldGate != null ) {
+                gates.add( heldGate );
+                heldGate = null;
+                playerMode = PlayerMode.NORMAL;
+            }
+        }
+    }
+
+    private void updatePLACE_WIRE() {
+        if ( mouseHandler.isMouseClicked() ) {
+            Node a = gates.findNearestNode( playerLocation );
+        }
+    }
 }

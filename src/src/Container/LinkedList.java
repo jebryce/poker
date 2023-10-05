@@ -23,9 +23,10 @@ public class LinkedList< W extends ListItem > extends ListItem implements Iterab
         };
     }
 
-    public void add( final W newItem ) {
+    public W add( final W newItem ) {
         newItem.setNext( head );
         head = newItem;
+        return newItem;
     }
 
     public void remove( final W itemToRemove ) {

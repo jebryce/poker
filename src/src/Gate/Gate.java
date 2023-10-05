@@ -14,8 +14,8 @@ import java.awt.geom.Rectangle2D;
 import Container.ListItem;
 
 public abstract class Gate extends ListItem {
-    protected final Path2D  body         = new Path2D.Float();
-    protected final Point2D location     = new Point2D.Float( 0, 0 );
+    protected final Path2D  body         = new Path2D.Double();
+    protected final Point2D location     = new Point2D.Double( 0, 0 );
     protected final Wires   inputWires   = new Wires( 4 );
     protected final Wires   outputWires  = new Wires( 4 );
 
@@ -90,5 +90,13 @@ public abstract class Gate extends ListItem {
         if ( nodeType == NodeType.OUTPUT ) {
             outputWires.add( new Wire( nodeType, x, y ) );
         }
+    }
+
+    public Wires getInputWires() {
+        return inputWires;
+    }
+
+    public Wires getOutputWires() {
+        return outputWires;
     }
 }
