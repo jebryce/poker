@@ -3,7 +3,8 @@ package Container;
 import java.util.Iterator;
 
 public class LinkedList< W extends ListItem > extends ListItem implements Iterable< W > {
-    private ListItem head = null;
+    private W   head = null;
+    private int length = 0;
 
     public Iterator< W > iterator() {
         return new Iterator<>() {
@@ -24,24 +25,30 @@ public class LinkedList< W extends ListItem > extends ListItem implements Iterab
     }
 
     public W add( final W newItem ) {
-        newItem.setContainer( this );
+        length++;
         newItem.setNext( head );
         head = newItem;
         return newItem;
     }
 
-    public void remove( final W itemToRemove ) {
+    public boolean remove( final W itemToRemove ) {
         W previousItem = null;
         for ( W currentItem : this ) {
             if ( currentItem == itemToRemove ) {
                 if ( previousItem == null ) {
-                    head = currentItem.getNext();
+                    head = (W) currentItem.getNext();
                 } else {
                     previousItem.setNext( currentItem.getNext() );
                 }
-                return;
+                length--;
+                return true;
             }
             previousItem = currentItem;
         }
+        return false;
+    }
+
+    public int getLength() {
+        return length;
     }
 }

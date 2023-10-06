@@ -26,6 +26,9 @@ public class AndGate extends Gate {
 
     @Override
     public void update() {
+        if ( outputWires.getFirst() == null ) {
+            System.out.println(outputWires);
+        }
         outputWires.getFirst().setState( inputWires.and() );
     }
 }

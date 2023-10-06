@@ -9,6 +9,7 @@ import Main.KeyHandler;
 import Main.MouseHandler;
 import Wire.Node.Node;
 import Wire.Wire;
+import Wire.Wires;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -17,7 +18,8 @@ public class Player {
     private final MouseHandler  mouseHandler;
     private final KeyHandler    keyHandler;
     private       Gate          heldGate = null;
-    private Node heldWireNode = null;
+    private       Wire          heldWire = null;
+    private       Node          heldWireNode = null;
     private final Point2D       playerLocation = new Point2D.Double();
     private final Gates         gates          = new Gates();
     private       PlayerMode    playerMode     = PlayerMode.NORMAL;
@@ -100,6 +102,7 @@ public class Player {
 
     private void clearHand() {
         heldGate = null;
+        heldWire = null;
         if ( heldWireNode != null ) {
             heldWireNode.clearPlayerNode();
         }
@@ -123,20 +126,38 @@ public class Player {
     }
 
     private void updatePLACE_WIRE() {
-        System.out.println( heldWireNode );
         if ( heldWireNode != null ) {
             heldWireNode.setPlayerNode( playerLocation );
         }
-        if ( mouseHandler.isMouseClicked() ) {
-            Node closestNode = gates.findClosestNode( playerLocation );
-            if ( heldWireNode == null ){
-                heldWireNode = closestNode;
+        if ( !mouseHandler.isMouseClicked() ) {
+            return;
+        }
+
+
+        Wires containingWires = gates.findContainingWires( playerLocation );
+        Node containingNode;
+
+        for ( Wire wire : containingWires ) {
+            if ( wire == heldWire ) {
+                continue;
+            }
+            containingNode = wire.findContainingNode( playerLocation );
+            if ( heldWireNode == null ) {
+                if ( containingNode == null ) {
+                    continue;
+                }
+                heldWireNode = containingNode;
+                heldWire = wire;
                 return;
             }
-            if ( closestNode == null ) {
-                heldWireNode = heldWireNode.placePlayerNode();
-                System.out.println( heldWireNode );
+            if ( containingNode != null ) {
+                wire.getAttachedGate().replaceWire( wire, heldWire );
+                clearHand();
+                return;
             }
+        }
+        if ( containingWires.getFirst() == null ) {
+            heldWireNode = heldWire.placePlayerNode(heldWireNode);
         }
     }
 }

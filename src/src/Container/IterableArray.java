@@ -27,6 +27,7 @@ public class IterableArray<W> implements Iterable<W>{
         for( int index = 0; index < currentLength; index++ ) {
             if ( contents[index] == itemToRemove ) {
                 isItemRemoved = true;
+                currentLength--;
             }
             if ( isItemRemoved ) {
                 contents[index] = contents[index + 1];

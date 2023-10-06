@@ -6,6 +6,7 @@ import Wire.Node.Node;
 
 import Container.LinkedList;
 import Wire.Node.NodeType;
+import Gate.Gate;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -14,8 +15,10 @@ import java.awt.geom.Rectangle2D;
 public class Wire extends LinkedList<Node> {
     private       boolean     state  = false;
     private final Rectangle2D bounds;
+    private final Gate        attachedGate;
 
-    public Wire( final NodeType nodeType, final double x, final double y ) {
+    public Wire( final Gate attachedGate, final NodeType nodeType, final double x, final double y ) {
+        this.attachedGate = attachedGate;
         Node start = new Node( x, y );
         Node end = null;
         if ( nodeType == NodeType.INPUT ) {
@@ -35,6 +38,10 @@ public class Wire extends LinkedList<Node> {
         super.add( newNode );
         updateBounds( newNode.getLocation() );
         return newNode;
+    }
+
+    public Gate getAttachedGate() {
+        return attachedGate;
     }
 
     private void updateBounds( final Point2D location ) {
@@ -66,5 +73,20 @@ public class Wire extends LinkedList<Node> {
             node.repaint( graphics2D );
         }
         graphics2D.draw( bounds );
+    }
+
+    public Node findContainingNode( final Point2D location ) {
+        for ( Node node : this ) {
+            if ( node.isPointWithinBounds( location ) ) {
+                return node;
+            }
+        }
+        return null;
+    }
+
+    public Node placePlayerNode( final Node heldWireNode ) {
+        Node newHeldWireNode = heldWireNode.placePlayerNode();
+        add( newHeldWireNode );
+        return newHeldWireNode;
     }
 }

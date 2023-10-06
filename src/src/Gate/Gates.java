@@ -6,6 +6,7 @@ import java.awt.geom.Point2D;
 import Container.LinkedList;
 import Wire.Node.Node;
 import Wire.WiresLL;
+import Wire.Wires;
 import Wire.Wire;
 
 public class Gates extends LinkedList<Gate> {
@@ -18,28 +19,15 @@ public class Gates extends LinkedList<Gate> {
         return newGate;
     }
 
-    private Wire findContainingWire( final Point2D location ) {
+    public Wires findContainingWires( final Point2D location ) {
+        Wires returnWires = new Wires( wires.getLength() );
         for ( Wire wire : wires ) {
             if ( wire.isPointWithinBounds( location ) ) {
-                return wire;
+                returnWires.add( wire );
             }
         }
-        return null;
+        return returnWires;
     }
-
-    public Node findClosestNode( final Point2D location ) {
-        Wire containingWire = findContainingWire( location );
-        if ( containingWire == null ) {
-            return null;
-        }
-        for ( Node node : containingWire ) {
-            if ( node.isPointWithinBounds( location ) ) {
-                return node;
-            }
-        }
-        return null;
-    }
-
 
     public void repaint( final Graphics2D graphics2D ) {
         for ( Gate gate : this ) {

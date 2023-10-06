@@ -85,10 +85,10 @@ public abstract class Gate extends ListItem {
         assert nodeType == NodeType.INPUT || nodeType == NodeType.OUTPUT :
                 "Cannot add a wire to a gate that isn't an input or output";
         if ( nodeType == NodeType.INPUT ) {
-            inputWires.add( new Wire( nodeType, x + location.getX(), y + location.getY() ) );
+            inputWires.add(  new Wire( this, nodeType, x + location.getX(), y + location.getY() ) );
         }
         if ( nodeType == NodeType.OUTPUT ) {
-            outputWires.add( new Wire( nodeType, x + location.getX(), y + location.getY() ) );
+            outputWires.add( new Wire( this, nodeType, x + location.getX(), y + location.getY() ) );
         }
     }
 
@@ -98,5 +98,17 @@ public abstract class Gate extends ListItem {
 
     public Wires getOutputWires() {
         return outputWires;
+    }
+
+    public void replaceWire( Wire oldWire, Wire newWire ) {
+        if ( inputWires.remove( oldWire ) ) {
+            inputWires.add( newWire );
+            return;
+        }
+        if ( outputWires.remove( oldWire ) ) {
+            outputWires.add( newWire );
+            return;
+        }
+        assert false : oldWire + " is not attached to this gate.";
     }
 }
