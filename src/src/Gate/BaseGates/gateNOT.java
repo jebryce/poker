@@ -8,8 +8,8 @@ import Wire.Node.NodeType;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 
-public class NotGate extends Gate {
-    public NotGate( final Point2D location ) {
+public class gateNOT extends Gate {
+    public gateNOT( final Point2D location ) {
         super( location, GateType.NOT );
         body.append( new Line2D.Float( 0, 0, 50, 30 ), false );
         body.append( new Line2D.Float( 50, 30, 0, 60 ), false );

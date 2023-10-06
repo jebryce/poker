@@ -10,9 +10,9 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 
-public class NorGate extends Gate {
+public class gateNOR extends Gate {
 
-    public NorGate( final Point2D location ) {
+    public gateNOR( final Point2D location ) {
         super( location, GateType.NOR );
         body.append( new Line2D.Float( 0, 0, 75, 0 ), false );
         body.append( new Arc2D.Float( 25, 0, 100, 100, 270, 180, Arc2D.OPEN ), false );

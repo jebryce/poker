@@ -8,10 +8,9 @@ import Main.KeyBinds;
 import Main.KeyHandler;
 import Main.MouseHandler;
 import Wire.Node.Node;
-import Wire.Node.NodeType;
 import Wire.Wire;
 import Wire.Wires;
-
+import com.google.gson.GsonBuilder;
 import com.google.gson.Gson;
 
 import java.awt.*;
@@ -24,7 +23,7 @@ public class Player {
     private       Wire          heldWire = null;
     private       Node          heldWireNode = null;
     private final Point2D       playerLocation = new Point2D.Double();
-    private final Gates         gates          = new Gates();
+    private       Gates         gates          = new Gates();
     private       PlayerMode    playerMode     = PlayerMode.NORMAL;
 
     public Player( final MouseHandler mouseH, final KeyHandler keyH ) {
@@ -33,12 +32,23 @@ public class Player {
 
         Gate in0 = gates.add( new Input(   new Point2D.Double( 100, 100 ) ) ).place();
         Gate in1 = gates.add( new Input(   new Point2D.Double( 100, 500 ) ) ).place();
-        Gate and = gates.add( new AndGate( new Point2D.Double( 400, 400 ) ) ).place();
+        Gate and = gates.add( new gateAND( new Point2D.Double( 400, 400 ) ) ).place();
         Gate out = gates.add( new Output(  new Point2D.Double( 800, 600 ) ) ).place();
 
         gates.connectGates( in0, and );
         gates.connectGates( in1, and );
         gates.connectGates( and, out );
+
+
+        GsonBuilder builder = new GsonBuilder();
+
+        builder.registerTypeAdapter( Gates.class, new gsonGatesAdapter() );
+        builder.setPrettyPrinting();
+        Gson gson = builder.create();
+        String jsonString = gson.toJson( gates );
+        System.out.println(jsonString);
+
+        gates = gson.fromJson( jsonString, Gates.class );
     }
 
     public void repaint( final Graphics2D graphics2D  ) {
@@ -80,25 +90,25 @@ public class Player {
         }
         else if ( keyHandler.isKeyPressed( KeyBinds.newNOTGate ) ) {
             clearHand();
-                                 heldGate = new NotGate(  playerLocation );
+                                 heldGate = new gateNOT(  playerLocation );
             playerMode = PlayerMode.PLACE_GATE;
         }
         else if ( keyHandler.isKeyPressed( KeyBinds.newANDGate ) ) {
             clearHand();
-            if ( makeGateNot ) { heldGate = new NandGate( playerLocation ); }
-            else               { heldGate = new AndGate(  playerLocation ); }
+            if ( makeGateNot ) { heldGate = new gateNAND( playerLocation ); }
+            else               { heldGate = new gateAND(  playerLocation ); }
             playerMode = PlayerMode.PLACE_GATE;
         }
         else if ( keyHandler.isKeyPressed( KeyBinds.newORGate ) ) {
             clearHand();
-            if ( makeGateNot ) { heldGate = new NorGate(  playerLocation ); }
-            else               { heldGate = new OrGate(   playerLocation ); }
+            if ( makeGateNot ) { heldGate = new gateNOR(  playerLocation ); }
+            else               { heldGate = new gateOR(   playerLocation ); }
             playerMode = PlayerMode.PLACE_GATE;
         }
         else if ( keyHandler.isKeyPressed( KeyBinds.newXORGate ) ) {
             clearHand();
-            if ( makeGateNot ) { heldGate = new XNorGate( playerLocation ); }
-            else               { heldGate = new XorGate(  playerLocation ); }
+            if ( makeGateNot ) { heldGate = new gateXNOR( playerLocation ); }
+            else               { heldGate = new gateXOR(  playerLocation ); }
             playerMode = PlayerMode.PLACE_GATE;
         }
 

@@ -144,4 +144,8 @@ public abstract class Gate extends ListItem {
     public boolean contains( final Wire wire ) {
         return inputWires.contains( wire ) || outputWires.contains( wire );
     }
+
+    protected GateType getGateType() {
+        return gateType;
+    }
 }
