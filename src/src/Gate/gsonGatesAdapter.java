@@ -1,6 +1,7 @@
 package Gate;
 
-import Gate.BaseGates.gateAND;
+import Gate.IOGates.*;
+import Gate.BaseGates.*;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
@@ -55,26 +56,23 @@ public class gsonGatesAdapter extends TypeAdapter<Gates> {
                 jsonReader.endObject();
             }
         }
-
         jsonReader.endArray();
         return gates;
     }
 
     private void addNewGate( final Gates gates, final GateType gateType, final Point2D location ) {
-//        NULL,
-//        AND,
-//        NAND,
-//        OR,
-//        NOR,
-//        XOR,
-//        XNOR,
-//        NOT,
-//        INPUT,
-//        OUTPUT,
         assert gateType != GateType.NULL;
-//        switch ( gateType ) {
-//            case AND -> gates.add( new gateAND())
-//        }
+        switch ( gateType ) {
+            case AND    -> gates.add( new gateAND(  location ) ).place();
+            case NAND   -> gates.add( new gateNAND( location ) ).place();
+            case OR     -> gates.add( new gateOR(   location ) ).place();
+            case NOR    -> gates.add( new gateNOR(  location ) ).place();
+            case XOR    -> gates.add( new gateXOR(  location ) ).place();
+            case XNOR   -> gates.add( new gateXNOR( location ) ).place();
+            case NOT    -> gates.add( new gateNOT(  location ) ).place();
+            case INPUT  -> gates.add( new Input(    location ) ).place();
+            case OUTPUT -> gates.add( new Output(   location ) ).place();
+        }
     }
 
     private String getNextField( final JsonReader jsonReader ) throws IOException {
