@@ -6,7 +6,6 @@ import Wire.Node.Node;
 
 import Container.LinkedList;
 import Wire.Node.NodeType;
-import Gate.Gate;
 
 import java.awt.*;
 import java.awt.geom.Point2D;

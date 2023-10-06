@@ -13,8 +13,8 @@ public abstract class IO_Gate extends Gate {
     }
 
     @Override
-    protected void addWire( final NodeType nodeType, final int x, final int y ) {
-        super.addWire( nodeType, x, y );
+    protected Wire addWire( final NodeType nodeType, final int x, final int y ) {
+        return super.addWire( nodeType, x, y );
     }
 
     @Override
@@ -24,4 +24,13 @@ public abstract class IO_Gate extends Gate {
         graphics2D.translate( -location.getX(), -location.getY() );
         super.repaint(graphics2D);
     }
+
+    @Override
+    public void repaintInHand( Graphics2D graphics2D ) {
+        graphics2D.translate( location.getX(), location.getY() );
+        graphics2D.fill( body );
+        graphics2D.translate( -location.getX(), -location.getY() );
+        super.repaintInHand(graphics2D);
+    }
+
 }

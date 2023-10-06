@@ -24,7 +24,7 @@ public class XNorGate extends Gate {
         addWire( NodeType.INPUT, 20, 30 );
         addWire( NodeType.INPUT, 20, 70 );
 
-        addWire( NodeType.OUTPUT, 145, 50 );
+        addWire( NodeType.OUTPUT, 145, 50 ).setState( true );
     }
 
     @Override

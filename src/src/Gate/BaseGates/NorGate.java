@@ -23,7 +23,7 @@ public class NorGate extends Gate {
         addWire( NodeType.INPUT, 45, 30 );
         addWire( NodeType.INPUT, 45, 70 );
 
-        addWire( NodeType.OUTPUT, 145, 50 );
+        addWire( NodeType.OUTPUT, 145, 50 ).setState( true );
     }
 
     @Override

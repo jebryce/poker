@@ -108,14 +108,14 @@ public abstract class Gate extends ListItem {
 
     public void update() {};
 
-    protected void addWire( final NodeType nodeType, final int x, final int y ) {
+    protected Wire addWire( final NodeType nodeType, final int x, final int y ) {
         assert nodeType == NodeType.INPUT || nodeType == NodeType.OUTPUT :
                 "Cannot add a wire to a gate that isn't an input or output";
         if ( nodeType == NodeType.INPUT ) {
-            inputWires.add(  new Wire( nodeType, x, y ) );
+            return inputWires.add(  new Wire( nodeType, x, y ) );
         }
-        if ( nodeType == NodeType.OUTPUT ) {
-            outputWires.add( new Wire( nodeType, x, y ) );
+        else {
+            return outputWires.add( new Wire( nodeType, x, y ) );
         }
     }
 

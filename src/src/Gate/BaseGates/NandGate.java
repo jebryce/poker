@@ -24,7 +24,7 @@ public class NandGate extends Gate {
         addWire( NodeType.INPUT, 0, 30 );
         addWire( NodeType.INPUT, 0, 70 );
 
-        addWire( NodeType.OUTPUT, 145, 50 );
+        addWire( NodeType.OUTPUT, 145, 50 ).setState( true );
     }
 
     @Override

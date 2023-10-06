@@ -28,4 +28,15 @@ public class Output extends IO_Gate {
         }
         super.repaint( graphics2D );
     }
+
+    @Override
+    public void repaintInHand( final Graphics2D graphics2D ) {
+        if ( inputWires.getFirst().getState() ) {
+            graphics2D.setColor( Colors.GREEN );
+        }
+        else {
+            graphics2D.setColor( Colors.RED );
+        }
+        super.repaintInHand( graphics2D );
+    }
 }
