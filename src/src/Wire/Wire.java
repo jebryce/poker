@@ -89,4 +89,8 @@ public class Wire extends LinkedList<Node> {
         add( newHeldWireNode );
         return newHeldWireNode;
     }
+
+    public void flipState() {
+        state = !state;
+    }
 }

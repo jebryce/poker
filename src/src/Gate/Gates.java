@@ -40,4 +40,13 @@ public class Gates extends LinkedList<Gate> {
             gate.update();
         }
     }
+
+    public Gate findContainingGate( final Point2D point ) {
+        for ( Gate gate : this ) {
+            if ( gate.isPointWithin( point ) ) {
+                return gate;
+            }
+        }
+        return null;
+    }
 }

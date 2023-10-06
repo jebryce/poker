@@ -113,6 +113,12 @@ public class Player {
 
 
     private void updateNORMAL() {
+        if ( mouseHandler.isMouseClicked() ) {
+            Gate gate = gates.findContainingGate( playerLocation );
+            if ( gate instanceof Input ) {
+                ((Input) gate).flipState();
+            }
+        }
     }
 
     private void updatePLACE_GATE() {
