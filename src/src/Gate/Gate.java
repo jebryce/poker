@@ -2,6 +2,7 @@ package Gate;
 
 import Main.Colors;
 import Main.Constants;
+import Wire.Node.Node;
 import Wire.Node.NodeType;
 import Wire.Wire;
 import Wire.Wires;
@@ -24,7 +25,7 @@ public abstract class Gate extends ListItem {
         this.location.setLocation( location );
     }
 
-    public void place() {
+    public Gate place() {
         for ( Wire wire : inputWires ) {
             wire.move( location );
         }
@@ -32,6 +33,15 @@ public abstract class Gate extends ListItem {
             wire.move( location );
         }
         isPlaced = true;
+        return this;
+    }
+
+    public Wire connect( final Gate gateToConnect ) {
+        Wire input = gateToConnect.inputWires.getFirst();
+        Wire output = outputWires.getFirst();
+
+        output.replaceWire( input, output.getHead(), input.getHead());
+        return input;
     }
 
     public void setLocation( final double x, final double y ) {

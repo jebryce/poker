@@ -53,7 +53,12 @@ public class Gates extends LinkedList<Gate> {
         return null;
     }
 
-    public void removeWire( final Wire wire ) {
-        wires.remove( wire );
+    public void connectGates( final Gate gate0, final Gate gate1 ) {
+        wires.remove( gate0.connect( gate1 ) );
+    }
+
+    public void connectWires( final Wire wire0, final Wire wire1, final Node wire0Node, final Node wire1Node ) {
+        wires.remove( wire1 );
+        wire0.replaceWire( wire1, wire0Node, wire1Node );
     }
 }

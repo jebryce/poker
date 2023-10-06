@@ -28,10 +28,15 @@ public class Player {
         mouseHandler = mouseH;
         keyHandler = keyH;
 
-        gates.add( new Input(   new Point2D.Double( 100, 100 ) ) ).place();
-        gates.add( new Input(   new Point2D.Double( 100, 500 ) ) ).place();
-        gates.add( new AndGate( new Point2D.Double( 400, 400 ) ) ).place();
-        gates.add( new Output(  new Point2D.Double( 800, 600 ) ) ).place();
+        Gate in0 = gates.add( new Input(   new Point2D.Double( 100, 100 ) ) ).place();
+        Gate in1 = gates.add( new Input(   new Point2D.Double( 100, 500 ) ) ).place();
+        Gate and = gates.add( new AndGate( new Point2D.Double( 400, 400 ) ) ).place();
+        Gate out = gates.add( new Output(  new Point2D.Double( 800, 600 ) ) ).place();
+
+        gates.connectGates( in0, and );
+        gates.connectGates( in1, and );
+        gates.connectGates( and, out );
+
     }
 
     public void repaint( final Graphics2D graphics2D  ) {
@@ -158,14 +163,13 @@ public class Player {
                 return;
             }
             if ( containingNode != null ) {
-                gates.removeWire( wire );
-                heldWire.replaceWire( wire, heldWireNode, containingNode );
+                gates.connectWires( heldWire, wire, heldWireNode, containingNode );
                 clearHand();
                 return;
             }
         }
-        if ( containingWires.getFirst() == null && heldWire != null ) {
-            heldWireNode = heldWire.placePlayerNode(heldWireNode);
+        if ( heldWireNode != null ) {
+            heldWireNode = heldWire.placePlayerNode( heldWireNode );
         }
     }
 }
