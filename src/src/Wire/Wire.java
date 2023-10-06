@@ -102,6 +102,7 @@ public class Wire extends LinkedList<Node> {
             add( node );
         }
         thisNode.connectNode( wireNode );
+        setState( state || wire.state );
     }
 
     public void move( final Point2D location ) {
