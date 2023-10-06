@@ -71,9 +71,9 @@ public abstract class Gate extends ListItem {
     }
 
     public void repaint( final Graphics2D graphics2D ) {
-        graphics2D.translate( location.getX(), location.getY() );
         inputWires.repaint( graphics2D );
         outputWires.repaint( graphics2D );
+        graphics2D.translate( location.getX(), location.getY() );
         graphics2D.setColor( Colors.BLACK );
         graphics2D.draw(body);
         graphics2D.translate( -location.getX(), -location.getY() );
@@ -85,10 +85,10 @@ public abstract class Gate extends ListItem {
         assert nodeType == NodeType.INPUT || nodeType == NodeType.OUTPUT :
                 "Cannot add a wire to a gate that isn't an input or output";
         if ( nodeType == NodeType.INPUT ) {
-            inputWires.add( new Wire( nodeType, x, y ) );
+            inputWires.add( new Wire( nodeType, x + location.getX(), y + location.getY() ) );
         }
         if ( nodeType == NodeType.OUTPUT ) {
-            outputWires.add( new Wire( nodeType, x, y ) );
+            outputWires.add( new Wire( nodeType, x + location.getX(), y + location.getY() ) );
         }
     }
 

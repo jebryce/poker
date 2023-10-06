@@ -24,6 +24,7 @@ public class LinkedList< W extends ListItem > extends ListItem implements Iterab
     }
 
     public W add( final W newItem ) {
+        newItem.setContainer( this );
         newItem.setNext( head );
         head = newItem;
         return newItem;

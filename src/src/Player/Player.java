@@ -8,6 +8,7 @@ import Main.KeyBinds;
 import Main.KeyHandler;
 import Main.MouseHandler;
 import Wire.Node.Node;
+import Wire.Wire;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -15,7 +16,8 @@ import java.awt.geom.Point2D;
 public class Player {
     private final MouseHandler  mouseHandler;
     private final KeyHandler    keyHandler;
-    private       Gate          heldGate;
+    private       Gate          heldGate = null;
+    private Node heldWireNode = null;
     private final Point2D       playerLocation = new Point2D.Double();
     private final Gates         gates          = new Gates();
     private       PlayerMode    playerMode     = PlayerMode.NORMAL;
@@ -98,6 +100,10 @@ public class Player {
 
     private void clearHand() {
         heldGate = null;
+        if ( heldWireNode != null ) {
+            heldWireNode.clearPlayerNode();
+        }
+        heldWireNode = null;
         playerMode = PlayerMode.NORMAL;
     }
 
@@ -117,8 +123,20 @@ public class Player {
     }
 
     private void updatePLACE_WIRE() {
+        System.out.println( heldWireNode );
+        if ( heldWireNode != null ) {
+            heldWireNode.setPlayerNode( playerLocation );
+        }
         if ( mouseHandler.isMouseClicked() ) {
-            Node a = gates.findNearestNode( playerLocation );
+            Node closestNode = gates.findClosestNode( playerLocation );
+            if ( heldWireNode == null ){
+                heldWireNode = closestNode;
+                return;
+            }
+            if ( closestNode == null ) {
+                heldWireNode = heldWireNode.placePlayerNode();
+                System.out.println( heldWireNode );
+            }
         }
     }
 }

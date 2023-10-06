@@ -59,6 +59,7 @@ public class GamePanel extends JPanel implements Runnable {
             if ( currentTime - lastRepaintTime > repaintInterval ) {
                 repaint();
                 numFrames++;
+                lastRepaintTime = currentTime;
                 long sleepTime = repaintInterval - ( System.nanoTime() - currentTime) ;
                 if ( sleepTime > 0 ) {
                     try {

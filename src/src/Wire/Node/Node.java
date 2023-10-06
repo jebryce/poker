@@ -1,17 +1,20 @@
 package Wire.Node;
 
 import Container.ListItem;
+import Main.Constants;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 public class Node extends ListItem {
-    private final Nodes   previousNodes = new Nodes( 3 );
-    private final Nodes   nextNodes     = new Nodes( 3 );
+    private final Nodes       previousNodes = new Nodes( 3 );
+    private final Nodes       nextNodes     = new Nodes( 3 );
+    private       Node        playerNode    = null;
 
-    private final Point2D location      = new Point2D.Double();
+    private final Point2D     location      = new Point2D.Double();
 
-    public Node( final int x, final int y ) {
+    public Node( final double x, final double y ) {
         location.setLocation( x, y );
     }
 
@@ -35,15 +38,60 @@ public class Node extends ListItem {
         }
     }
 
+    public void setPlayerNode( final Point2D playerLocation ) {
+        double playerX = playerLocation.getX();
+        double playerY = playerLocation.getY();
+        if ( Math.abs( playerX - location.getX() )  < Math.abs( playerY - location.getY() ) ) {
+            playerNode = new Node( location.getX(), playerLocation.getY() );
+        }
+        else {
+            playerNode = new Node( playerLocation.getX(), location.getY() );
+        }
+    }
+
+    public void clearPlayerNode() {
+        playerNode = null;
+    }
+
+    public Node placePlayerNode() {
+        assert playerNode != null;
+        Node returnNode = playerNode;
+        connectNode( returnNode );
+        clearPlayerNode();
+        return returnNode;
+    }
+
     public void repaint( final Graphics2D graphics2D ) {
         for ( Node node : nextNodes ) {
             graphics2D.drawLine(
                     (int) location.getX(), (int) location.getY(), (int) node.location.getX(), (int) node.location.getY()
             );
         }
+        if ( playerNode != null ) {
+            graphics2D.drawLine(
+                    (int) location.getX(), (int) location.getY(),
+                    (int) playerNode.location.getX(), (int) playerNode.location.getY()
+            );
+        }
     }
 
     public Point2D getLocation() {
         return (Point2D) location.clone();
+    }
+
+    public boolean isPointWithinBounds( final Point2D point ) {
+        if ( point.getX() < location.getX() - Constants.LINE_GRAB_RADIUS ) {
+            return false;
+        }
+        if ( point.getX() > location.getX() + Constants.LINE_GRAB_RADIUS ) {
+            return false;
+        }
+        if ( point.getY() < location.getY() - Constants.LINE_GRAB_RADIUS ) {
+            return false;
+        }
+        if ( point.getY() > location.getY() + Constants.LINE_GRAB_RADIUS ) {
+            return false;
+        }
+        return true;
     }
 }

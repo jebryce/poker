@@ -18,15 +18,28 @@ public class Gates extends LinkedList<Gate> {
         return newGate;
     }
 
-    public Node findNearestNode( final Point2D location ) {
+    private Wire findContainingWire( final Point2D location ) {
         for ( Wire wire : wires ) {
-            System.out.println( wire.isPointWithinBounds( location ) );
             if ( wire.isPointWithinBounds( location ) ) {
-                return null;
+                return wire;
             }
         }
         return null;
     }
+
+    public Node findClosestNode( final Point2D location ) {
+        Wire containingWire = findContainingWire( location );
+        if ( containingWire == null ) {
+            return null;
+        }
+        for ( Node node : containingWire ) {
+            if ( node.isPointWithinBounds( location ) ) {
+                return node;
+            }
+        }
+        return null;
+    }
+
 
     public void repaint( final Graphics2D graphics2D ) {
         for ( Gate gate : this ) {
