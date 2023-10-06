@@ -51,6 +51,13 @@ public class Wire extends LinkedList<Node> {
         bounds.add( x - Constants.LINE_GRAB_RADIUS, y - Constants.LINE_GRAB_RADIUS );
     }
 
+    private void recalculateBounds() {
+        bounds.setFrame( getHead().getLocation(), new Dimension(0,0) );
+        for ( Node node : this ) {
+            updateBounds( node.getLocation() );
+        }
+    }
+
     public void setState( final boolean newState ) {
         state = newState;
     }
@@ -72,7 +79,7 @@ public class Wire extends LinkedList<Node> {
         for ( Node node : this ) {
             node.repaint( graphics2D );
         }
-//        graphics2D.draw( bounds );
+        graphics2D.draw( bounds );
     }
 
     public Node findContainingNode( final Point2D location ) {
@@ -109,5 +116,6 @@ public class Wire extends LinkedList<Node> {
         for ( Node node : this ) {
             node.move( location );
         }
+        recalculateBounds();
     }
 }

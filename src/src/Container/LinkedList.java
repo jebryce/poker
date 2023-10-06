@@ -51,4 +51,8 @@ public class LinkedList< W extends ListItem > extends ListItem implements Iterab
     public int getLength() {
         return length;
     }
+
+    public W getHead() {
+        return head;
+    }
 }
