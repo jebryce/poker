@@ -59,6 +59,19 @@ public class Gates extends LinkedList<Gate> {
 
     public void connectWires( final Wire wire0, final Wire wire1, final Node wire0Node, final Node wire1Node ) {
         wires.remove( wire1 );
+        Gate wire1AttachedGate = getAttachedGate( wire1 );
+        assert wire1AttachedGate != null : "No gate contains the wire " + wire1 + ".";
+        wire1AttachedGate.replaceWire( wire1, wire0 );
         wire0.replaceWire( wire1, wire0Node, wire1Node );
+    }
+
+    private Gate getAttachedGate( final Wire wire ) {
+        for ( Gate gate : this ) {
+            if ( gate.contains( wire ) ) {
+                return gate;
+            }
+        }
+        assert false : "No gate contains the wire " + wire + ".";
+        return null;
     }
 }

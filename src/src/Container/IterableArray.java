@@ -1,5 +1,7 @@
 package Container;
 
+import Wire.Wire;
+
 import java.util.Iterator;
 import java.util.Spliterator;
 import java.util.function.Consumer;
@@ -68,5 +70,14 @@ public class IterableArray<W> implements Iterable<W>{
     @Override
     public Spliterator< W > spliterator() {
         return Iterable.super.spliterator();
+    }
+
+    public boolean contains( final W item ) {
+        for ( Object content : contents ) {
+            if ( content == item ) {
+                return true;
+            }
+        }
+        return false;
     }
 }

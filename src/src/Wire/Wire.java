@@ -15,10 +15,8 @@ import java.awt.geom.Rectangle2D;
 public class Wire extends LinkedList<Node> {
     private       boolean     state  = false;
     private final Rectangle2D bounds;
-    private final Gate        attachedGate;
 
-    public Wire( final Gate attachedGate, final NodeType nodeType, final double x, final double y ) {
-        this.attachedGate = attachedGate;
+    public Wire( final NodeType nodeType, final double x, final double y ) {
         Node start = new Node( nodeType, x, y );
         Node end = null;
         if ( nodeType == NodeType.INPUT ) {
@@ -38,10 +36,6 @@ public class Wire extends LinkedList<Node> {
         super.add( newNode );
         updateBounds( newNode.getLocation() );
         return newNode;
-    }
-
-    public Gate getAttachedGate() {
-        return attachedGate;
     }
 
     private void updateBounds( final Point2D location ) {
@@ -105,7 +99,6 @@ public class Wire extends LinkedList<Node> {
     }
 
     public void replaceWire( final Wire wire, final Node thisNode, final Node wireNode ) {
-        wire.getAttachedGate().replaceWire( wire, this );
         for ( Node node : wire ) {
             add( node );
         }

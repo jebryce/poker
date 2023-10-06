@@ -45,7 +45,7 @@ public class Player {
         if ( heldGate != null ) {
             Point2D centerOffset = heldGate.getCenterOffset();
             heldGate.setLocation( playerLocation.getX() - centerOffset.getX(), playerLocation.getY() - centerOffset.getY() );
-            heldGate.repaint( graphics2D );
+            heldGate.repaintInHand( graphics2D );
         }
     }
 

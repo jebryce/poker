@@ -19,7 +19,6 @@ public abstract class Gate extends ListItem {
     protected final Point2D location     = new Point2D.Double( 0, 0 );
     protected final Wires   inputWires   = new Wires( 4 );
     protected final Wires   outputWires  = new Wires( 4 );
-    private         boolean isPlaced     = false;
 
     public Gate( final Point2D location ) {
         this.location.setLocation( location );
@@ -32,7 +31,6 @@ public abstract class Gate extends ListItem {
         for ( Wire wire : outputWires ) {
             wire.move( location );
         }
-        isPlaced = true;
         return this;
     }
 
@@ -40,6 +38,7 @@ public abstract class Gate extends ListItem {
         Wire input = gateToConnect.inputWires.getFirst();
         Wire output = outputWires.getFirst();
 
+        gateToConnect.replaceWire( input, output );
         output.replaceWire( input, output.getHead(), input.getHead());
         return input;
     }
@@ -93,10 +92,15 @@ public abstract class Gate extends ListItem {
 
     public void repaint( final Graphics2D graphics2D ) {
         graphics2D.translate( location.getX(), location.getY() );
-        if ( !isPlaced ) {
-            inputWires.repaint( graphics2D );
-            outputWires.repaint( graphics2D );
-        }
+        graphics2D.setColor( Colors.BLACK );
+        graphics2D.draw(body);
+        graphics2D.translate( -location.getX(), -location.getY() );
+    }
+
+    public void repaintInHand( final Graphics2D graphics2D ) {
+        graphics2D.translate( location.getX(), location.getY() );
+        inputWires.repaint( graphics2D );
+        outputWires.repaint( graphics2D );
         graphics2D.setColor( Colors.BLACK );
         graphics2D.draw(body);
         graphics2D.translate( -location.getX(), -location.getY() );
@@ -108,10 +112,10 @@ public abstract class Gate extends ListItem {
         assert nodeType == NodeType.INPUT || nodeType == NodeType.OUTPUT :
                 "Cannot add a wire to a gate that isn't an input or output";
         if ( nodeType == NodeType.INPUT ) {
-            inputWires.add(  new Wire( this, nodeType, x, y ) );
+            inputWires.add(  new Wire( nodeType, x, y ) );
         }
         if ( nodeType == NodeType.OUTPUT ) {
-            outputWires.add( new Wire( this, nodeType, x, y ) );
+            outputWires.add( new Wire( nodeType, x, y ) );
         }
     }
 
@@ -133,5 +137,9 @@ public abstract class Gate extends ListItem {
             return;
         }
         assert false : oldWire + " is not attached to this gate.";
+    }
+
+    public boolean contains( final Wire wire ) {
+        return inputWires.contains( wire ) || outputWires.contains( wire );
     }
 }
