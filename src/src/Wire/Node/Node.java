@@ -11,10 +11,17 @@ public class Node extends ListItem {
     private final Nodes       previousNodes = new Nodes( 3 );
     private final Nodes       nextNodes     = new Nodes( 3 );
     private       Node        playerNode    = null;
+    private final NodeType    nodeType;
 
     private final Point2D     location      = new Point2D.Double();
 
     public Node( final double x, final double y ) {
+        this.nodeType = NodeType.NORMAL;
+        location.setLocation( x, y );
+    }
+
+    public Node( final NodeType nodeType, final double x, final double y ) {
+        this.nodeType = nodeType;
         location.setLocation( x, y );
     }
 
@@ -93,5 +100,13 @@ public class Node extends ListItem {
             return false;
         }
         return true;
+    }
+
+    public NodeType getNodeType() {
+        return nodeType;
+    }
+
+    public void move( final Point2D newLocation ) {
+        this.location.setLocation( newLocation.getX() + location.getX(), newLocation.getY() + location.getY() );
     }
 }

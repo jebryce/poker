@@ -19,7 +19,7 @@ public class Wire extends LinkedList<Node> {
 
     public Wire( final Gate attachedGate, final NodeType nodeType, final double x, final double y ) {
         this.attachedGate = attachedGate;
-        Node start = new Node( x, y );
+        Node start = new Node( nodeType, x, y );
         Node end = null;
         if ( nodeType == NodeType.INPUT ) {
             end = new Node( x - Constants.MIN_LINE_LENGTH, y );
@@ -72,12 +72,15 @@ public class Wire extends LinkedList<Node> {
         for ( Node node : this ) {
             node.repaint( graphics2D );
         }
-        graphics2D.draw( bounds );
+//        graphics2D.draw( bounds );
     }
 
     public Node findContainingNode( final Point2D location ) {
         for ( Node node : this ) {
             if ( node.isPointWithinBounds( location ) ) {
+                if ( node.getNodeType() != NodeType.NORMAL ) {
+                    continue;
+                }
                 return node;
             }
         }
@@ -92,5 +95,19 @@ public class Wire extends LinkedList<Node> {
 
     public void flipState() {
         state = !state;
+    }
+
+    public void replaceWire( final Wire wire, final Node thisNode, final Node wireNode ) {
+        wire.getAttachedGate().replaceWire( wire, this );
+        for ( Node node : wire ) {
+            add( node );
+        }
+        thisNode.connectNode( wireNode );
+    }
+
+    public void move( final Point2D location ) {
+        for ( Node node : this ) {
+            node.move( location );
+        }
     }
 }

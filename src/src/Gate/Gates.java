@@ -30,6 +30,9 @@ public class Gates extends LinkedList<Gate> {
     }
 
     public void repaint( final Graphics2D graphics2D ) {
+        for ( Wire wire : wires ) {
+            wire.repaint( graphics2D );
+        }
         for ( Gate gate : this ) {
             gate.repaint( graphics2D );
         }
@@ -48,5 +51,9 @@ public class Gates extends LinkedList<Gate> {
             }
         }
         return null;
+    }
+
+    public void removeWire( final Wire wire ) {
+        wires.remove( wire );
     }
 }
