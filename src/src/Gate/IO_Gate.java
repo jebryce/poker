@@ -1,6 +1,5 @@
 package Gate;
 
-import Main.Colors;
 import Wire.Node.NodeType;
 import Wire.Wire;
 
@@ -8,8 +7,8 @@ import java.awt.*;
 import java.awt.geom.Point2D;
 
 public abstract class IO_Gate extends Gate {
-    public IO_Gate( final Point2D location ) {
-        super( location );
+    public IO_Gate( final Point2D location, GateType gateType ) {
+        super( location, gateType );
     }
 
     @Override

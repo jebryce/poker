@@ -15,13 +15,15 @@ import java.awt.geom.Rectangle2D;
 import Container.ListItem;
 
 public abstract class Gate extends ListItem {
-    protected final Path2D  body         = new Path2D.Double();
-    protected final Point2D location     = new Point2D.Double( 0, 0 );
-    protected final Wires   inputWires   = new Wires( 4 );
-    protected final Wires   outputWires  = new Wires( 4 );
+    protected final Path2D   body         = new Path2D.Double();
+    protected final Point2D  location     = new Point2D.Double( 0, 0 );
+    protected final Wires    inputWires   = new Wires( 4 );
+    protected final Wires    outputWires  = new Wires( 4 );
+    protected final GateType gateType;
 
-    public Gate( final Point2D location ) {
+    public Gate( final Point2D location, final GateType gateType ) {
         this.location.setLocation( location );
+        this.gateType = gateType;
     }
 
     public Gate place() {

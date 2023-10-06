@@ -8,8 +8,11 @@ import Main.KeyBinds;
 import Main.KeyHandler;
 import Main.MouseHandler;
 import Wire.Node.Node;
+import Wire.Node.NodeType;
 import Wire.Wire;
 import Wire.Wires;
+
+import com.google.gson.Gson;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -36,7 +39,6 @@ public class Player {
         gates.connectGates( in0, and );
         gates.connectGates( in1, and );
         gates.connectGates( and, out );
-
     }
 
     public void repaint( final Graphics2D graphics2D  ) {

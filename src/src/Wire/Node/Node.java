@@ -5,7 +5,6 @@ import Main.Constants;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 
 public class Node extends ListItem {
     private final Nodes       previousNodes = new Nodes( 3 );
