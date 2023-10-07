@@ -7,8 +7,8 @@ import java.awt.*;
 import java.awt.geom.Point2D;
 
 public class Node extends ListItem {
-    private final Nodes       previousNodes = new Nodes( 3 );
-    private final Nodes       nextNodes     = new Nodes( 3 );
+    private final Nodes       previousNodes = new Nodes( Constants.NUM_NEXT_NODES );
+    private final Nodes       nextNodes     = new Nodes( Constants.NUM_NEXT_NODES );
     private       Node        playerNode    = null;
     private final NodeType    nodeType;
 
@@ -112,5 +112,9 @@ public class Node extends ListItem {
 
     public void move( final Point2D newLocation ) {
         this.location.setLocation( newLocation.getX() + location.getX(), newLocation.getY() + location.getY() );
+    }
+
+    public Nodes getNextNodes() {
+        return nextNodes;
     }
 }

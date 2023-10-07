@@ -18,7 +18,7 @@ public class GsonGateAdapter extends GsonAdapter< Gate > {
     @Override
     public void write( final JsonWriter jsonWriter, final Gate gate ) throws IOException {
         jsonWriter.beginObject();
-        jsonWriter.name( "type" );
+        jsonWriter.name( "gateType" );
         jsonWriter.value( gate.getGateType().ordinal() );
         pointAdapter.write( jsonWriter, gate.getLocation() );
         jsonWriter.endObject();
@@ -33,7 +33,7 @@ public class GsonGateAdapter extends GsonAdapter< Gate > {
             jsonReader.beginObject();
         }
         String fieldName = getNextField( jsonReader );
-        if ( fieldName.equals( "type" ) ) {
+        if ( fieldName.equals( "gateType" ) ) {
             gateType = GateType.values()[jsonReader.nextInt()];
         }
         location = pointAdapter.read( jsonReader );

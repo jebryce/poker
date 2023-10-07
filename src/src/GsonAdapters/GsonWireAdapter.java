@@ -1,5 +1,6 @@
 package GsonAdapters;
 
+import Main.Constants;
 import Wire.Node.Node;
 import Wire.Node.NodeType;
 import Wire.Wire;
@@ -10,6 +11,7 @@ import com.google.gson.stream.JsonWriter;
 
 import java.awt.geom.Point2D;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class GsonWireAdapter extends GsonAdapter< Wire > {
     protected final GsonPoint2DAdapter pointAdapter = new GsonPoint2DAdapter();
@@ -19,9 +21,15 @@ public class GsonWireAdapter extends GsonAdapter< Wire > {
         jsonWriter.beginArray();
         for ( Node node : wire ) {
             jsonWriter.beginObject();
-            jsonWriter.name( "type" );
-            jsonWriter.value( node.getNodeType().ordinal() );
+            jsonWriter.name( "nodeType" ).value( node.getNodeType().ordinal() );
+            jsonWriter.name( "index" ).value( wire.getIndex( node ) );
             pointAdapter.write( jsonWriter, node.getLocation() );
+            jsonWriter.name( "connectedNodeIndexes" );
+            jsonWriter.beginArray();
+            for ( Node connectedNode : node.getNextNodes() ) {
+                jsonWriter.value( wire.getIndex( connectedNode ) );
+            }
+            jsonWriter.endArray();
             jsonWriter.endObject();
         }
         jsonWriter.endArray();
@@ -29,8 +37,12 @@ public class GsonWireAdapter extends GsonAdapter< Wire > {
 
     @Override
     public Wire read( JsonReader jsonReader ) throws IOException {
-        Wire     wire     = null;
-        NodeType nodeType = null;
+        Wire     wire             = null;
+        NodeType nodeType         = null;
+        int      index            = -1;
+        int[]    connectedIndexes = new int[Constants.NUM_NEXT_NODES];
+        Arrays.fill( connectedIndexes, -1 );
+        Node[]   nodes            = new Node[Constants.MAX_NUM_WIRE_NODES];
         Point2D  location;
 
         jsonReader.beginArray();
@@ -39,22 +51,44 @@ public class GsonWireAdapter extends GsonAdapter< Wire > {
                 jsonReader.beginObject();
             }
             String fieldName = getNextField( jsonReader );
-            if ( fieldName.equals( "type" ) ) {
+            if ( fieldName.equals( "nodeType" ) ) {
                 nodeType = NodeType.values()[jsonReader.nextInt()];
             }
+            fieldName = getNextField( jsonReader );
+            if ( fieldName.equals( "index" ) ) {
+                index = jsonReader.nextInt();
+            }
+            assert index != -1;
             location = pointAdapter.read( jsonReader );
+            fieldName = getNextField( jsonReader );
+            if ( fieldName.equals( "connectedNodeIndexes" ) ) {
+                jsonReader.beginArray();
+                int i = 0;
+                while ( jsonReader.peek() == JsonToken.NUMBER ) {
+                    connectedIndexes[i++] = jsonReader.nextInt();
+                }
+                jsonReader.endArray();
+            }
+            System.out.print( location + " " + index + " " + nodeType + " " );
             if ( nodeType == NodeType.INPUT ) {
                 wire = new Wire( nodeType, location );
-                wire.remove( wire.getHead() );
-                jsonReader.endObject();
-                continue;
+                wire.removeAll();
             }
             assert wire != null;
-            wire.add( new Node( nodeType, location ) );
+            nodes[index] = wire.add( new Node( nodeType, location ) );
+            for ( int connectedIndex : connectedIndexes ) {
+                if ( connectedIndex == -1 ) {
+                    break;
+                }
+                if ( nodes[connectedIndex] == null ) {
+                    continue;
+                }
+                nodes[index].connectNode( nodes[connectedIndex] );
+            }
             jsonReader.endObject();
-
         }
+        System.out.println();
         jsonReader.endArray();
-        return null;
+        return wire;
     }
 }

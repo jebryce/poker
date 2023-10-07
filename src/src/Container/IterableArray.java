@@ -2,6 +2,7 @@ package Container;
 
 import Wire.Wire;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Spliterator;
 import java.util.function.Consumer;
@@ -36,6 +37,11 @@ public class IterableArray<W> implements Iterable<W>{
             }
         }
         return isItemRemoved;
+    }
+
+    public void removeAll() {
+        Arrays.fill( contents, null );
+        currentLength = 0;
     }
 
     public W getFirst() {

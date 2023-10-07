@@ -1,5 +1,7 @@
 package Container;
 
+import Wire.Node.Node;
+
 import java.util.Iterator;
 
 public class LinkedList< W extends ListItem > extends ListItem implements Iterable< W > {
@@ -54,5 +56,28 @@ public class LinkedList< W extends ListItem > extends ListItem implements Iterab
 
     public W getHead() {
         return head;
+    }
+
+    public int getIndex( final ListItem item ) {
+        ListItem next = head;
+        for ( int index = 0; index < length; index++ ) {
+            if ( next == item ) {
+                return index;
+            }
+            next = next.getNext();
+        }
+        assert false : item + " is not in this linked list.";
+        return -1;
+    }
+
+    public void removeAll() {
+        ListItem current;
+        ListItem next    = head;
+        while ( next != null ) {
+            current = next;
+            next    = next.getNext();
+            current.setNext( null );
+        }
+        head = null;
     }
 }
