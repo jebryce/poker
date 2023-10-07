@@ -86,4 +86,8 @@ public class IterableArray<W> implements Iterable<W>{
         }
         return false;
     }
+
+    public int getMaxLength() {
+        return maxLength;
+    }
 }

@@ -113,7 +113,7 @@ public class Player {
         }
 
         if ( keyHandler.isKeyPressed( KeyBinds.load ) ) {
-            String jsonString = "[]";
+            String jsonString = "[[{\"gateType\":9,\"point\":[960.0,290.0]}],[{\"gateType\":8,\"point\":[212.0,287.0]},[{\"nodeType\":0,\"index\":0,\"point\":[590.0,312.0],\"connectedNodeIndexes\":[1]},{\"nodeType\":2,\"index\":1,\"point\":[550.0,312.0],\"connectedNodeIndexes\":[0,2]},{\"nodeType\":2,\"index\":2,\"point\":[302.0,312.0],\"connectedNodeIndexes\":[1,3]},{\"nodeType\":1,\"index\":3,\"point\":[262.0,312.0],\"connectedNodeIndexes\":[2]}]],[{\"gateType\":10,\"point\":[590.0,282.0]},[{\"nodeType\":0,\"index\":0,\"point\":[960.0,315.0],\"connectedNodeIndexes\":[1]},{\"nodeType\":2,\"index\":1,\"point\":[920.0,315.0],\"connectedNodeIndexes\":[0,2]},{\"nodeType\":2,\"index\":2,\"point\":[750.0,312.0],\"connectedNodeIndexes\":[1,3]},{\"nodeType\":1,\"index\":3,\"point\":[710.0,312.0],\"connectedNodeIndexes\":[2]}],[{\"nodeType\":2,\"index\":0,\"point\":[750.0,352.0],\"connectedNodeIndexes\":[1]},{\"nodeType\":1,\"index\":1,\"point\":[710.0,352.0],\"connectedNodeIndexes\":[0]}],[{\"nodeType\":2,\"index\":0,\"point\":[750.0,392.0],\"connectedNodeIndexes\":[1]},{\"nodeType\":1,\"index\":1,\"point\":[710.0,392.0],\"connectedNodeIndexes\":[0]}],[{\"nodeType\":2,\"index\":0,\"point\":[750.0,432.0],\"connectedNodeIndexes\":[1]},{\"nodeType\":1,\"index\":1,\"point\":[710.0,432.0],\"connectedNodeIndexes\":[0]}]]]";
             gates = gson.fromJson( jsonString, Gates.class );
         }
     }

@@ -2,6 +2,7 @@ package GsonAdapters;
 
 import Gate.BaseGates.*;
 import Gate.Gate;
+import Gate.Chip;
 import Gate.GateType;
 import Gate.IOGates.*;
 import com.google.gson.TypeAdapter;
@@ -56,6 +57,7 @@ public class GsonGateAdapter extends GsonAdapter< Gate > {
             case NOT    -> { return new gateNOT(  location ); }
             case INPUT  -> { return new Input(    location ); }
             case OUTPUT -> { return new Output(   location ); }
+            case CHIP   -> { return new Chip(     location ); }
             default     -> { assert false : "Invalid gateType."; }
         }
         return null;

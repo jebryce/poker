@@ -97,7 +97,7 @@ public class Gates extends LinkedList<Gate> {
                 }
                 for ( Gate gate : this ) {
                     if ( gate.isPointNear( node.getLocation(), 1 ) ) {
-                        gate.getInputWires().add( wire );
+                        wires.remove( gate.getInputWires().replaceWireAtNode( wire, node ) );
                     }
                 }
             }

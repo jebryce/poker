@@ -1,12 +1,14 @@
 package Wire;
 
 import Container.IterableArray;
+import Wire.Node.Node;
+import Wire.Node.NodeType;
 
 import java.awt.*;
 
 public class Wires extends IterableArray<Wire> {
 
-    public Wires( int maxLength ) {
+    public Wires( final int maxLength ) {
         super( maxLength );
     }
 
@@ -38,5 +40,25 @@ public class Wires extends IterableArray<Wire> {
         for ( Wire wire : this ) {
             wire.repaint( graphics2D );
         }
+    }
+
+    public Wire replaceWireAtNode( final Wire newWire, final Node inputNode ) {
+        Wire returnWire = null;
+        for ( Wire wire : this ) {
+            if ( wire == newWire ) {
+                return null;
+            }
+            for ( Node node : wire ) {
+                if ( node.getNodeType() != NodeType.INPUT ) {
+                    continue;
+                }
+                if ( node.getLocation().equals( inputNode.getLocation() ) ) {
+                    returnWire = wire;
+                    remove( wire );
+                }
+            }
+        }
+        super.add( newWire );
+        return returnWire;
     }
 }

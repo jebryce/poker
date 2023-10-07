@@ -30,8 +30,9 @@ public class Wire extends LinkedList<Node> {
             end = new Node( x - Constants.MIN_LINE_LENGTH, y );
         } else if ( nodeType == NodeType.OUTPUT ) {
             end = new Node( x + Constants.MIN_LINE_LENGTH, y );
+        } else {
+            return;
         }
-        assert end != null;
         bounds.setRect( x, y, 0, 0 );
         add( start );
         add( end );
@@ -80,7 +81,7 @@ public class Wire extends LinkedList<Node> {
         for ( Node node : this ) {
             node.repaint( graphics2D );
         }
-//        graphics2D.draw( bounds );
+        graphics2D.draw( bounds );
     }
 
     public Node findContainingNode( final Point2D location ) {

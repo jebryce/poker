@@ -27,13 +27,17 @@ public abstract class Gate extends ListItem {
     }
 
     public Gate place() {
-        for ( Wire wire : inputWires ) {
-            wire.move( location );
-        }
+        moveInputs();
         for ( Wire wire : outputWires ) {
             wire.move( location );
         }
         return this;
+    }
+
+    public void moveInputs() {
+        for ( Wire wire : inputWires ) {
+            wire.move( location );
+        }
     }
 
     public Wire connect( final Gate gateToConnect ) {
