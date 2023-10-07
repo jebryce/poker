@@ -25,7 +25,8 @@ public class Wire extends LinkedList<Node> {
 
     private void initialize( final NodeType nodeType, final double x, final double y ) {
         Node start = new Node( nodeType, x, y );
-        Node end = null;
+        Node end;
+        bounds.setRect( x, y, 0, 0 );
         if ( nodeType == NodeType.INPUT ) {
             end = new Node( x - Constants.MIN_LINE_LENGTH, y );
         } else if ( nodeType == NodeType.OUTPUT ) {
@@ -33,7 +34,6 @@ public class Wire extends LinkedList<Node> {
         } else {
             return;
         }
-        bounds.setRect( x, y, 0, 0 );
         add( start );
         add( end );
         start.connectNode( end );
