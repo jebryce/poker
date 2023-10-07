@@ -69,7 +69,6 @@ public class GsonWireAdapter extends GsonAdapter< Wire > {
                 }
                 jsonReader.endArray();
             }
-            System.out.print( location + " " + index + " " + nodeType + " " );
             if ( nodeType == NodeType.INPUT ) {
                 wire = new Wire( nodeType, location );
                 wire.removeAll();
@@ -87,7 +86,6 @@ public class GsonWireAdapter extends GsonAdapter< Wire > {
             }
             jsonReader.endObject();
         }
-        System.out.println();
         jsonReader.endArray();
         return wire;
     }

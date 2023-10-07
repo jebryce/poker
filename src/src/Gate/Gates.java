@@ -5,6 +5,7 @@ import java.awt.geom.Point2D;
 
 import Container.LinkedList;
 import Wire.Node.Node;
+import Wire.Node.NodeType;
 import Wire.WiresLL;
 import Wire.Wires;
 import Wire.Wire;
@@ -73,5 +74,20 @@ public class Gates extends LinkedList<Gate> {
         }
         assert false : "No gate contains the wire " + wire + ".";
         return null;
+    }
+
+    public void connectOutputWiresToGates() {
+        for ( Wire wire : wires ) {
+            for ( Node node : wire ) {
+                if ( node.getNodeType() != NodeType.INPUT ) {
+                    continue;
+                }
+                for ( Gate gate : this ) {
+                    if ( gate.isPointNear( node.getLocation(), 1 ) ) {
+                        gate.getInputWires().add( wire );
+                    }
+                }
+            }
+        }
     }
 }

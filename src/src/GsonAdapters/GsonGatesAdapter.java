@@ -47,6 +47,9 @@ public class GsonGatesAdapter extends TypeAdapter< Gates > {
             gates.add( newGate );
         }
         jsonReader.endArray();
+
+        gates.connectOutputWiresToGates();
+
         return gates;
     }
 }

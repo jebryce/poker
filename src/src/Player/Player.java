@@ -44,10 +44,8 @@ public class Player {
         GsonBuilder builder = new GsonBuilder();
 
         builder.registerTypeAdapter( Gates.class, new GsonGatesAdapter() );
-        builder.setPrettyPrinting();
         Gson gson = builder.create();
         String jsonString = gson.toJson( gates );
-        System.out.println(jsonString);
 
         gates = gson.fromJson( jsonString, Gates.class );
     }

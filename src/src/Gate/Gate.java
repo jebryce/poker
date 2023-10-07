@@ -61,28 +61,16 @@ public abstract class Gate extends ListItem {
         return body.contains( point2D.getX() - location.getX(), point2D.getY() - location.getY() );
     }
 
-    public boolean isPointNear( final Point2D point2D ) {
+    public boolean isPointNear( final Point2D point2D, final int radius ) {
         double x = point2D.getX() - location.getX();
         double y = point2D.getY() - location.getY();
         Rectangle2D bounds = body.getBounds2D();
-        final double maxX = bounds.getMaxX() + Constants.MIN_LINE_LENGTH;
-        final double minX = bounds.getMinX() - Constants.MIN_LINE_LENGTH;
-        final double maxY = bounds.getMaxY() + Constants.MIN_LINE_LENGTH;
-        final double minY = bounds.getMinY() - Constants.MIN_LINE_LENGTH;
+        final double maxX = bounds.getMaxX() + radius;
+        final double minX = bounds.getMinX() - radius;
+        final double maxY = bounds.getMaxY() + radius;
+        final double minY = bounds.getMinY() - radius;
 
-        if ( x > maxX ) {
-            return false;
-        }
-        if ( x < minX ) {
-            return false;
-        }
-        if ( y > maxY ) {
-            return false;
-        }
-        if ( y < minY ) {
-            return false;
-        }
-        return true;
+        return ( x < maxX ) && ( x > minX ) && ( y < maxY ) && ( y > minY );
     }
 
     public Point2D getCenter() {
