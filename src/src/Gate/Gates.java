@@ -11,13 +11,26 @@ import Wire.Wires;
 import Wire.Wire;
 
 public class Gates extends LinkedList<Gate> {
-    private final WiresLL wires = new WiresLL();
+    private final WiresLL wires    = new WiresLL();
+    private       Gates   previous = null;
 
     @Override
     public Gate add( final Gate newGate ) {
         super.add( newGate );
         wires.addFromGate( newGate );
         return newGate;
+    }
+
+    public Gates getPrevious() {
+        if ( previous == null ) {
+            return this;
+        }
+        return previous;
+    }
+
+    public Gates setPrevious( final Gates newPrevious ) {
+        previous = newPrevious;
+        return this;
     }
 
     public Wires findContainingWires( final Point2D location ) {

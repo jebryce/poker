@@ -97,6 +97,11 @@ public class Player {
             else               { heldGate = new gateXOR(  playerLocation ); }
             playerMode = PlayerMode.PLACE_GATE;
         }
+        else if ( keyHandler.isKeyPressed( KeyBinds.newChip ) ) {
+            clearHand();
+                                 heldGate = new Chip(     playerLocation );
+            playerMode = PlayerMode.PLACE_GATE;
+        }
 
         if ( keyHandler.isKeyPressed( KeyBinds.clearHand ) ) {
             clearHand();
@@ -126,16 +131,22 @@ public class Player {
 
 
     private void updateNORMAL() {
-        if ( mouseHandler.isMouseClicked() ) {
+        if ( mouseHandler.isMouseLeftClicked() ) {
             Gate gate = gates.findContainingGate( playerLocation );
             if ( gate instanceof Input ) {
                 ((Input) gate).flipState();
             }
+            if ( gate instanceof Chip ) {
+                gates = ((Chip) gate).getContents().setPrevious( gates );
+            }
+        }
+        if ( mouseHandler.isMouseRightClicked() ) {
+            gates = gates.getPrevious();
         }
     }
 
     private void updatePLACE_GATE() {
-        if ( mouseHandler.isMouseClicked() ) {
+        if ( mouseHandler.isMouseLeftClicked() ) {
             if ( heldGate != null ) {
                 heldGate.place();
                 gates.add( heldGate );
@@ -149,7 +160,7 @@ public class Player {
         if ( heldWireNode != null ) {
             heldWireNode.setPlayerNode( playerLocation );
         }
-        if ( !mouseHandler.isMouseClicked() ) {
+        if ( !mouseHandler.isMouseLeftClicked() ) {
             return;
         }
 
