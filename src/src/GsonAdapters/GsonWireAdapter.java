@@ -29,6 +29,9 @@ public class GsonWireAdapter extends GsonAdapter< Wire > {
             for ( Node connectedNode : node.getNextNodes() ) {
                 jsonWriter.value( wire.getIndex( connectedNode ) );
             }
+            for ( Node connectedNode : node.getPreviousNodes() ) {
+                jsonWriter.value( wire.getIndex( connectedNode ) );
+            }
             jsonWriter.endArray();
             jsonWriter.endObject();
         }
@@ -40,8 +43,6 @@ public class GsonWireAdapter extends GsonAdapter< Wire > {
         Wire     wire             = null;
         NodeType nodeType         = null;
         int      index            = -1;
-        int[]    connectedIndexes = new int[Constants.NUM_NEXT_NODES];
-        Arrays.fill( connectedIndexes, -1 );
         Node[]   nodes            = new Node[Constants.MAX_NUM_WIRE_NODES];
         Point2D  location;
 
@@ -61,6 +62,8 @@ public class GsonWireAdapter extends GsonAdapter< Wire > {
             assert index != -1;
             location = pointAdapter.read( jsonReader );
             fieldName = getNextField( jsonReader );
+            int[]    connectedIndexes = new int[Constants.NUM_NEXT_NODES * 2];
+            Arrays.fill( connectedIndexes, -1 );
             if ( fieldName.equals( "connectedNodeIndexes" ) ) {
                 jsonReader.beginArray();
                 int i = 0;
@@ -69,11 +72,10 @@ public class GsonWireAdapter extends GsonAdapter< Wire > {
                 }
                 jsonReader.endArray();
             }
-            if ( nodeType == NodeType.INPUT ) {
+            if ( wire == null ) {
                 wire = new Wire( nodeType, location );
                 wire.removeAll();
             }
-            assert wire != null;
             nodes[index] = wire.add( new Node( nodeType, location ) );
             for ( int connectedIndex : connectedIndexes ) {
                 if ( connectedIndex == -1 ) {

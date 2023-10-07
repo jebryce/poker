@@ -26,28 +26,15 @@ public class Player {
     private final Point2D       playerLocation = new Point2D.Double();
     private       Gates         gates          = new Gates();
     private       PlayerMode    playerMode     = PlayerMode.NORMAL;
+    private final Gson          gson;
 
     public Player( final MouseHandler mouseH, final KeyHandler keyH ) {
         mouseHandler = mouseH;
         keyHandler = keyH;
 
-        Gate in0 = gates.add( new Input(   new Point2D.Double( 100, 100 ) ) ).place();
-        Gate in1 = gates.add( new Input(   new Point2D.Double( 100, 500 ) ) ).place();
-        Gate and = gates.add( new gateAND( new Point2D.Double( 400, 400 ) ) ).place();
-        Gate out = gates.add( new Output(  new Point2D.Double( 800, 600 ) ) ).place();
-
-        gates.connectGates( in0, and );
-        gates.connectGates( in1, and );
-        gates.connectGates( and, out );
-
-
         GsonBuilder builder = new GsonBuilder();
-
         builder.registerTypeAdapter( Gates.class, new GsonGatesAdapter() );
-        Gson gson = builder.create();
-        String jsonString = gson.toJson( gates );
-
-        gates = gson.fromJson( jsonString, Gates.class );
+        gson = builder.create();
     }
 
     public void repaint( final Graphics2D graphics2D  ) {
@@ -113,6 +100,16 @@ public class Player {
 
         if ( keyHandler.isKeyPressed( KeyBinds.clearHand ) ) {
             clearHand();
+        }
+
+        if ( keyHandler.isKeyPressed( KeyBinds.save ) ) {
+            String jsonString = gson.toJson( gates );
+            System.out.println( jsonString );
+        }
+
+        if ( keyHandler.isKeyPressed( KeyBinds.load ) ) {
+            String jsonString = "[]";
+            gates = gson.fromJson( jsonString, Gates.class );
         }
     }
 

@@ -117,4 +117,8 @@ public class Node extends ListItem {
     public Nodes getNextNodes() {
         return nextNodes;
     }
+
+    public Nodes getPreviousNodes() {
+        return previousNodes;
+    }
 }
