@@ -1,6 +1,8 @@
-package Gate;
+package GsonAdapters;
 
 import Gate.BaseGates.*;
+import Gate.Gate;
+import Gate.GateType;
 import Gate.IOGates.*;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
@@ -10,16 +12,15 @@ import com.google.gson.stream.JsonWriter;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 
-public class GsonGateAdapter extends TypeAdapter<Gate> {
+public class GsonGateAdapter extends GsonAdapter< Gate > {
+    protected final GsonPoint2DAdapter pointAdapter = new GsonPoint2DAdapter();
+
     @Override
     public void write( final JsonWriter jsonWriter, final Gate gate ) throws IOException {
         jsonWriter.beginObject();
         jsonWriter.name( "type" );
         jsonWriter.value( gate.getGateType().ordinal() );
-        jsonWriter.name( "x" );
-        jsonWriter.value( gate.getLocation().getX() );
-        jsonWriter.name( "y" );
-        jsonWriter.value( gate.getLocation().getY() );
+        pointAdapter.write( jsonWriter, gate.getLocation() );
         jsonWriter.endObject();
     }
 
@@ -27,7 +28,7 @@ public class GsonGateAdapter extends TypeAdapter<Gate> {
     public Gate read( final JsonReader jsonReader ) throws IOException {
         Gate     gate     = null;
         GateType gateType = null;
-        Point2D  location = null;
+        Point2D  location;
         if ( jsonReader.peek() == JsonToken.BEGIN_OBJECT ) {
             jsonReader.beginObject();
         }
@@ -35,15 +36,7 @@ public class GsonGateAdapter extends TypeAdapter<Gate> {
         if ( fieldName.equals( "type" ) ) {
             gateType = GateType.values()[jsonReader.nextInt()];
         }
-        fieldName = getNextField( jsonReader );
-        if ( fieldName.equals( "x" ) ) {
-            location = new Point2D.Double( jsonReader.nextDouble(), 0 );
-        }
-        fieldName = getNextField( jsonReader );
-        if ( fieldName.equals( "y" ) ) {
-            assert location != null;
-            location.setLocation( location.getX(), jsonReader.nextDouble() );
-        }
+        location = pointAdapter.read( jsonReader );
         if ( location != null && gateType != null ) {
             gate = getNewGate( gateType, location );
             jsonReader.endObject();
@@ -66,15 +59,5 @@ public class GsonGateAdapter extends TypeAdapter<Gate> {
             default     -> { assert false : "Invalid gateType."; }
         }
         return null;
-    }
-
-    private String getNextField( final JsonReader jsonReader ) throws IOException {
-        String fieldName = null;
-        JsonToken token = jsonReader.peek();
-        if ( token.equals( JsonToken.NAME ) ) {
-            fieldName = jsonReader.nextName();
-        }
-        assert fieldName != null;
-        return fieldName;
     }
 }

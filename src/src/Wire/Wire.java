@@ -13,9 +13,17 @@ import java.awt.geom.Rectangle2D;
 
 public class Wire extends LinkedList<Node> {
     private       boolean     state  = false;
-    private final Rectangle2D bounds;
+    private final Rectangle2D bounds = new Rectangle2D.Double();
 
     public Wire( final NodeType nodeType, final double x, final double y ) {
+        initialize( nodeType, x, y );
+    }
+
+    public Wire( final NodeType nodeType, final Point2D location ) {
+        initialize( nodeType, location.getX(), location.getY() );
+    }
+
+    private void initialize( final NodeType nodeType, final double x, final double y ) {
         Node start = new Node( nodeType, x, y );
         Node end = null;
         if ( nodeType == NodeType.INPUT ) {
@@ -24,7 +32,7 @@ public class Wire extends LinkedList<Node> {
             end = new Node( x + Constants.MIN_LINE_LENGTH, y );
         }
         assert end != null;
-        bounds = new Rectangle2D.Double( x, y, 0, 0 );
+        bounds.setRect( x, y, 0, 0 );
         add( start );
         add( end );
         start.connectNode( end );

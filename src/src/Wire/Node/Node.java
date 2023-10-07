@@ -24,6 +24,11 @@ public class Node extends ListItem {
         location.setLocation( x, y );
     }
 
+    public Node( final NodeType nodeType, final Point2D point2D ) {
+        this.nodeType = nodeType;
+        location.setLocation( point2D );
+    }
+
     public void connectNode( final Node connectedNode ) {
         this.connectToNode( connectedNode );
         connectedNode.connectToNode( this );

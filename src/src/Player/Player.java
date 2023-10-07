@@ -4,6 +4,7 @@ import Gate.*;
 import Gate.BaseGates.*;
 import Gate.IOGates.Input;
 import Gate.IOGates.Output;
+import GsonAdapters.GsonGatesAdapter;
 import Main.KeyBinds;
 import Main.KeyHandler;
 import Main.MouseHandler;
