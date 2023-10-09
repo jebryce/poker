@@ -5,8 +5,9 @@ import java.awt.geom.Arc2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
-import Gate.IOGates.ChipIO;
-import Gate.IOGates.IO_Direction;
+import Gate.IOGates.ChipIO.ChipIO;
+import Gate.IOGates.ChipIO.IO_Direction;
+import Gate.IOGates.ChipIO.IO_Type;
 import Main.Colors;
 import Main.Constants;
 import Wire.Wire;
@@ -76,10 +77,13 @@ public class Chip extends Gate {
     @Override
     public void update() {
         contents.update();
-        int halfIO = Constants.MAX_NUM_IO/2;
-        for ( int i = 0; i < halfIO; i++ ) {
-            chipIO[i].setState( gateIO.getIndex( i ).getState() );
-            gateIO.getIndex( i + halfIO ).setState( chipIO[i+halfIO].getState() );
+        for ( int i = 0; i < Constants.MAX_NUM_IO; i++ ) {
+            if ( chipIO[i].getIO_Type() == IO_Type.INPUT ) {
+                gateIO.getIndex( i ).setState( chipIO[i].getState() );
+            }
+            else {
+                chipIO[i].setState( gateIO.getIndex( i ).getState() );
+            }
         }
     }
 

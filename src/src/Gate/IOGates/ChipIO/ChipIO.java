@@ -1,17 +1,17 @@
-package Gate.IOGates;
+package Gate.IOGates.ChipIO;
 
 import Gate.GateType;
 import Gate.IO_Gate;
-import Main.Colors;
 import Main.Constants;
 import Wire.Node.Node;
 import Wire.Node.NodeType;
 import Wire.Wire;
 
-import java.awt.*;
 import java.awt.geom.Point2D;
 
 public class ChipIO extends IO_Gate {
+    private IO_Type ioType = IO_Type.INPUT;
+
     public ChipIO( final Point2D location, final IO_Direction direction ) {
         super( location, GateType.CHIP_IO );
         addWire( direction );
@@ -20,6 +20,11 @@ public class ChipIO extends IO_Gate {
     public ChipIO( final double x, final double y, final IO_Direction direction ) {
         super( x, y, GateType.CHIP_IO );
         addWire( direction );
+        if ( direction == IO_Direction.LEFT ) {
+            ioType = IO_Type.INPUT;
+        } else {
+            ioType = IO_Type.OUTPUT;
+        }
     }
 
     protected Wire addWire( final IO_Direction direction ) {
@@ -39,12 +44,12 @@ public class ChipIO extends IO_Gate {
 
     @Override
     public void update() {
-        if ( state ) {
-            outputWires.getFirst().setState( state );
-        } else {
+        if ( ioType == IO_Type.INPUT ) {
             state = outputWires.getFirst().getState();
         }
-
+        else {
+            outputWires.getFirst().setState( state );
+        }
     }
 
     public void setState( final boolean newState ) {
@@ -54,4 +59,9 @@ public class ChipIO extends IO_Gate {
     public boolean getState() {
         return state;
     }
+
+    public IO_Type getIO_Type() {
+        return ioType;
+    }
+
 }
