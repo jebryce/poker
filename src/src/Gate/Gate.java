@@ -29,12 +29,11 @@ public abstract class Gate extends ListItem {
         this.gateType = gateType;
     }
 
-    public Gate place() {
+    public void place() {
         moveInputs();
         for ( Wire wire : outputWires ) {
             wire.move( location );
         }
-        return this;
     }
 
     public void moveInputs() {
@@ -87,7 +86,7 @@ public abstract class Gate extends ListItem {
         graphics2D.translate( -location.getX(), -location.getY() );
     }
 
-    public void update() {};
+    public void update() {}
 
     protected Wire addWire( final NodeType nodeType, final double x, final double y ) {
         assert nodeType == NodeType.INPUT || nodeType == NodeType.OUTPUT :

@@ -1,7 +1,5 @@
 package Container;
 
-import Wire.Wire;
-
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Spliterator;
@@ -120,6 +118,4 @@ public class IterableArray<W> extends ListItem implements Iterable<W> {
     public int getMaxLength() {
         return maxLength;
     }
-
-    public int getCurrentLength() { return currentLength; }
 }

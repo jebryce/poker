@@ -7,15 +7,8 @@ import Wire.Node.Node;
 import Wire.Node.NodeType;
 import Wire.Wire;
 
-import java.awt.geom.Point2D;
-
 public class ChipIO extends IO_Gate {
     private IO_Type ioType = IO_Type.INPUT;
-
-    public ChipIO( final Point2D location, final IO_Direction direction ) {
-        super( location, GateType.CHIP_IO );
-        addWire( direction );
-    }
 
     public ChipIO( final double x, final double y, final IO_Direction direction ) {
         super( x, y, GateType.CHIP_IO );

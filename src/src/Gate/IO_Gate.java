@@ -24,7 +24,7 @@ public abstract class IO_Gate extends Gate {
     @Override
     protected Wire addWire( final NodeType nodeType, final double x, final double y ) {
         return super.addWire( nodeType, x, y );
-    };
+    }
 
     private void repaintBody( Graphics2D graphics2D ) {
         if ( state ) {

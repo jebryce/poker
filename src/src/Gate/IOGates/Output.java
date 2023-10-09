@@ -3,11 +3,8 @@ package Gate.IOGates;
 
 import Gate.GateType;
 import Gate.IO_Gate;
-import Main.Colors;
 import Wire.Node.NodeType;
 
-import java.awt.*;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 
 public class Output extends IO_Gate {

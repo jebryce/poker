@@ -47,11 +47,10 @@ public class Chip extends Gate {
     }
 
     @Override
-    public Gate place() {
+    public void place() {
         for ( Wire wire : gateIO ) {
             wire.move( location );
         }
-        return this;
     }
 
     private void addGateWire( final NodeType nodeType, final double x, final double y ) {

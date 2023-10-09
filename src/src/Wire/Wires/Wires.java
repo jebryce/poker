@@ -43,23 +43,20 @@ public class Wires extends IterableArray< Wire > {
         }
     }
 
-    public Wire replaceWireAtNode( final Wire newWire, final Node inputNode ) {
-        Wire returnWire = null;
+    public void replaceWireAtNode( final Wire newWire, final Node inputNode ) {
         for ( Wire wire : this ) {
             if ( wire == newWire ) {
-                return null;
+                return;
             }
             for ( Node node : wire ) {
                 if ( node.getNodeType() != NodeType.INPUT ) {
                     continue;
                 }
                 if ( node.getLocation().equals( inputNode.getLocation() ) ) {
-                    returnWire = wire;
                     remove( wire );
                 }
             }
         }
         super.add( newWire );
-        return returnWire;
     }
 }
