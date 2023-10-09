@@ -43,15 +43,6 @@ public abstract class Gate extends ListItem {
         }
     }
 
-    public Wire connect( final Gate gateToConnect ) {
-        Wire input = gateToConnect.inputWires.getFirst();
-        Wire output = outputWires.getFirst();
-
-        gateToConnect.replaceWire( input, output );
-        output.replaceWire( input, output.getHead(), input.getHead());
-        return input;
-    }
-
     public void setLocation( final double x, final double y ) {
         location.setLocation( x, y );
     }
@@ -78,13 +69,6 @@ public abstract class Gate extends ListItem {
         final double minY = bounds.getMinY() - radius;
 
         return ( x < maxX ) && ( x > minX ) && ( y < maxY ) && ( y > minY );
-    }
-
-    public Point2D getCenter() {
-        Point2D centerOffset = getCenterOffset();
-        return new Point2D.Double(
-                location.getX() + centerOffset.getX(), location.getY() + centerOffset.getY()
-        );
     }
 
     public void repaint( final Graphics2D graphics2D ) {

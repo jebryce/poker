@@ -20,11 +20,6 @@ public class ChipIO extends IO_Gate {
     public ChipIO( final double x, final double y, final IO_Direction direction ) {
         super( x, y, GateType.CHIP_IO );
         addWire( direction );
-        if ( direction == IO_Direction.LEFT ) {
-            ioType = IO_Type.INPUT;
-        } else {
-            ioType = IO_Type.OUTPUT;
-        }
     }
 
     protected Wire addWire( final IO_Direction direction ) {
@@ -33,9 +28,11 @@ public class ChipIO extends IO_Gate {
         if ( direction == IO_Direction.LEFT ) {
             start = new Node( NodeType.OUTPUT, 0, 25 );
             end   = new Node( -Constants.MIN_LINE_LENGTH, 25 );
+            ioType = IO_Type.INPUT;
         } else {
             start = new Node( NodeType.OUTPUT, 50, 25 );
             end   = new Node( 50 + Constants.MIN_LINE_LENGTH, 25 );
+            ioType = IO_Type.OUTPUT;
         }
         Wire newWire = new Wire( start, end  );
         outputWires.add( newWire );
