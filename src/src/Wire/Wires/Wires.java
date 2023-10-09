@@ -1,12 +1,13 @@
-package Wire;
+package Wire.Wires;
 
 import Container.IterableArray;
 import Wire.Node.Node;
 import Wire.Node.NodeType;
+import Wire.Wire;
 
 import java.awt.*;
 
-public class Wires extends IterableArray<Wire> {
+public class Wires extends IterableArray< Wire > {
 
     public Wires( final int maxLength ) {
         super( maxLength );

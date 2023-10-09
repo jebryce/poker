@@ -9,33 +9,31 @@ import Gate.IOGates.ChipIO;
 import Gate.IOGates.IO_Direction;
 import Main.Colors;
 import Main.Constants;
-import Wire.Node.NodeType;
-import Wire.Wires;
 import Wire.Wire;
+import Wire.Node.NodeType;
+import Wire.Wires.Wires;
 
 public class Chip extends Gate {
-    private final Arc2D notch      = new Arc2D.Double( 40, -20, 40, 40, 180, 180, Arc2D.OPEN );
-    private final Gates contents   = new Gates();
-    private final Wires ioWires    = new Wires(Constants.MAX_NUM_IO);
+    private final Arc2D   notch      = new Arc2D.Double( 40, -20, 40, 40, 180, 180, Arc2D.OPEN );
+    private final Gates   contents   = new Gates();
+    private final Wires   gateIO     = new Wires( Constants.MAX_NUM_IO );
+    private final Wires   contentsIO = new Wires( Constants.MAX_NUM_IO );
 
     public Chip( final Point2D location ) {
         super( location, GateType.CHIP );
         body.append( new Rectangle2D.Double(0, 0, 120, 180), false );
 
-        addWire( NodeType.INPUT, 0, 30 );
-        addWire( NodeType.INPUT, 0, 70 );
-        addWire( NodeType.INPUT, 0, 110 );
-        addWire( NodeType.INPUT, 0, 150 );
-
-        addWire( NodeType.OUTPUT, 120, 30 );
-        addWire( NodeType.OUTPUT, 120, 70 );
-        addWire( NodeType.OUTPUT, 120, 110 );
-        addWire( NodeType.OUTPUT, 120, 150 );
+        addGateWire( NodeType.INPUT, 0, 30 );
+        addGateWire( NodeType.INPUT, 0, 70 );
+        addGateWire( NodeType.INPUT, 0, 110 );
+        addGateWire( NodeType.INPUT, 0, 150 );
+        addGateWire( NodeType.OUTPUT, 120, 30 );
+        addGateWire( NodeType.OUTPUT, 120, 70 );
+        addGateWire( NodeType.OUTPUT, 120, 110 );
+        addGateWire( NodeType.OUTPUT, 120, 150 );
 
         double yDiv = Constants.SCREEN_HEIGHT / Constants.SCREEN_SCALE / 8;
         double width = Constants.SCREEN_WIDTH / Constants.SCREEN_SCALE;
-
-
 
         addChipIO( new ChipIO( 50, yDiv*1 - 25, IO_Direction.RIGHT ) );
         addChipIO( new ChipIO( 50, yDiv*3 - 25, IO_Direction.RIGHT ) );
@@ -47,41 +45,76 @@ public class Chip extends Gate {
         addChipIO( new ChipIO( width - 100, yDiv*7 - 25, IO_Direction.LEFT  ) );
     }
 
+    @Override
+    public Gate place() {
+        for ( Wire wire : gateIO ) {
+            wire.move( location );
+        }
+        return this;
+    }
+
+    private void addGateWire( final NodeType nodeType, final double x, final double y ) {
+        gateIO.addFirst( new Wire( nodeType, x, y ) );
+    }
+
     private void addChipIO( final ChipIO newChipIO ) {
         contents.add( newChipIO );
         newChipIO.place();
-        ioWires.add( newChipIO.getOutputWires().getFirst() );
+        contentsIO.addFirst( newChipIO.getOutputWires().getFirst() );
+    }
+
+    public Wires getGateIO() {
+        return gateIO;
     }
 
     @Override
     public void update() {
         contents.update();
         int halfIO = Constants.MAX_NUM_IO/2;
-        for ( int index = 0; index < halfIO; index++ ) {
-            ioWires.getIndex( index ).setState( inputWires.getIndex( index ).getState() );
-            outputWires.getIndex( index ).setState( ioWires.getIndex( index + halfIO ).getState() );
+        for ( int i = 0; i < halfIO; i++ ) {
+            contentsIO.getIndex( i ).setState( gateIO.getIndex( i ).getState() );
+            gateIO.getIndex( i + halfIO ).setState( contentsIO.getIndex( i + halfIO ).getState() );
         }
     }
 
     private void repaintBody( final Graphics2D graphics2D ) {
-        graphics2D.translate(location.getX(), location.getY());
         graphics2D.setColor(Colors.GRAY);
         graphics2D.fill(body);
         graphics2D.setColor(Colors.BLACK);
         graphics2D.fill(notch);
-        graphics2D.translate(-location.getX(), -location.getY());
     }
 
     @Override
     public void repaint( final Graphics2D graphics2D ) {
+        graphics2D.translate(location.getX(), location.getY());
         repaintBody( graphics2D );
+        graphics2D.translate(-location.getX(), -location.getY());
         super.repaint( graphics2D );
     }
 
     @Override
     public void repaintInHand( final Graphics2D graphics2D ) {
+        graphics2D.translate(location.getX(), location.getY());
+        for ( Wire wire : gateIO ) {
+            wire.repaint( graphics2D );
+        }
         repaintBody( graphics2D );
+        graphics2D.translate(-location.getX(), -location.getY());
         super.repaintInHand( graphics2D );
+    }
+
+    @Override
+    public boolean contains( final Wire wire ) {
+        return gateIO.contains( wire );
+    }
+
+    @Override
+    public void replaceWire( Wire oldWire, Wire newWire ) {
+        if ( gateIO.removeFirst( oldWire ) ) {
+            gateIO.addFirst( newWire );
+            return;
+        }
+        assert false : oldWire + " is not attached to this gate.";
     }
 
     public Gates getContents() {

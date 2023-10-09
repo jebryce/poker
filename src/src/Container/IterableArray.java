@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 
-public class IterableArray<W> implements Iterable<W>{
+public class IterableArray<W> extends ListItem implements Iterable<W> {
     private final int maxLength;
     private final Object[] contents;
     private       int currentLength = 0;
@@ -22,6 +22,17 @@ public class IterableArray<W> implements Iterable<W>{
         return (W) contents[index];
     }
 
+    public W addFirst( final W newItem ) {
+        for ( int i = 0; i < maxLength; i++ ) {
+            if ( contents[i] != null ) {
+                continue;
+            }
+            contents[i] = newItem;
+            currentLength++;
+            break;
+        }
+        return newItem;
+    }
 
     public W add( final W newItem) {
         if ( currentLength < maxLength ) {
@@ -29,6 +40,19 @@ public class IterableArray<W> implements Iterable<W>{
             return newItem;
         }
         return newItem;
+    }
+
+    public boolean removeFirst( final W itemToRemove ) {
+        boolean isItemRemoved = false;
+        for( int index = 0; index < currentLength; index++ ) {
+            if ( contents[index] == itemToRemove ) {
+                contents[index] = null;
+                currentLength--;
+                isItemRemoved = true;
+                break;
+            }
+        }
+        return isItemRemoved;
     }
 
     public boolean remove( final W itemToRemove ) {
@@ -96,4 +120,6 @@ public class IterableArray<W> implements Iterable<W>{
     public int getMaxLength() {
         return maxLength;
     }
+
+    public int getCurrentLength() { return currentLength; }
 }

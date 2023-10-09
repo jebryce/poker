@@ -3,7 +3,7 @@ package Gate;
 import Main.Colors;
 import Wire.Node.NodeType;
 import Wire.Wire;
-import Wire.Wires;
+import Wire.Wires.Wires;
 
 import java.awt.*;
 import java.awt.geom.Path2D;

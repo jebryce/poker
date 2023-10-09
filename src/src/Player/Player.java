@@ -10,7 +10,7 @@ import Main.KeyHandler;
 import Main.MouseHandler;
 import Wire.Node.Node;
 import Wire.Wire;
-import Wire.Wires;
+import Wire.Wires.Wires;
 import com.google.gson.GsonBuilder;
 import com.google.gson.Gson;
 
