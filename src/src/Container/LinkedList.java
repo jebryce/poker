@@ -2,6 +2,7 @@ package Container;
 
 import Wire.Node.Node;
 
+import java.awt.geom.Point2D;
 import java.util.Iterator;
 
 public class LinkedList< W extends ListItem > extends ListItem implements Iterable< W > {

@@ -62,6 +62,10 @@ public class Player {
     }
 
     private void checkKeyPresses() {
+        if ( keyHandler.isKeyPressed( KeyBinds.delete ) ) {
+            gates.deleteAtLocation( playerLocation );
+        }
+
         if ( keyHandler.isKeyPressed( KeyBinds.placeWire ) ) {
             clearHand();
             playerMode = PlayerMode.PLACE_WIRE;
@@ -113,7 +117,7 @@ public class Player {
         }
 
         if ( keyHandler.isKeyPressed( KeyBinds.load ) ) {
-            String jsonString = "[[{\"gateType\":9,\"point\":[1342.0,642.0]}],[{\"gateType\":8,\"point\":[422.0,647.0]},[{\"nodeType\":0,\"index\":0,\"point\":[792.0,675.0],\"connectedNodeIndexes\":[1]},{\"nodeType\":2,\"index\":1,\"point\":[752.0,675.0],\"connectedNodeIndexes\":[0,2]},{\"nodeType\":2,\"index\":2,\"point\":[512.0,672.0],\"connectedNodeIndexes\":[1,3]},{\"nodeType\":1,\"index\":3,\"point\":[472.0,672.0],\"connectedNodeIndexes\":[2]}]],[{\"gateType\":10,\"point\":[792.0,645.0]},[{\"nodeType\":2,\"index\":0,\"point\":[952.0,675.0],\"connectedNodeIndexes\":[1]},{\"nodeType\":1,\"index\":1,\"point\":[912.0,675.0],\"connectedNodeIndexes\":[0]}],[{\"nodeType\":2,\"index\":0,\"point\":[952.0,715.0],\"connectedNodeIndexes\":[1]},{\"nodeType\":1,\"index\":1,\"point\":[912.0,715.0],\"connectedNodeIndexes\":[0]}],[{\"nodeType\":2,\"index\":0,\"point\":[952.0,755.0],\"connectedNodeIndexes\":[1]},{\"nodeType\":1,\"index\":1,\"point\":[912.0,755.0],\"connectedNodeIndexes\":[0]}],[{\"nodeType\":0,\"index\":0,\"point\":[1342.0,667.0],\"connectedNodeIndexes\":[1]},{\"nodeType\":2,\"index\":1,\"point\":[1302.0,667.0],\"connectedNodeIndexes\":[0,2]},{\"nodeType\":2,\"index\":2,\"point\":[952.0,795.0],\"connectedNodeIndexes\":[1,3]},{\"nodeType\":1,\"index\":3,\"point\":[912.0,795.0],\"connectedNodeIndexes\":[2]}]]]";
+            String jsonString = "[]";
             gates = gson.fromJson( jsonString, Gates.class );
         }
     }

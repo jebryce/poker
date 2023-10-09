@@ -58,7 +58,7 @@ public abstract class Gate extends ListItem {
         return body.contains( point2D.getX() - location.getX(), point2D.getY() - location.getY() );
     }
 
-    public boolean isPointNear( final Point2D point2D, final int radius ) {
+    public boolean isGateNear( final Point2D point2D, final int radius ) {
         double x = point2D.getX() - location.getX();
         double y = point2D.getY() - location.getY();
         Rectangle2D bounds = body.getBounds2D();

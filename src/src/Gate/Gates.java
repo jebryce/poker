@@ -95,6 +95,15 @@ public class Gates extends LinkedList<Gate> {
         return attachedGates;
     }
 
+    private Gate findGateNear( final Point2D point2D ) {
+        for ( Gate gate : this ) {
+            if ( gate.isGateNear( point2D, 1 ) ) {
+                return gate;
+            }
+        }
+        return null;
+    }
+
     public void connectOutputWiresToGates() {
         for ( Wires gateIO : wires ) {
             for ( Wire wire : gateIO ) {
@@ -103,12 +112,30 @@ public class Gates extends LinkedList<Gate> {
                         continue;
                     }
                     for ( Gate gate : this ) {
-                        if ( gate.isPointNear(node.getLocation(), 1) ) {
+                        if ( gate.isGateNear( node.getLocation(), 1 ) ) {
                             gate.getInputWires().replaceWireAtNode(wire, node);
                         }
                     }
                 }
             }
         }
+    }
+
+    public void deleteAtLocation( final Point2D location ) {
+        Wire outputWire = null;
+        Wire inputWire  = findContainingWires( location ).getFirst();
+        if ( inputWire != null ) {
+            Node containingNode = inputWire.findContainingNode( location );
+            if ( containingNode != null ) {
+                outputWire = inputWire.resetWire();
+            }
+        }
+        if ( outputWire != null ) {
+            Gate outputGate = findGateNear( outputWire.getOutputNode().getLocation() );
+            assert outputGate != null : "outputWire " + outputWire + " is not attached to any gate.";
+            outputGate.replaceWire( inputWire, outputWire );
+        }
+        Gate gateToDelete = findContainingGate( location );
+
     }
 }

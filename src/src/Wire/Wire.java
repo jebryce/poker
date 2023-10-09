@@ -30,6 +30,11 @@ public class Wire extends LinkedList<Node> {
         start.connectNode( end );
     }
 
+    private Wire( final Node start ) {
+        add( start );
+        recalculateBounds();
+    }
+
     private void initialize( final NodeType nodeType, final double x, final double y ) {
         Node start = new Node( nodeType, x, y );
         Node end;
@@ -127,5 +132,33 @@ public class Wire extends LinkedList<Node> {
             node.move( location );
         }
         recalculateBounds();
+    }
+
+    public Wire resetWire() {
+        Point2D inputLocation  = null;
+        Point2D outputLocation = null;
+        for ( Node node : this ) {
+            if ( node.getNodeType() == NodeType.INPUT ) {
+                inputLocation = node.getLocation();
+            }
+            else if ( node.getNodeType() == NodeType.OUTPUT ) {
+                outputLocation = node.getLocation();
+            }
+        }
+        assert outputLocation != null;
+        assert inputLocation != null;
+        removeAll();
+        initialize( NodeType.INPUT, inputLocation.getX(), inputLocation.getY() );
+        return new Wire( NodeType.OUTPUT, outputLocation );
+    }
+
+    public Node getOutputNode() {
+        for ( Node node : this ) {
+            if ( node.getNodeType() == NodeType.OUTPUT ) {
+                return node;
+            }
+        }
+        assert false : "This wire " + this + " does not have an output node.";
+        return null;
     }
 }
