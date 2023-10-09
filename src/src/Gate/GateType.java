@@ -11,5 +11,6 @@ public enum GateType {
     NOT,
     INPUT,
     OUTPUT,
-    CHIP
+    CHIP,
+    CHIP_IO,
 }

@@ -1,8 +1,6 @@
 package Gate;
 
 import Main.Colors;
-import Main.Constants;
-import Wire.Node.Node;
 import Wire.Node.NodeType;
 import Wire.Wire;
 import Wire.Wires;
@@ -26,12 +24,11 @@ public abstract class Gate extends ListItem {
         this.gateType = gateType;
     }
 
-    public Gate place() {
+    public void place() {
         moveInputs();
         for ( Wire wire : outputWires ) {
             wire.move( location );
         }
-        return this;
     }
 
     public void moveInputs() {
@@ -102,7 +99,7 @@ public abstract class Gate extends ListItem {
 
     public void update() {};
 
-    protected Wire addWire( final NodeType nodeType, final int x, final int y ) {
+    protected Wire addWire( final NodeType nodeType, final double x, final double y ) {
         assert nodeType == NodeType.INPUT || nodeType == NodeType.OUTPUT :
                 "Cannot add a wire to a gate that isn't an input or output";
         if ( nodeType == NodeType.INPUT ) {

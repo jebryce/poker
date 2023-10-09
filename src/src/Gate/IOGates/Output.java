@@ -13,7 +13,6 @@ import java.awt.geom.Point2D;
 public class Output extends IO_Gate {
     public Output( final Point2D location ) {
         super( location, GateType.OUTPUT );
-        body.append( new Ellipse2D.Float( 0, 0, 50, 50), false );
 
         addWire( NodeType.INPUT, 0, 25 );
     }

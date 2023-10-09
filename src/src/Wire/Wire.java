@@ -23,6 +23,13 @@ public class Wire extends LinkedList<Node> {
         initialize( nodeType, location.getX(), location.getY() );
     }
 
+    public Wire( final Node start, final Node end ) {
+        bounds.setFrame( start.getLocation().getX(), start.getLocation().getY(), 0, 0 );
+        add( start );
+        add( end );
+        start.connectNode( end );
+    }
+
     private void initialize( final NodeType nodeType, final double x, final double y ) {
         Node start = new Node( nodeType, x, y );
         Node end;
