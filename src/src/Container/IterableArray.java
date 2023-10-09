@@ -17,6 +17,12 @@ public class IterableArray<W> implements Iterable<W>{
         contents = new Object[maxLength];
     }
 
+    public W getIndex( final int index ) {
+        assert index < maxLength;
+        return (W) contents[index];
+    }
+
+
     public W add( final W newItem) {
         if ( currentLength < maxLength ) {
             contents[currentLength++] = newItem;

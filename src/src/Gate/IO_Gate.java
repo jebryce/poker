@@ -13,6 +13,11 @@ public abstract class IO_Gate extends Gate {
         body.append( new Ellipse2D.Float( 0, 0, 50, 50), false );
     }
 
+    public IO_Gate( final double x, final double y, final GateType gateType ) {
+        super( x, y, gateType );
+        body.append( new Ellipse2D.Float( 0, 0, 50, 50), false );
+    }
+
     @Override
     protected Wire addWire( final NodeType nodeType, final double x, final double y ) {
         return super.addWire( nodeType, x, y );

@@ -12,38 +12,26 @@ import java.awt.*;
 import java.awt.geom.Point2D;
 
 public class ChipIO extends IO_Gate {
-    private boolean initialized = false;
 
-    public ChipIO( Point2D location ) {
+    public ChipIO( final Point2D location, final IO_Direction direction ) {
         super( location, GateType.CHIP_IO );
+        addWire( direction );
     }
 
-    public void setInput() {
-        if ( initialized ) {
-            return;
-        }
-        initialized = true;
-        addWire( NodeType.OUTPUT, 50, 25 );
+    public ChipIO( final double x, final double y, final IO_Direction direction ) {
+        super( x, y, GateType.CHIP_IO );
+        addWire( direction );
     }
 
-    public void setOutput() {
-        if ( initialized ) {
-            return;
-        }
-        initialized = true;
-        addWire( NodeType.OUTPUT, 0, 25 );
-    }
-
-    @Override
-    protected Wire addWire( final NodeType nodeType, final double x, final double y ) {
-        assert nodeType == NodeType.INPUT || nodeType == NodeType.OUTPUT :
-                "NodeType needs to be either INPUT or OUTPUT to set direction of wire.";
-        Node start = new Node( NodeType.OUTPUT, x, y );
+    protected Wire addWire( final IO_Direction direction ) {
+        Node start;
         Node end;
-        if ( nodeType == NodeType.INPUT ) {
-            end = new Node( x - Constants.MIN_LINE_LENGTH, y );
+        if ( direction == IO_Direction.LEFT ) {
+            start = new Node( NodeType.OUTPUT, 0, 25 );
+            end   = new Node( -Constants.MIN_LINE_LENGTH, 25 );
         } else {
-            end = new Node( x + Constants.MIN_LINE_LENGTH, y );
+            start = new Node( NodeType.OUTPUT, 50, 25 );
+            end   = new Node( 50 + Constants.MIN_LINE_LENGTH, 25 );
         }
         Wire newWire = new Wire( start, end  );
         outputWires.add( newWire );

@@ -24,11 +24,17 @@ public abstract class Gate extends ListItem {
         this.gateType = gateType;
     }
 
-    public void place() {
+    public Gate( final double x, final double y, final GateType gateType ) {
+        this.location.setLocation( x, y );
+        this.gateType = gateType;
+    }
+
+    public Gate place() {
         moveInputs();
         for ( Wire wire : outputWires ) {
             wire.move( location );
         }
+        return this;
     }
 
     public void moveInputs() {
