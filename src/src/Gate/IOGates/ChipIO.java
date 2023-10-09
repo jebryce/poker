@@ -12,7 +12,6 @@ import java.awt.*;
 import java.awt.geom.Point2D;
 
 public class ChipIO extends IO_Gate {
-
     public ChipIO( final Point2D location, final IO_Direction direction ) {
         super( location, GateType.CHIP_IO );
         addWire( direction );
@@ -39,13 +38,20 @@ public class ChipIO extends IO_Gate {
     }
 
     @Override
-    public void repaint( final Graphics2D graphics2D  ) {
-        if ( outputWires.getFirst().getState() ) {
-            graphics2D.setColor( Colors.GREEN );
+    public void update() {
+        if ( state ) {
+            outputWires.getFirst().setState( state );
+        } else {
+            state = outputWires.getFirst().getState();
         }
-        else {
-            graphics2D.setColor( Colors.RED );
-        }
-        super.repaint( graphics2D );
+
+    }
+
+    public void setState( final boolean newState ) {
+        state = newState;
+    }
+
+    public boolean getState() {
+        return state;
     }
 }

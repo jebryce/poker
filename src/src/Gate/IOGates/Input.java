@@ -18,28 +18,6 @@ public class Input extends IO_Gate {
     }
 
     public void flipState() {
-        outputWires.getFirst().flipState();
-    }
-
-    @Override
-    public void repaint( final Graphics2D graphics2D  ) {
-        if ( outputWires.getFirst().getState() ) {
-            graphics2D.setColor( Colors.GREEN );
-        }
-        else {
-            graphics2D.setColor( Colors.RED );
-        }
-        super.repaint( graphics2D );
-    }
-
-    @Override
-    public void repaintInHand( final Graphics2D graphics2D ) {
-        if ( outputWires.getFirst().getState() ) {
-            graphics2D.setColor( Colors.GREEN );
-        }
-        else {
-            graphics2D.setColor( Colors.RED );
-        }
-        super.repaintInHand( graphics2D );
+        state = outputWires.getFirst().flipState();
     }
 }

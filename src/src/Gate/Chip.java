@@ -14,10 +14,10 @@ import Wire.Node.NodeType;
 import Wire.Wires.Wires;
 
 public class Chip extends Gate {
-    private final Arc2D   notch      = new Arc2D.Double( 40, -20, 40, 40, 180, 180, Arc2D.OPEN );
-    private final Gates   contents   = new Gates();
-    private final Wires   gateIO     = new Wires( Constants.MAX_NUM_IO );
-    private final Wires   contentsIO = new Wires( Constants.MAX_NUM_IO );
+    private final Arc2D    notch    = new Arc2D.Double( 40, -20, 40, 40, 180, 180, Arc2D.OPEN );
+    private final Gates    contents = new Gates();
+    private final Wires    gateIO   = new Wires( Constants.MAX_NUM_IO );
+    private final ChipIO[] chipIO   = new ChipIO[Constants.MAX_NUM_IO];
 
     public Chip( final Point2D location ) {
         super( location, GateType.CHIP );
@@ -60,7 +60,13 @@ public class Chip extends Gate {
     private void addChipIO( final ChipIO newChipIO ) {
         contents.add( newChipIO );
         newChipIO.place();
-        contentsIO.addFirst( newChipIO.getOutputWires().getFirst() );
+        for ( int i = 0; i < Constants.MAX_NUM_IO; i++ ) {
+            if ( chipIO[i] != null ) {
+                continue;
+            }
+            chipIO[i] = newChipIO;
+            break;
+        }
     }
 
     public Wires getGateIO() {
@@ -72,8 +78,8 @@ public class Chip extends Gate {
         contents.update();
         int halfIO = Constants.MAX_NUM_IO/2;
         for ( int i = 0; i < halfIO; i++ ) {
-            contentsIO.getIndex( i ).setState( gateIO.getIndex( i ).getState() );
-            gateIO.getIndex( i + halfIO ).setState( contentsIO.getIndex( i + halfIO ).getState() );
+            chipIO[i].setState( gateIO.getIndex( i ).getState() );
+            gateIO.getIndex( i + halfIO ).setState( chipIO[i+halfIO].getState() );
         }
     }
 

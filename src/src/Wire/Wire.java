@@ -109,8 +109,9 @@ public class Wire extends LinkedList<Node> {
         return newHeldWireNode;
     }
 
-    public void flipState() {
+    public boolean flipState() {
         state = !state;
+        return state;
     }
 
     public void replaceWire( final Wire wire, final Node thisNode, final Node wireNode ) {
