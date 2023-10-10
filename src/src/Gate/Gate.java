@@ -55,7 +55,7 @@ public abstract class Gate extends ListItem {
     }
 
     public boolean isPointWithin( final Point2D point2D ) {
-        return body.contains( point2D.getX() - location.getX(), point2D.getY() - location.getY() );
+        return isGateNear( point2D, 0 );
     }
 
     public boolean isGateNear( final Point2D point2D, final int radius ) {
@@ -108,12 +108,13 @@ public abstract class Gate extends ListItem {
     }
 
     public void replaceWire( Wire oldWire, Wire newWire ) {
-        if ( inputWires.remove( oldWire ) ) {
-            inputWires.add( newWire );
+        if ( inputWires.removeFirst( oldWire ) ) {
+            inputWires.addFirst( newWire );
             return;
         }
-        if ( outputWires.remove( oldWire ) ) {
-            outputWires.add( newWire );
+        if ( outputWires.removeFirst( oldWire ) ) {
+            newWire.setState( oldWire.getState() );
+            outputWires.addFirst( newWire );
             return;
         }
         assert false : oldWire + " is not attached to this gate.";

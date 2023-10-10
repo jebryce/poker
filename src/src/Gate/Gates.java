@@ -122,20 +122,43 @@ public class Gates extends LinkedList<Gate> {
     }
 
     public void deleteAtLocation( final Point2D location ) {
-        Wire outputWire = null;
-        Wire inputWire  = findContainingWires( location ).getFirst();
-        if ( inputWire != null ) {
-            Node containingNode = inputWire.findContainingNode( location );
-            if ( containingNode != null ) {
-                outputWire = inputWire.resetWire();
-            }
-        }
-        if ( outputWire != null ) {
-            Gate outputGate = findGateNear( outputWire.getOutputNode().getLocation() );
-            assert outputGate != null : "outputWire " + outputWire + " is not attached to any gate.";
-            outputGate.replaceWire( inputWire, outputWire );
-        }
-        Gate gateToDelete = findContainingGate( location );
+        deleteWireAtLocation( location );
 
+        Gate gateToDelete = findContainingGate( location );
+        if ( gateToDelete == null ) {
+            return;
+        }
+        for ( Wire wire : gateToDelete.getInputWires() ) {
+            deleteWire( wire );
+        }
+        for ( Wire wire : gateToDelete.getOutputWires() ) {
+            deleteWire( wire );
+        }
+        wires.remove( gateToDelete.inputWires );
+        wires.remove( gateToDelete.outputWires );
+        this.remove( gateToDelete );
+    }
+
+    private void deleteWireAtLocation( final Point2D location ) {
+        Wires     containingWires = findContainingWires( location );
+        Wire      wire            = containingWires.getFirst();
+        Node      containingNode  = null;
+        if ( wire != null ) {
+            containingNode = wire.findContainingNode( location );
+        }
+        if ( containingNode != null ) {
+            deleteWire( wire );
+        }
+    }
+
+    private void deleteWire( final Wire wire ) {
+        for ( Node node : wire.ioNodes() ) {
+            if ( node == null ) {
+                break;
+            }
+            Gate nearGate = findGateNear ( node.getLocation() );
+            assert nearGate != null : "ioNodes must have only nodes attached to gates";
+            nearGate.replaceWire( wire, new Wire ( node.getNodeType(), node.getLocation() ) );
+        }
     }
 }

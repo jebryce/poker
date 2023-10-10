@@ -134,22 +134,15 @@ public class Wire extends LinkedList<Node> {
         recalculateBounds();
     }
 
-    public Wire resetWire() {
-        Point2D inputLocation  = null;
-        Point2D outputLocation = null;
+    public Node[] ioNodes() {
+        Node[] ioNodes = new Node[getLength()/2];
+        int count = 0;
         for ( Node node : this ) {
-            if ( node.getNodeType() == NodeType.INPUT ) {
-                inputLocation = node.getLocation();
-            }
-            else if ( node.getNodeType() == NodeType.OUTPUT ) {
-                outputLocation = node.getLocation();
+            if ( node.getNodeType() == NodeType.INPUT || node.getNodeType() == NodeType.OUTPUT ) {
+                ioNodes[count++] = node;
             }
         }
-        assert outputLocation != null;
-        assert inputLocation != null;
-        removeAll();
-        initialize( NodeType.INPUT, inputLocation.getX(), inputLocation.getY() );
-        return new Wire( NodeType.OUTPUT, outputLocation );
+        return ioNodes;
     }
 
     public Node getOutputNode() {

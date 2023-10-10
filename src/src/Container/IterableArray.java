@@ -73,7 +73,10 @@ public class IterableArray<W> extends ListItem implements Iterable<W> {
     }
 
     public W getFirst() {
-        return (W) contents[0];
+        if ( maxLength > 0 ) {
+            return (W) contents[0];
+        }
+        return null;
     }
 
     @Override
