@@ -1,6 +1,7 @@
 package Gate;
 
 import Main.Colors;
+import Main.Constants;
 import Wire.Node.NodeType;
 import Wire.Wire;
 import Wire.Wires.Wires;
@@ -126,5 +127,31 @@ public abstract class Gate extends ListItem {
 
     public GateType getGateType() {
         return gateType;
+    }
+
+    public Point2D snapCenter( final Point2D playerLocation ) {
+        if ( isPointHorizontal( playerLocation ) ) {
+            return new Point2D.Double( playerLocation.getX(), body.getBounds2D().getCenterY() + location.getY() );
+        }
+        if ( isPointVertical( playerLocation ) ) {
+            return new Point2D.Double( body.getBounds2D().getCenterX() + location.getX(), playerLocation.getY() );
+        }
+        return null;
+    }
+
+    private boolean isPointHorizontal( final Point2D point ) {
+        double y = body.getBounds2D().getCenterY() + location.getY();
+        double minY = y - Constants.LINE_GRAB_RADIUS;
+        double maxY = y + Constants.LINE_GRAB_RADIUS;
+        double pointY = point.getY();
+        return minY < pointY && pointY < maxY;
+    }
+
+    private boolean isPointVertical( final Point2D point ) {
+        double x = body.getBounds2D().getCenterX() + location.getX();
+        double minX = x - Constants.LINE_GRAB_RADIUS;
+        double maxX = x + Constants.LINE_GRAB_RADIUS;
+        double pointX = point.getX();
+        return minX < pointX && pointX < maxX;
     }
 }

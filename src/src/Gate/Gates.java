@@ -172,6 +172,13 @@ public class Gates extends LinkedList<Gate> {
                 }
             }
         }
+        for ( Gate gate : this ) {
+            snappedLocation = gate.snapCenter( playerLocation );
+            System.out.println( snappedLocation );
+            if ( snappedLocation != null ) {
+                return snappedLocation;
+            }
+        }
         return playerLocation;
     }
 }

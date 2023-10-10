@@ -41,8 +41,6 @@ public class Player {
         gates.repaint( graphics2D );
 
         if ( heldGate != null ) {
-            Point2D centerOffset = heldGate.getCenterOffset();
-            heldGate.setLocation( playerLocation.getX() - centerOffset.getX(), playerLocation.getY() - centerOffset.getY() );
             heldGate.repaintInHand( graphics2D );
         }
     }
@@ -150,8 +148,11 @@ public class Player {
     }
 
     private void updatePLACE_GATE() {
-        if ( mouseHandler.isMouseLeftClicked() ) {
-            if ( heldGate != null ) {
+        if ( heldGate != null ) {
+            Point2D centerOffset = heldGate.getCenterOffset();
+            Point2D snappedLocation = gates.snapToNode( playerLocation );
+            heldGate.setLocation( snappedLocation.getX() - centerOffset.getX(), snappedLocation.getY() - centerOffset.getY() );
+            if ( mouseHandler.isMouseLeftClicked() ) {
                 heldGate.place();
                 gates.add( heldGate );
                 heldGate = null;
