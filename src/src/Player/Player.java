@@ -162,7 +162,9 @@ public class Player {
 
     private void updatePLACE_WIRE() {
         if ( heldWireNode != null ) {
-            heldWireNode.setPlayerNode( playerLocation );
+            Point2D snappedLocation = gates.snapToNode( playerLocation );
+            heldWireNode.updatePlayerNode( snappedLocation );
+
         }
         if ( !mouseHandler.isMouseLeftClicked() ) {
             return;
@@ -182,6 +184,7 @@ public class Player {
                     continue;
                 }
                 heldWireNode = containingNode;
+                heldWireNode.setPlayerNode( playerLocation );
                 heldWire = wire;
                 return;
             }
@@ -193,6 +196,7 @@ public class Player {
         }
         if ( heldWireNode != null ) {
             heldWireNode = heldWire.placePlayerNode( heldWireNode );
+            heldWireNode.setPlayerNode( playerLocation );
         }
     }
 }

@@ -30,11 +30,6 @@ public class Wire extends LinkedList<Node> {
         start.connectNode( end );
     }
 
-    private Wire( final Node start ) {
-        add( start );
-        recalculateBounds();
-    }
-
     private void initialize( final NodeType nodeType, final double x, final double y ) {
         Node start = new Node( nodeType, x, y );
         Node end;
@@ -108,6 +103,24 @@ public class Wire extends LinkedList<Node> {
         return null;
     }
 
+    public Point2D snapNode( final Point2D location ) {
+        for ( Node node : this ) {
+            if ( node.isPointHorizontal( location ) ) {
+                if ( node.getNodeType() != NodeType.NORMAL ) {
+                    continue;
+                }
+                return new Point2D.Double( location.getX(), node.getLocation().getY() );
+            }
+            if ( node.isPointVertical( location ) ) {
+                if ( node.getNodeType() != NodeType.NORMAL ) {
+                    continue;
+                }
+                return new Point2D.Double( node.getLocation().getX(), location.getY() );
+            }
+        }
+        return null;
+    }
+
     public Node placePlayerNode( final Node heldWireNode ) {
         Node newHeldWireNode = heldWireNode.placePlayerNode();
         add( newHeldWireNode );
@@ -143,15 +156,5 @@ public class Wire extends LinkedList<Node> {
             }
         }
         return ioNodes;
-    }
-
-    public Node getOutputNode() {
-        for ( Node node : this ) {
-            if ( node.getNodeType() == NodeType.OUTPUT ) {
-                return node;
-            }
-        }
-        assert false : "This wire " + this + " does not have an output node.";
-        return null;
     }
 }

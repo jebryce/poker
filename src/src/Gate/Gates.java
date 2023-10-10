@@ -161,4 +161,17 @@ public class Gates extends LinkedList<Gate> {
             nearGate.replaceWire( wire, new Wire ( node.getNodeType(), node.getLocation() ) );
         }
     }
+
+    public Point2D snapToNode( final Point2D playerLocation ) {
+        Point2D snappedLocation;
+        for ( Wires ioWire : wires ) {
+            for ( Wire wire : ioWire ) {
+                snappedLocation = wire.snapNode( playerLocation );
+                if ( snappedLocation != null ) {
+                    return snappedLocation;
+                }
+            }
+        }
+        return playerLocation;
+    }
 }
