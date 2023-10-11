@@ -133,18 +133,4 @@ public class Node extends ListItem {
     public Nodes getPreviousNodes() {
         return previousNodes;
     }
-
-    public boolean isPointVertical( final Point2D point ) {
-        double minX = location.getX() - Constants.LINE_GRAB_RADIUS;
-        double maxX = location.getX() + Constants.LINE_GRAB_RADIUS;
-        double pointX = point.getX();
-        return minX < pointX && pointX < maxX;
-    }
-
-    public boolean isPointHorizontal( final Point2D point ) {
-        double minY = location.getY() - Constants.LINE_GRAB_RADIUS;
-        double maxY = location.getY() + Constants.LINE_GRAB_RADIUS;
-        double pointY = point.getY();
-        return minY < pointY && pointY < maxY;
-    }
 }

@@ -103,24 +103,6 @@ public class Wire extends LinkedList<Node> {
         return null;
     }
 
-    public Point2D snapNode( final Point2D location ) {
-        for ( Node node : this ) {
-            if ( node.isPointHorizontal( location ) ) {
-                if ( node.getNodeType() != NodeType.NORMAL ) {
-                    continue;
-                }
-                return new Point2D.Double( location.getX(), node.getLocation().getY() );
-            }
-            if ( node.isPointVertical( location ) ) {
-                if ( node.getNodeType() != NodeType.NORMAL ) {
-                    continue;
-                }
-                return new Point2D.Double( node.getLocation().getX(), location.getY() );
-            }
-        }
-        return null;
-    }
-
     public Node placePlayerNode( final Node heldWireNode ) {
         Node newHeldWireNode = heldWireNode.placePlayerNode();
         add( newHeldWireNode );

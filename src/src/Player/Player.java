@@ -150,7 +150,7 @@ public class Player {
     private void updatePLACE_GATE() {
         if ( heldGate != null ) {
             Point2D centerOffset = heldGate.getCenterOffset();
-            Point2D snappedLocation = gates.snapToNode( playerLocation );
+            Point2D snappedLocation = gates.snap( playerLocation );
             heldGate.setLocation( snappedLocation.getX() - centerOffset.getX(), snappedLocation.getY() - centerOffset.getY() );
             if ( mouseHandler.isMouseLeftClicked() ) {
                 heldGate.place();

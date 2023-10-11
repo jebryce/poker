@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.geom.Point2D;
 
 import Container.LinkedList;
+import Main.Constants;
 import Wire.Node.Node;
 import Wire.Node.NodeType;
 import Wire.Wires.WiresLL;
@@ -136,6 +137,9 @@ public class Gates extends LinkedList<Gate> {
         }
         wires.remove( gateToDelete.inputWires );
         wires.remove( gateToDelete.outputWires );
+        if ( gateToDelete instanceof Chip ) {
+            wires.remove( ((Chip) gateToDelete).getGateIO() );
+        }
         this.remove( gateToDelete );
     }
 
@@ -162,23 +166,51 @@ public class Gates extends LinkedList<Gate> {
         }
     }
 
+    private Point2D snapToPoint( final Point2D playerLocation, final Point2D snapToPoint ) {
+        double snappedX = snapToPoint.getX();
+        double snappedY = snapToPoint.getY();
+
+        double minX = snappedX - Constants.LINE_GRAB_RADIUS;
+        double maxX = snappedX + Constants.LINE_GRAB_RADIUS;
+        double minY = snappedY - Constants.LINE_GRAB_RADIUS;
+        double maxY = snappedY + Constants.LINE_GRAB_RADIUS;
+
+        double playerX = playerLocation.getX();
+        double playerY = playerLocation.getY();
+
+        if ( minX < playerX && playerX < maxX ) {
+            playerX = snappedX;
+        }
+        if ( minY < playerY && playerY < maxY ) {
+            playerY = snappedY;
+        }
+        return new Point2D.Double( playerX, playerY );
+    }
+
     public Point2D snapToNode( final Point2D playerLocation ) {
-        Point2D snappedLocation;
+        Point2D snappedLocation = (Point2D) playerLocation.clone();
         for ( Wires ioWire : wires ) {
             for ( Wire wire : ioWire ) {
-                snappedLocation = wire.snapNode( playerLocation );
-                if ( snappedLocation != null ) {
-                    return snappedLocation;
+                for ( Node node : wire ) {
+                    snappedLocation = snapToPoint( snappedLocation, node.getLocation() );
                 }
             }
         }
+        return snappedLocation;
+    }
+
+    public Point2D snapToGate( final Point2D playerLocation ) {
+        Point2D snappedLocation = (Point2D) playerLocation.clone();
         for ( Gate gate : this ) {
-            snappedLocation = gate.snapCenter( playerLocation );
-            System.out.println( snappedLocation );
-            if ( snappedLocation != null ) {
-                return snappedLocation;
-            }
+            snappedLocation = snapToPoint( snappedLocation, gate.getCenter() );
         }
-        return playerLocation;
+        return snappedLocation;
+    }
+
+    public Point2D snap( final Point2D playerLocation ) {
+        Point2D snappedLocation = (Point2D) playerLocation.clone();
+        snappedLocation = snapToGate( snappedLocation );
+        snappedLocation = snapToNode( snappedLocation );
+        return snappedLocation;
     }
 }
