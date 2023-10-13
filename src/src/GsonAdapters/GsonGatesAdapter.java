@@ -36,10 +36,10 @@ public class GsonGatesAdapter extends TypeAdapter< Gates > {
             jsonReader.beginArray();
             Gate newGate = gateAdapter.read( jsonReader );
             newGate.moveInputs();
-            newGate.getOutputWires().removeAll();
+            newGate.removeAllOutputs();
             while ( jsonReader.peek() == JsonToken.BEGIN_ARRAY ) {
                 Wire newWire = wireAdapter.read( jsonReader );
-                newGate.getOutputWires().add( newWire );
+                newGate.addOutputWire( newWire );
             }
             if ( jsonReader.peek() == JsonToken.END_ARRAY ) {
                 jsonReader.endArray();

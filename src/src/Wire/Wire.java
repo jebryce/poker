@@ -88,7 +88,7 @@ public class Wire extends LinkedList<Node> {
         for ( Node node : this ) {
             node.repaint( graphics2D );
         }
-//        graphics2D.draw( bounds );
+        graphics2D.draw( bounds );
     }
 
     public Node findContainingNode( final Point2D location ) {

@@ -12,7 +12,7 @@ public class IterableArray<W> extends ListItem implements Iterable<W> {
 
     protected IterableArray( final int maxLength ) {
         this.maxLength = maxLength;
-        contents = new Object[maxLength];
+        contents = new Object[maxLength+1]; // add one to act as a sort of null-terminator
     }
 
     public W getIndex( final int index ) {
@@ -38,6 +38,11 @@ public class IterableArray<W> extends ListItem implements Iterable<W> {
             return newItem;
         }
         return newItem;
+    }
+
+    public void setIndexToNull( final int index ) {
+        contents[index] = null;
+        currentLength--;
     }
 
     public boolean removeFirst( final W itemToRemove ) {

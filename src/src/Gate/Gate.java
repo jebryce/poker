@@ -1,7 +1,7 @@
 package Gate;
 
 import Main.Colors;
-import Main.Constants;
+import Wire.Node.Node;
 import Wire.Node.NodeType;
 import Wire.Wire;
 import Wire.Wires.Wires;
@@ -133,5 +133,17 @@ public abstract class Gate extends ListItem {
 
     public GateType getGateType() {
         return gateType;
+    }
+
+    public void removeAllOutputs() {
+        outputWires.removeAll();
+    }
+
+    public void addOutputWire( final Wire newWire ) {
+        outputWires.add( newWire );
+    }
+
+    public void replaceInputWireAtNode( Wire newWire, Node node ) {
+        inputWires.replaceAndShiftWireAtNode( newWire, node );
     }
 }

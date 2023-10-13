@@ -43,7 +43,15 @@ public class Wires extends IterableArray< Wire > {
         }
     }
 
+    public void replaceAndShiftWireAtNode( final Wire newWire, final Node inputNode ) {
+        replaceWireAtNode( newWire, inputNode, true );
+    }
+
     public void replaceWireAtNode( final Wire newWire, final Node inputNode ) {
+        replaceWireAtNode( newWire, inputNode, false );
+    }
+
+    private void replaceWireAtNode( final Wire newWire, final Node inputNode, final boolean shift ) {
         for ( Wire wire : this ) {
             if ( wire == newWire ) {
                 return;
@@ -53,10 +61,18 @@ public class Wires extends IterableArray< Wire > {
                     continue;
                 }
                 if ( node.getLocation().equals( inputNode.getLocation() ) ) {
-                    remove( wire );
+                    if ( shift ) {
+                        remove( wire );
+                    } else {
+                        removeFirst( wire );
+                    }
                 }
             }
         }
-        super.add( newWire );
+        if ( shift)  {
+            super.add( newWire );
+        } else {
+            super.addFirst( newWire );
+        }
     }
 }

@@ -114,7 +114,7 @@ public class Gates extends LinkedList<Gate> {
                     }
                     for ( Gate gate : this ) {
                         if ( gate.isGateNear( node.getLocation(), 1 ) ) {
-                            gate.getInputWires().replaceWireAtNode(wire, node);
+                            gate.replaceInputWireAtNode( wire, node );
                         }
                     }
                 }
@@ -138,6 +138,9 @@ public class Gates extends LinkedList<Gate> {
         wires.remove( gateToDelete.inputWires );
         wires.remove( gateToDelete.outputWires );
         if ( gateToDelete instanceof Chip ) {
+            for ( Wire wire : ((Chip) gateToDelete).getGateIO() ) {
+                deleteWire( wire );
+            }
             wires.remove( ((Chip) gateToDelete).getGateIO() );
         }
         this.remove( gateToDelete );

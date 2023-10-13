@@ -10,6 +10,7 @@ import Gate.IOGates.ChipIO.IO_Direction;
 import Gate.IOGates.ChipIO.IO_Type;
 import Main.Colors;
 import Main.Constants;
+import Wire.Node.Node;
 import Wire.Wire;
 import Wire.Node.NodeType;
 import Wire.Wires.Wires;
@@ -128,5 +129,45 @@ public class Chip extends Gate {
 
     public Gates getContents() {
         return contents;
+    }
+
+    @Override
+    public void moveInputs() {
+        for ( int index = 0; index < Constants.MAX_NUM_IO; index++ ) {
+            if ( chipIO[index].getIO_Type() == IO_Type.OUTPUT ) {
+                gateIO.getIndex( index ).move( location );
+            }
+        }
+    }
+
+    @Override
+    public void removeAllOutputs() {
+        for ( int index = 0; index < Constants.MAX_NUM_IO; index++ ) {
+            if ( chipIO[index].getIO_Type() == IO_Type.INPUT ) {
+                gateIO.setIndexToNull( index );
+            }
+        }
+    }
+
+    @Override
+    public void addOutputWire( final Wire newWire ) {
+        gateIO.addFirst( newWire );
+    }
+
+    @Override
+    public Wires getOutputWires() {
+        Wires returnWires = new Wires( Constants.MAX_NUM_IO );
+        for ( int index = 0; index < Constants.MAX_NUM_IO; index++ ) {
+            if ( chipIO[index].getIO_Type() == IO_Type.INPUT ) {
+                returnWires.add( gateIO.getIndex( index ) );
+            }
+        }
+
+        return returnWires;
+    }
+
+    @Override
+    public void replaceInputWireAtNode( Wire newWire, Node node ) {
+        gateIO.replaceWireAtNode( newWire, node );
     }
 }
