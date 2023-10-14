@@ -59,6 +59,13 @@ public class LinkedList< W extends ListItem > extends ListItem implements Iterab
         return head;
     }
 
+    public void removeHead() {
+        if ( head == null ) {
+            return;
+        }
+        head = (W) head.getNext();
+    }
+
     public int getIndex( final ListItem item ) {
         ListItem next = head;
         for ( int index = 0; index < length; index++ ) {

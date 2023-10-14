@@ -36,7 +36,11 @@ public class SaveHandler {
 
     private static void updateChipName() {
         for ( Key key : KeyHandler.get().getKeysTyped() ) {
-            chipName.append( key.getKey() );
+            if ( key.getKey() == '\b' && chipName.length() > 0 ) {
+                chipName.deleteCharAt( chipName.length() - 1 );
+            } else {
+                chipName.append( key.getKey() );
+            }
         }
     }
 
