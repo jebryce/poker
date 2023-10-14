@@ -5,8 +5,8 @@ import Gate.BaseGates.*;
 import Gate.IOGates.Input;
 import Gate.IOGates.Output;
 import GsonAdapters.GsonGatesAdapter;
-import Main.KeyBinds;
-import Main.KeyHandler;
+import Main.KeyHandler.KeyBinds;
+import Main.KeyHandler.KeyHandler;
 import Main.MouseHandler;
 import Main.SaveHandler;
 import Wire.Node.Node;
@@ -118,6 +118,7 @@ public class Player {
 
         if ( KeyHandler.get().isKeyPressed( KeyBinds.save ) ) {
             SaveHandler.setContents( gates );
+            KeyHandler.get().resetKeysTyped();
             clearHand();
             playerMode = PlayerMode.SAVE_MENU;
         }

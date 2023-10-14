@@ -1,4 +1,6 @@
-package Main;
+package Main.KeyHandler;
+
+import Container.Queue;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -8,6 +10,7 @@ public class KeyHandler implements KeyListener {
     private        final boolean[]  keyPressed   = new boolean[MAX_NUM_KEYS];
     private        final boolean[]  keyPressRead = new boolean[MAX_NUM_KEYS];
     private        final boolean[]  keyHeld      = new boolean[MAX_NUM_KEYS];
+    private static final Queue<Key> keysTyped    = new Queue<>();
     private static       KeyHandler instance     = null;
 
     private KeyHandler() {
@@ -21,8 +24,18 @@ public class KeyHandler implements KeyListener {
         return instance;
     }
 
+    public Queue<Key> getKeysTyped() {
+        return keysTyped;
+    }
+
+    public void resetKeysTyped() {
+        keysTyped.clear();
+    }
+
     @Override
-    public void keyTyped( KeyEvent event ) {}
+    public void keyTyped( KeyEvent event ) {
+        keysTyped.add( new Key( event.getKeyChar() ) );
+    }
 
     @Override
     public void keyPressed( KeyEvent event ) {
@@ -56,6 +69,5 @@ public class KeyHandler implements KeyListener {
         assert keyCode >= 0 && keyCode < MAX_NUM_KEYS : "Key [" + keyCode + "] not implemented!";
         return keyHeld[keyCode];
     }
-
 
 }

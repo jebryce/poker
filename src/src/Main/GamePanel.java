@@ -1,5 +1,6 @@
 package Main;
 
+import Main.KeyHandler.KeyHandler;
 import Player.Player;
 
 import java.awt.*;
