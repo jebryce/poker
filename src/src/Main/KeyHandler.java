@@ -2,14 +2,24 @@ package Main;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.Arrays;
 
 public class KeyHandler implements KeyListener {
-    private static final int       MAX_NUM_KEYS = 256;
-    private        final boolean[] keyPressed   = new boolean[MAX_NUM_KEYS];
-    private        final boolean[] keyPressRead = new boolean[MAX_NUM_KEYS];
-    private        final boolean[] keyHeld      = new boolean[MAX_NUM_KEYS];
+    private static final int        MAX_NUM_KEYS = 256;
+    private        final boolean[]  keyPressed   = new boolean[MAX_NUM_KEYS];
+    private        final boolean[]  keyPressRead = new boolean[MAX_NUM_KEYS];
+    private        final boolean[]  keyHeld      = new boolean[MAX_NUM_KEYS];
+    private static       KeyHandler instance     = null;
 
+    private KeyHandler() {
+
+    }
+
+    public static KeyHandler get() {
+        if ( instance == null ) {
+            instance = new KeyHandler();
+        }
+        return instance;
+    }
 
     @Override
     public void keyTyped( KeyEvent event ) {}

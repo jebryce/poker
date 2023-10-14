@@ -9,16 +9,15 @@ import javax.swing.*;
 public class GamePanel extends JPanel implements Runnable {
 
     private       Thread           gameThread;
-    private final KeyHandler       keyHandler       = new KeyHandler();
     private final MouseHandler     mouseHandler     = new MouseHandler();
-    private final Player player           = new Player( mouseHandler, keyHandler );
+    private final Player player           = new Player( mouseHandler );
 
 
     public GamePanel() {
         this.setPreferredSize( new Dimension( Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT ) );
         this.setBackground( Colors.EGGSHELL );
         this.setDoubleBuffered( true );
-        this.addKeyListener( keyHandler );
+        this.addKeyListener( KeyHandler.get() );
         this.setFocusTraversalKeysEnabled( false ); // can receive tab inputs
         this.addMouseMotionListener( mouseHandler );
         this.addMouseListener( mouseHandler );
@@ -84,7 +83,7 @@ public class GamePanel extends JPanel implements Runnable {
         graphics2D.setStroke( new BasicStroke( Constants.LINE_THICKNESS ) );
         graphics2D.scale( Constants.SCREEN_SCALE, Constants.SCREEN_SCALE);
 
-        graphics2D.setFont( new Font( Font.MONOSPACED, Font.PLAIN, 50 ) );
+        graphics2D.setFont( new Font( Font.MONOSPACED, Font.PLAIN, (int) (12 / Constants.SCREEN_SCALE) ) );
 
         player.repaint( graphics2D );
 
