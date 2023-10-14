@@ -1,6 +1,7 @@
 package GsonAdapters;
 
 import Gate.Gate;
+import Gate.GateType;
 import Gate.Gates;
 import Wire.Wire;
 import com.google.gson.TypeAdapter;

@@ -17,22 +17,14 @@ import Wire.Wires.Wires;
 
 public class Chip extends Gate {
     private final Arc2D    notch    = new Arc2D.Double( 40, -20, 40, 40, 180, 180, Arc2D.OPEN );
-    private final Gates    contents = new Gates();
+    private final Gates    contents;
     private final Wires    gateIO   = new Wires( Constants.MAX_NUM_IO );
     private final ChipIO[] chipIO   = new ChipIO[Constants.MAX_NUM_IO];
 
     public Chip( final Point2D location ) {
         super( location, GateType.CHIP );
-        body.append( new Rectangle2D.Double(0, 0, 120, 180), false );
-
-        addGateWire( NodeType.INPUT, 0, 30 );
-        addGateWire( NodeType.INPUT, 0, 70 );
-        addGateWire( NodeType.INPUT, 0, 110 );
-        addGateWire( NodeType.INPUT, 0, 150 );
-        addGateWire( NodeType.OUTPUT, 120, 30 );
-        addGateWire( NodeType.OUTPUT, 120, 70 );
-        addGateWire( NodeType.OUTPUT, 120, 110 );
-        addGateWire( NodeType.OUTPUT, 120, 150 );
+        contents = new Gates();
+        setBody();
 
         double yDiv = Constants.SCREEN_HEIGHT / Constants.SCREEN_SCALE / 8;
         double width = Constants.SCREEN_WIDTH / Constants.SCREEN_SCALE;
@@ -45,6 +37,46 @@ public class Chip extends Gate {
         addChipIO( new ChipIO( width - 100, yDiv*3 - 25, IO_Direction.LEFT  ) );
         addChipIO( new ChipIO( width - 100, yDiv*5 - 25, IO_Direction.LEFT  ) );
         addChipIO( new ChipIO( width - 100, yDiv*7 - 25, IO_Direction.LEFT  ) );
+    }
+
+    public Chip( final Point2D location, final Gates contents ) {
+        super( location, GateType.CHIP );
+        assert contents != null;
+        this.contents = contents;
+        setBody();
+        setChipIO();
+    }
+
+    private void setBody() {
+        body.append( new Rectangle2D.Double(0, 0, 120, 180), false );
+
+        addGateWire( NodeType.INPUT, 0, 30 );
+        addGateWire( NodeType.INPUT, 0, 70 );
+        addGateWire( NodeType.INPUT, 0, 110 );
+        addGateWire( NodeType.INPUT, 0, 150 );
+        addGateWire( NodeType.OUTPUT, 120, 30 );
+        addGateWire( NodeType.OUTPUT, 120, 70 );
+        addGateWire( NodeType.OUTPUT, 120, 110 );
+        addGateWire( NodeType.OUTPUT, 120, 150 );
+    }
+
+    private void setChipIO() {
+        for ( Gate gate : contents ) {
+            if ( gate instanceof ChipIO io ) {
+//                if ( io.getIO_Direction() == IO_Direction.LEFT ) {
+//                    io.setIO_Type( IO_Type.INPUT );
+//                } else {
+//                    io.setIO_Type( IO_Type.OUTPUT );
+//                }
+                for ( int i = 0; i < Constants.MAX_NUM_IO; i++ ) {
+                    if ( chipIO[i] != null ) {
+                        continue;
+                    }
+                    chipIO[i] = io;
+                    break;
+                }
+            }
+        }
     }
 
     @Override

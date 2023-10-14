@@ -1,5 +1,6 @@
 package Gate;
 
+import Gate.IOGates.ChipIO.ChipIO;
 import Main.Colors;
 import Wire.Node.Node;
 import Wire.Node.NodeType;
@@ -65,14 +66,18 @@ public abstract class Gate extends ListItem {
         return isGateNear( point2D, 0 );
     }
 
-    public boolean isGateNear( final Point2D point2D, final int radius ) {
-        double x = point2D.getX() - location.getX();
-        double y = point2D.getY() - location.getY();
+    public boolean isGateNear( final Point2D point, final int radius ) {
+        double x = point.getX() - location.getX();
+        double y = point.getY() - location.getY();
         Rectangle2D bounds = body.getBounds2D();
         final double maxX = bounds.getMaxX() + radius;
         final double minX = bounds.getMinX() - radius;
         final double maxY = bounds.getMaxY() + radius;
         final double minY = bounds.getMinY() - radius;
+
+        if ( gateType == GateType.CHIP_IO ) {
+//            System.out.println( "    " + x + " " + y + " " + maxX + " " + minX + " " + maxY + " " + minY );
+        }
 
         return ( x < maxX ) && ( x > minX ) && ( y < maxY ) && ( y > minY );
     }
