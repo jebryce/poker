@@ -84,8 +84,6 @@ public class GamePanel extends JPanel implements Runnable {
         graphics2D.setStroke( new BasicStroke( Constants.LINE_THICKNESS ) );
         graphics2D.scale( Constants.SCREEN_SCALE, Constants.SCREEN_SCALE);
 
-        graphics2D.setFont( new Font( Font.MONOSPACED, Font.PLAIN, (int) (12 / Constants.SCREEN_SCALE) ) );
-
         player.repaint( graphics2D );
 
 

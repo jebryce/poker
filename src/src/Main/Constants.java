@@ -14,4 +14,5 @@ public class Constants {
     public static final int    LINE_GRAB_RADIUS      = (int) ( 8 / SCREEN_SCALE );
     public static final int    MIN_LINE_LENGTH       = 40;
     public static final int    NUM_NEXT_NODES        = 3;
+    public static final String SAVE_PATH             = "src/saves/";
 }
