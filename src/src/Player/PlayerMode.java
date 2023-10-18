@@ -5,4 +5,5 @@ public enum PlayerMode {
     PLACE_GATE,
     PLACE_WIRE,
     SAVE_MENU,
+    LOAD_MENU,
 }

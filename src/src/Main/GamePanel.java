@@ -38,7 +38,6 @@ public class GamePanel extends JPanel implements Runnable {
         long       numUpdates         = 0;
         double     FPS;
         double     UPS;
-        boolean repaint = false;
 
         // main game loop
         while ( gameThread != null) {
@@ -85,7 +84,6 @@ public class GamePanel extends JPanel implements Runnable {
         graphics2D.scale( Constants.SCREEN_SCALE, Constants.SCREEN_SCALE);
 
         player.repaint( graphics2D );
-
 
         graphics2D.dispose();
     }

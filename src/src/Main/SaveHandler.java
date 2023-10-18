@@ -31,42 +31,61 @@ public class SaveHandler {
         return instance;
     }
 
-    public void repaint( final Graphics2D graphics2D ) {
-        updateChipName();
+    public boolean repaint( final Graphics2D graphics2D ) {
+        if ( updateChipName() ) {
+            return true;
+        }
 
-        int width  = (int) ( 400 / Constants.SCREEN_SCALE );
-        int height = (int) ( 200 / Constants.SCREEN_SCALE );
-        int x      = (int) ( Constants.SCREEN_WIDTH  / Constants.SCREEN_SCALE - width  ) / 2;
-        int y      = (int) ( Constants.SCREEN_HEIGHT / Constants.SCREEN_SCALE - height ) / 2;
+        double previewScale = 0.4;
+        int width  = (int) ( Constants.SCREEN_WIDTH  * previewScale / Constants.SCREEN_SCALE  );
+        int height = (int) ( Constants.SCREEN_HEIGHT * previewScale / Constants.SCREEN_SCALE );
+        int x      = (int) ( Constants.SCREEN_WIDTH  / 2 / Constants.SCREEN_SCALE - width / 2 );
+        int y      = (int) ( Constants.SCREEN_HEIGHT / 2 / Constants.SCREEN_SCALE - height / 2 );
 
 
         graphics2D.setColor( Colors.DARK_EGGSHELL );
-        graphics2D.fillRect( x, y, width, height );
-        graphics2D.setColor( Colors.GRAY );
-        graphics2D.drawRect( x, y, width, height );
+        graphics2D.fillRect( x, y, width, height + (int) (26 / Constants.SCREEN_SCALE) );
 
-        graphics2D.setFont( new Font( Font.MONOSPACED, Font.PLAIN, (int) (12 / Constants.SCREEN_SCALE) ) );
-        graphics2D.drawString( "Enter a name for this chip you are saving:",
-                x + (int) (2 / Constants.SCREEN_SCALE), y + (int) (12 / Constants.SCREEN_SCALE)
+        graphics2D.setColor( Colors.GRAY );
+        graphics2D.setFont( new Font( Font.MONOSPACED, Font.PLAIN, (int) (18 / Constants.SCREEN_SCALE) ) );
+        graphics2D.drawString( "Chip name: " + chipName + "_",
+                x + (int) (2 / Constants.SCREEN_SCALE), y + (int) (18 / Constants.SCREEN_SCALE) + height
         );
 
         graphics2D.setColor( Colors.BLACK );
-        graphics2D.setFont( new Font( Font.MONOSPACED, Font.PLAIN, (int) (18 / Constants.SCREEN_SCALE) ) );
-        graphics2D.drawString( chipName + "_",
-                x + (int) (2 / Constants.SCREEN_SCALE), y + (int) (30 / Constants.SCREEN_SCALE)
+        graphics2D.drawString( "           " + chipName + "_",
+                x + (int) (2 / Constants.SCREEN_SCALE), y + (int) (18 / Constants.SCREEN_SCALE) + height
         );
+
+
+        graphics2D.setColor( Colors.EGGSHELL );
+        graphics2D.fillRect( x, y, width, height);
+
+        graphics2D.translate( x, y );
+
+        graphics2D.scale( previewScale, previewScale );
+        contents.repaint( graphics2D );
+        graphics2D.scale( 1/previewScale, 1/previewScale );
+
+        graphics2D.translate( -x, -y );
+
+        graphics2D.setColor( Colors.GRAY );
+        graphics2D.drawRect( x, y, width, height + (int) (26 / Constants.SCREEN_SCALE) );
+        return false;
     }
 
-    private void updateChipName() {
+    private boolean updateChipName() {
         for ( Key key : KeyHandler.get().getKeysTyped() ) {
             if ( key.getKey() == '\b' && !chipName.isEmpty() ) {
                 chipName.deleteCharAt( chipName.length() - 1 );
             } else if ( key.getKey() == '\n' && !chipName.isEmpty() ) {
                 writeContents();
+                return true;
             } else {
                 chipName.append( key.getKey() );
             }
         }
+        return false;
     }
 
     public void setContents( final Gates gates ) {

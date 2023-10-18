@@ -4,17 +4,17 @@ import Gate.*;
 import Gate.BaseGates.*;
 import Gate.IOGates.Input;
 import Gate.IOGates.Output;
-import GsonAdapters.GsonGatesAdapter;
+import Main.Constants;
 import Main.KeyHandler.KeyBinds;
 import Main.KeyHandler.KeyHandler;
+import Main.LoadHandler;
 import Main.MouseHandler;
 import Main.SaveHandler;
 import Wire.Node.Node;
 import Wire.Wire;
 import Wire.Wires.Wires;
-import com.google.gson.GsonBuilder;
-import com.google.gson.Gson;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Point2D;
 
@@ -39,7 +39,13 @@ public class Player {
         }
 
         if ( playerMode == PlayerMode.SAVE_MENU ) {
-            SaveHandler.get().repaint( graphics2D );
+            if ( SaveHandler.get().repaint( graphics2D ) ) {
+                clearHand();
+            }
+        } else if ( playerMode == PlayerMode.LOAD_MENU ) {
+
+            clearHand();
+//            LoadHandler.get().repaint( graphics2D );
         }
     }
 
@@ -121,6 +127,7 @@ public class Player {
 
         if ( KeyHandler.get().isKeyPressed( KeyBinds.load ) ) {
             clearHand();
+            playerMode = PlayerMode.LOAD_MENU;
         }
     }
 
