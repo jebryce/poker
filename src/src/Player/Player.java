@@ -2,20 +2,21 @@ package Player;
 
 import Gate.*;
 import Gate.BaseGates.*;
+import Gate.IOGates.ChipIO.ChipIO;
+import Gate.IOGates.ChipIO.IO_Direction;
 import Gate.IOGates.Input;
 import Gate.IOGates.Output;
 import Main.Constants;
 import Main.KeyHandler.KeyBinds;
 import Main.KeyHandler.KeyHandler;
-import Main.LoadHandler;
 import Main.MouseHandler;
 import Main.SaveHandler;
 import Wire.Node.Node;
 import Wire.Wire;
 import Wire.Wires.Wires;
 
-import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.geom.Point2D;
 
 public class Player {
@@ -29,6 +30,18 @@ public class Player {
 
     public Player( final MouseHandler mouseH ) {
         mouseHandler = mouseH;
+
+        int yDiv = Constants.SCREEN_HEIGHT / 8;
+        int width = Constants.SCREEN_WIDTH;
+
+//        gates.add( new Input( 50, yDiv - 25) ).place();
+//        gates.add( new Input( 50, yDiv*3 - 25 ) ).place();
+//        gates.add( new Input( 50, yDiv*5 - 25 ) ).place();
+//        gates.add( new Input( 50, yDiv*7 - 25 ) ).place();
+//        gates.add( new Output( width - 100, yDiv - 25  ) ).place();
+//        gates.add( new Output( width - 100, yDiv*3 - 25  ) ).place();
+//        gates.add( new Output( width - 100, yDiv*5 - 25  ) ).place();
+//        gates.add( new Output( width - 100, yDiv*7 - 25  ) ).place();
     }
 
     public void repaint( final Graphics2D graphics2D  ) {
@@ -36,16 +49,6 @@ public class Player {
 
         if ( heldGate != null ) {
             heldGate.repaintInHand( graphics2D );
-        }
-
-        if ( playerMode == PlayerMode.SAVE_MENU ) {
-            if ( SaveHandler.get().repaint( graphics2D ) ) {
-                clearHand();
-            }
-        } else if ( playerMode == PlayerMode.LOAD_MENU ) {
-
-            clearHand();
-//            LoadHandler.get().repaint( graphics2D );
         }
     }
 
@@ -69,7 +72,18 @@ public class Player {
         }
 
         if ( playerMode == PlayerMode.SAVE_MENU ) {
+            if ( KeyHandler.get().isKeyPressed( KeyEvent.VK_ENTER ) ) {
+                clearHand();
+            }
             return;
+        }
+
+        if ( playerLocation.getY() < Constants.NAME_SPACE_HEIGHT && mouseHandler.isMouseLeftClicked() ) {
+            clearHand();
+            playerMode = PlayerMode.SAVE_MENU;
+            SaveHandler.get().select();
+            KeyHandler.get().resetKeysTyped();
+            SaveHandler.get().setContents( gates );
         }
 
         if ( KeyHandler.get().isKeyPressed( KeyBinds.delete ) ) {
@@ -116,22 +130,10 @@ public class Player {
                                  heldGate = new Chip(     playerLocation );
             playerMode = PlayerMode.PLACE_GATE;
         }
-
-        if ( KeyHandler.get().isKeyPressed( KeyBinds.save ) ) {
-            SaveHandler.get().setContents( gates );
-            KeyHandler.get().resetKeysTyped();
-            SaveHandler.get().resetChipName();
-            clearHand();
-            playerMode = PlayerMode.SAVE_MENU;
-        }
-
-        if ( KeyHandler.get().isKeyPressed( KeyBinds.load ) ) {
-            clearHand();
-            playerMode = PlayerMode.LOAD_MENU;
-        }
     }
 
     private void clearHand() {
+        SaveHandler.get().deselect();
         heldGate = null;
         heldWire = null;
         if ( heldWireNode != null ) {
@@ -162,7 +164,11 @@ public class Player {
         if ( heldGate != null ) {
             Point2D centerOffset = heldGate.getCenterOffset();
             Point2D snappedLocation = gates.snap( playerLocation );
-            heldGate.setLocation( snappedLocation.getX() - centerOffset.getX(), snappedLocation.getY() - centerOffset.getY() );
+            double y = Math.max( snappedLocation.getY() - centerOffset.getY(), Constants.NAME_SPACE_HEIGHT );
+            y = Math.min( y,
+                    Constants.SCREEN_HEIGHT - Constants.CHIP_SPACE_HEIGHT - heldGate.getHeight() );
+
+            heldGate.setLocation( snappedLocation.getX() - centerOffset.getX(), y );
             if ( mouseHandler.isMouseLeftClicked() ) {
                 heldGate.place();
                 gates.add( heldGate );

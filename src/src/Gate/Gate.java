@@ -54,6 +54,10 @@ public abstract class Gate extends ListItem {
         );
     }
 
+    public double getHeight() {
+        return body.getBounds2D().getHeight();
+    }
+
     public Point2D getCenterOffset() {
         return new Point2D.Double( body.getBounds().getCenterX() , body.getBounds().getCenterY() );
     }

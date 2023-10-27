@@ -26,14 +26,14 @@ public class Chip extends Gate {
         contents = new Gates();
         setBody();
 
-        double yDiv = Constants.SCREEN_HEIGHT / Constants.SCREEN_SCALE / 8;
-        double width = Constants.SCREEN_WIDTH / Constants.SCREEN_SCALE;
+        int yDiv = Constants.SCREEN_HEIGHT / 8;
+        int width = Constants.SCREEN_WIDTH;
 
-        addChipIO( new ChipIO( 50, yDiv*1 - 25, IO_Direction.RIGHT ) );
+        addChipIO( new ChipIO( 50, yDiv - 25, IO_Direction.RIGHT ) );
         addChipIO( new ChipIO( 50, yDiv*3 - 25, IO_Direction.RIGHT ) );
         addChipIO( new ChipIO( 50, yDiv*5 - 25, IO_Direction.RIGHT ) );
         addChipIO( new ChipIO( 50, yDiv*7 - 25, IO_Direction.RIGHT ) );
-        addChipIO( new ChipIO( width - 100, yDiv*1 - 25, IO_Direction.LEFT  ) );
+        addChipIO( new ChipIO( width - 100, yDiv - 25, IO_Direction.LEFT  ) );
         addChipIO( new ChipIO( width - 100, yDiv*3 - 25, IO_Direction.LEFT  ) );
         addChipIO( new ChipIO( width - 100, yDiv*5 - 25, IO_Direction.LEFT  ) );
         addChipIO( new ChipIO( width - 100, yDiv*7 - 25, IO_Direction.LEFT  ) );

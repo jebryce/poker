@@ -15,7 +15,7 @@ public class GamePanel extends JPanel implements Runnable {
 
 
     public GamePanel() {
-        this.setPreferredSize( new Dimension( Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT ) );
+        this.setPreferredSize( new Dimension( Constants.WIDTH, Constants.HEIGHT ) );
         this.setBackground( Colors.EGGSHELL );
         this.setDoubleBuffered( true );
         this.addKeyListener( KeyHandler.get() );
@@ -83,6 +83,7 @@ public class GamePanel extends JPanel implements Runnable {
         graphics2D.setStroke( new BasicStroke( Constants.LINE_THICKNESS ) );
         graphics2D.scale( Constants.SCREEN_SCALE, Constants.SCREEN_SCALE);
 
+        SaveHandler.get().repaint( graphics2D );
         player.repaint( graphics2D );
 
         graphics2D.dispose();

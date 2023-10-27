@@ -16,7 +16,7 @@ public class SaveHandler {
     private        Gates         contents = null;
     private static SaveHandler   instance = null;
     private final  Gson          gson;
-
+    private        boolean       selected = false;
 
     private SaveHandler() {
         GsonBuilder builder = new GsonBuilder();
@@ -31,61 +31,36 @@ public class SaveHandler {
         return instance;
     }
 
-    public boolean repaint( final Graphics2D graphics2D ) {
-        if ( updateChipName() ) {
-            return true;
-        }
-
-        double previewScale = 0.4;
-        int width  = (int) ( Constants.SCREEN_WIDTH  * previewScale / Constants.SCREEN_SCALE  );
-        int height = (int) ( Constants.SCREEN_HEIGHT * previewScale / Constants.SCREEN_SCALE );
-        int x      = (int) ( Constants.SCREEN_WIDTH  / 2 / Constants.SCREEN_SCALE - width / 2 );
-        int y      = (int) ( Constants.SCREEN_HEIGHT / 2 / Constants.SCREEN_SCALE - height / 2 );
-
-
+    public void repaint( final Graphics2D graphics2D ) {
         graphics2D.setColor( Colors.DARK_EGGSHELL );
-        graphics2D.fillRect( x, y, width, height + (int) (26 / Constants.SCREEN_SCALE) );
+        graphics2D.fillRect( 0, 0, Constants.SCREEN_WIDTH, Constants.NAME_SPACE_HEIGHT );
 
+        int fontHeight = (int) ( 35 / Constants.SCREEN_SCALE );
+        int offset = (int) ( 12 / Constants.SCREEN_SCALE );
+
+        graphics2D.setFont( new Font( Font.MONOSPACED, Font.PLAIN, fontHeight ) );
         graphics2D.setColor( Colors.GRAY );
-        graphics2D.setFont( new Font( Font.MONOSPACED, Font.PLAIN, (int) (18 / Constants.SCREEN_SCALE) ) );
-        graphics2D.drawString( "Chip name: " + chipName + "_",
-                x + (int) (2 / Constants.SCREEN_SCALE), y + (int) (18 / Constants.SCREEN_SCALE) + height
-        );
 
-        graphics2D.setColor( Colors.BLACK );
-        graphics2D.drawString( "           " + chipName + "_",
-                x + (int) (2 / Constants.SCREEN_SCALE), y + (int) (18 / Constants.SCREEN_SCALE) + height
-        );
-
-
-        graphics2D.setColor( Colors.EGGSHELL );
-        graphics2D.fillRect( x, y, width, height);
-
-        graphics2D.translate( x, y );
-
-        graphics2D.scale( previewScale, previewScale );
-        contents.repaint( graphics2D );
-        graphics2D.scale( 1/previewScale, 1/previewScale );
-
-        graphics2D.translate( -x, -y );
-
-        graphics2D.setColor( Colors.GRAY );
-        graphics2D.drawRect( x, y, width, height + (int) (26 / Constants.SCREEN_SCALE) );
-        return false;
+        if ( selected ) {
+            graphics2D.drawString( chipName  + "_", offset, Constants.NAME_SPACE_HEIGHT - offset );
+            updateChipName();
+        } else {
+            graphics2D.drawString( String.valueOf( chipName ), offset, Constants.NAME_SPACE_HEIGHT - offset );
+        }
     }
 
-    private boolean updateChipName() {
+    private void updateChipName() {
         for ( Key key : KeyHandler.get().getKeysTyped() ) {
             if ( key.getKey() == '\b' && !chipName.isEmpty() ) {
-                chipName.deleteCharAt( chipName.length() - 1 );
-            } else if ( key.getKey() == '\n' && !chipName.isEmpty() ) {
-                writeContents();
-                return true;
+                chipName.deleteCharAt(chipName.length() - 1);
+            } else if ( key.getKey() == '\n' ) {
+                if ( !chipName.isEmpty() && contents.getLength() > 0 ) {
+                    writeContents();
+                }
             } else {
                 chipName.append( key.getKey() );
             }
         }
-        return false;
     }
 
     public void setContents( final Gates gates ) {
@@ -94,6 +69,7 @@ public class SaveHandler {
 
     private void writeContents() {
         assert !chipName.isEmpty() : "Cannot create a file without a name.";
+        assert contents.getLength() > 0;
         try ( FileWriter fileWriter = new FileWriter( Constants.SAVE_PATH + chipName + ".jeb" ) ){
             fileWriter.write( gson.toJson( contents ) );
         } catch ( IOException e ) {
@@ -103,5 +79,13 @@ public class SaveHandler {
 
     public void resetChipName() {
         chipName.delete( 0, chipName.length() );
+    }
+
+    public void select() {
+        selected = true;
+    }
+
+    public void deselect() {
+        selected = false;
     }
 }

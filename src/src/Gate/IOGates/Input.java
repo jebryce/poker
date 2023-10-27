@@ -14,6 +14,12 @@ public class Input extends IO_Gate {
         addWire( NodeType.OUTPUT, 50, 25 );
     }
 
+    public Input( final double x, final double y ) {
+        super( x, y, GateType.INPUT );
+
+        addWire( NodeType.OUTPUT, 50, 25 );
+    }
+
     public void flipState() {
         state = outputWires.getFirst().flipState();
     }
