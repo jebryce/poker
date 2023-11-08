@@ -26,6 +26,7 @@ public class LoadHandler {
     }
 
     public void repaint( final Graphics2D graphics2D ) {
-        File file = new File ( Constants.SAVE_PATH );
+        graphics2D.setColor( Colors.DARK_EGGSHELL );
+        graphics2D.fillRect( 0, Constants.SCREEN_HEIGHT - Constants.CHIP_SPACE_HEIGHT, Constants.SCREEN_WIDTH, Constants.CHIP_SPACE_HEIGHT );
     }
 }

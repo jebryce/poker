@@ -84,6 +84,7 @@ public class GamePanel extends JPanel implements Runnable {
         graphics2D.scale( Constants.SCREEN_SCALE, Constants.SCREEN_SCALE);
 
         SaveHandler.get().repaint( graphics2D );
+        LoadHandler.get().repaint( graphics2D );
         player.repaint( graphics2D );
 
         graphics2D.dispose();

@@ -30,18 +30,6 @@ public class Player {
 
     public Player( final MouseHandler mouseH ) {
         mouseHandler = mouseH;
-
-        int yDiv = Constants.SCREEN_HEIGHT / 8;
-        int width = Constants.SCREEN_WIDTH;
-
-//        gates.add( new Input( 50, yDiv - 25) ).place();
-//        gates.add( new Input( 50, yDiv*3 - 25 ) ).place();
-//        gates.add( new Input( 50, yDiv*5 - 25 ) ).place();
-//        gates.add( new Input( 50, yDiv*7 - 25 ) ).place();
-//        gates.add( new Output( width - 100, yDiv - 25  ) ).place();
-//        gates.add( new Output( width - 100, yDiv*3 - 25  ) ).place();
-//        gates.add( new Output( width - 100, yDiv*5 - 25  ) ).place();
-//        gates.add( new Output( width - 100, yDiv*7 - 25  ) ).place();
     }
 
     public void repaint( final Graphics2D graphics2D  ) {
@@ -63,6 +51,7 @@ public class Player {
             case NORMAL        -> updateNORMAL();
             case PLACE_GATE    -> updatePLACE_GATE();
             case PLACE_WIRE    -> updatePLACE_WIRE();
+            case SAVE_MENU     -> updateSAVE_MENU();
         }
     }
 
@@ -143,8 +132,6 @@ public class Player {
         playerMode = PlayerMode.NORMAL;
     }
 
-
-
     private void updateNORMAL() {
         if ( mouseHandler.isMouseLeftClicked() ) {
             Gate gate = gates.findContainingGate( playerLocation );
@@ -215,6 +202,12 @@ public class Player {
         if ( heldWireNode != null ) {
             heldWireNode = heldWire.placePlayerNode( heldWireNode );
             heldWireNode.setPlayerNode( playerLocation );
+        }
+    }
+
+    private void updateSAVE_MENU() {
+        if ( mouseHandler.isMouseLeftClicked() && playerLocation.getY() > Constants.NAME_SPACE_HEIGHT) {
+            clearHand();
         }
     }
 }

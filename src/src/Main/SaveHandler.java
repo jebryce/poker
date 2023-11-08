@@ -51,8 +51,10 @@ public class SaveHandler {
 
     private void updateChipName() {
         for ( Key key : KeyHandler.get().getKeysTyped() ) {
-            if ( key.getKey() == '\b' && !chipName.isEmpty() ) {
-                chipName.deleteCharAt(chipName.length() - 1);
+            if ( key.getKey() == '\b' ) {
+                if ( !chipName.isEmpty() ) {
+                    chipName.deleteCharAt(chipName.length() - 1);
+                }
             } else if ( key.getKey() == '\n' ) {
                 if ( !chipName.isEmpty() && contents.getLength() > 0 ) {
                     writeContents();
@@ -72,6 +74,7 @@ public class SaveHandler {
         assert contents.getLength() > 0;
         try ( FileWriter fileWriter = new FileWriter( Constants.SAVE_PATH + chipName + ".jeb" ) ){
             fileWriter.write( gson.toJson( contents ) );
+            resetChipName();
         } catch ( IOException e ) {
             e.printStackTrace();
         }
