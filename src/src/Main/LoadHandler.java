@@ -57,15 +57,22 @@ public class LoadHandler {
         graphics2D.setColor( Colors.BLACK );
         graphics2D.translate( xOffset, Constants.SCREEN_HEIGHT - Constants.CHIP_SPACE_HEIGHT + yOffset );
 
+
         int fontHeight = (int) ( 20 / Constants.SCREEN_SCALE );
         graphics2D.setFont( new Font( Font.MONOSPACED, Font.PLAIN, fontHeight ) );
+
+        FontMetrics fontMetrics = graphics2D.getFontMetrics();
+        int textYOffset = ( fontMetrics.getAscent() - fontMetrics.getDescent() + 180 ) / 2;
 
         int totalOffset = 0;
         int offset = 120 + 2*Constants.MIN_LINE_LENGTH + xOffset;
         File savePath = new File( Constants.FULL_SAVE_PATH );
-        for ( String chip : Objects.requireNonNull( savePath.list() ) ) {
+        for ( String fileName : Objects.requireNonNull( savePath.list() ) ) {
+            String chipName = fileName.substring(0, fileName.length()-4);
+            int textXOffset = ( 120 - fontMetrics.stringWidth( chipName ) ) / 2;
             drawChip( graphics2D );
-            graphics2D.drawString( chip.substring(0, chip.length()-4), 10, 10 );
+            graphics2D.setColor( Colors.WHITE );
+            graphics2D.drawString( chipName, textXOffset, textYOffset );
             graphics2D.translate( offset, 0 );
             totalOffset += offset;
         }
