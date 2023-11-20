@@ -24,7 +24,8 @@ public class Player {
     private       Gate          heldGate       = null;
     private       Wire          heldWire       = null;
     private       Node          heldWireNode   = null;
-    private final Point2D       playerLocation = new Point2D.Double();
+    private final Point2D       cursorLocation = new Point2D.Double(); // cursorLocation = location of cursor in window
+    private final Point2D       playerLocation = new Point2D.Double(); // playerLocation = location of cursor in playableArea
     private       Gates         gates          = new Gates();
     private       PlayerMode    playerMode     = PlayerMode.NORMAL;
 
@@ -43,7 +44,12 @@ public class Player {
     public void update() {
         gates.update();
 
-        playerLocation.setLocation( mouseHandler.xPos, mouseHandler.yPos );
+        cursorLocation.setLocation( mouseHandler.xPos, mouseHandler.yPos );
+        playerLocation.setLocation(
+                mouseHandler.xPos,
+                Math.min( Math.max( mouseHandler.yPos, Constants.NAME_SPACE_HEIGHT ), Constants.END_PLAYABLE_AREA )
+        );
+
 
         checkKeyPresses();
 

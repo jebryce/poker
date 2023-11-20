@@ -10,6 +10,7 @@ public class Constants {
     public static final int    SCREEN_WIDTH          = (int) ( WIDTH / SCREEN_SCALE );
     public static final int    NAME_SPACE_HEIGHT     = (int) ( 50 / SCREEN_SCALE );
     public static final int    CHIP_SPACE_HEIGHT     = (int) ( 100 / SCREEN_SCALE );
+    public static final int    END_PLAYABLE_AREA     = Constants.SCREEN_HEIGHT - Constants.CHIP_SPACE_HEIGHT;
     public static final long   NANO_SEC_PER_SEC      = 1_000_000_000L;
     public static final long   NANO_SEC_PER_M_SEC    = 1_000_000L;
     public static final int    MAX_NUM_IO            = 8;
