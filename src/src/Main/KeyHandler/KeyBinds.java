@@ -12,6 +12,7 @@ public class KeyBinds {
     public static int newXORGate   = KeyEvent.VK_5;
     public static int newChip      = KeyEvent.VK_6;
     public static int clearHand    = KeyEvent.VK_ESCAPE;
+    public static int clearHandALT = KeyEvent.VK_ENTER;
     public static int delete       = KeyEvent.VK_BACK_SPACE;
     public static int save         = KeyEvent.VK_S;
     public static int load         = KeyEvent.VK_L;

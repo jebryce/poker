@@ -52,6 +52,7 @@ public class Player {
             case PLACE_GATE    -> updatePLACE_GATE();
             case PLACE_WIRE    -> updatePLACE_WIRE();
             case SAVE_MENU     -> updateSAVE_MENU();
+            case LOAD_MENU     -> updateLOAD_MENU();
         }
     }
 
@@ -59,20 +60,12 @@ public class Player {
         if ( KeyHandler.get().isKeyPressed( KeyBinds.clearHand ) ) {
             clearHand();
         }
-
-        if ( playerMode == PlayerMode.SAVE_MENU ) {
-            if ( KeyHandler.get().isKeyPressed( KeyEvent.VK_ENTER ) ) {
-                clearHand();
-            }
-            return;
+        if ( KeyHandler.get().isKeyPressed( KeyBinds.clearHandALT ) ) {
+            clearHand();
         }
 
-        if ( playerLocation.getY() < Constants.NAME_SPACE_HEIGHT && mouseHandler.isMouseLeftClicked() ) {
-            clearHand();
-            playerMode = PlayerMode.SAVE_MENU;
-            SaveHandler.get().select();
-            KeyHandler.get().resetKeysTyped();
-            SaveHandler.get().setContents( gates );
+        if ( playerMode == PlayerMode.SAVE_MENU ) {
+            return;
         }
 
         if ( KeyHandler.get().isKeyPressed( KeyBinds.delete ) ) {
@@ -134,6 +127,9 @@ public class Player {
 
     private void updateNORMAL() {
         if ( mouseHandler.isMouseLeftClicked() ) {
+            if ( setMenuState() ) {
+                return;
+            }
             Gate gate = gates.findContainingGate( playerLocation );
             if ( gate instanceof Input ) {
                 ((Input) gate).flipState();
@@ -153,10 +149,13 @@ public class Player {
             Point2D snappedLocation = gates.snap( playerLocation );
             double y = Math.max( snappedLocation.getY() - centerOffset.getY(), Constants.NAME_SPACE_HEIGHT );
             y = Math.min( y,
-                    Constants.SCREEN_HEIGHT - Constants.CHIP_SPACE_HEIGHT - heldGate.getHeight() );
-
+                    Constants.SCREEN_HEIGHT - Constants.CHIP_SPACE_HEIGHT - heldGate.getHeight()
+            );
             heldGate.setLocation( snappedLocation.getX() - centerOffset.getX(), y );
             if ( mouseHandler.isMouseLeftClicked() ) {
+                if ( setMenuState() ) {
+                    return;
+                }
                 heldGate.place();
                 gates.add( heldGate );
                 heldGate = null;
@@ -169,12 +168,13 @@ public class Player {
         if ( heldWireNode != null ) {
             Point2D snappedLocation = gates.snapToNode( playerLocation );
             heldWireNode.updatePlayerNode( snappedLocation );
-
         }
         if ( !mouseHandler.isMouseLeftClicked() ) {
             return;
         }
-
+        if ( setMenuState() ) {
+            return;
+        }
 
         Wires containingWires = gates.findContainingWires( playerLocation );
         Node containingNode;
@@ -205,9 +205,45 @@ public class Player {
         }
     }
 
-    private void updateSAVE_MENU() {
-        if ( mouseHandler.isMouseLeftClicked() && playerLocation.getY() > Constants.NAME_SPACE_HEIGHT) {
+    private boolean setMenuState() {
+        if ( playerLocation.getY() < Constants.NAME_SPACE_HEIGHT) {
             clearHand();
+            playerMode = PlayerMode.SAVE_MENU;
+            SaveHandler.get().select();
+            KeyHandler.get().resetKeysTyped();
+            SaveHandler.get().setContents( gates );
+            return true;
+        }
+        else if ( playerLocation.getY() > Constants.SCREEN_HEIGHT - Constants.CHIP_SPACE_HEIGHT ) {
+            clearHand();
+            playerMode = PlayerMode.LOAD_MENU;
+            return true;
+        }
+        return false;
+    }
+
+    private void updateSAVE_MENU() {
+        if ( mouseHandler.isMouseLeftClicked() ) {
+            if ( playerLocation.getY() > Constants.SCREEN_HEIGHT - Constants.CHIP_SPACE_HEIGHT ) {
+                clearHand();
+                playerMode = PlayerMode.LOAD_MENU;
+            } else if ( playerLocation.getY() > Constants.NAME_SPACE_HEIGHT ) {
+                clearHand();
+            }
+        }
+    }
+
+    private void updateLOAD_MENU() {
+        if ( mouseHandler.isMouseLeftClicked() ) {
+            if ( playerLocation.getY() < Constants.NAME_SPACE_HEIGHT) {
+                clearHand();
+                playerMode = PlayerMode.SAVE_MENU;
+                SaveHandler.get().select();
+                KeyHandler.get().resetKeysTyped();
+                SaveHandler.get().setContents( gates );
+            } else if ( playerLocation.getY() < Constants.SCREEN_HEIGHT - Constants.CHIP_SPACE_HEIGHT ) {
+                clearHand();
+            }
         }
     }
 }

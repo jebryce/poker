@@ -62,7 +62,8 @@ public class Node extends ListItem {
 
     public void updatePlayerNode( final Point2D playerLocation ) {
         double playerX = playerLocation.getX();
-        double playerY = playerLocation.getY();
+        double playerY = Math.max( playerLocation.getY(), Constants.NAME_SPACE_HEIGHT + Constants.LINE_GRAB_RADIUS );
+        playerY = Math.min( playerY, Constants.SCREEN_HEIGHT - Constants.CHIP_SPACE_HEIGHT - Constants.LINE_GRAB_RADIUS );
         if ( Math.abs( playerX - location.getX() )  < Math.abs( playerY - location.getY() ) ) {
             playerNode.location.setLocation( location.getX(), playerY );
         }
